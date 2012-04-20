@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<module>
+  <!-- Inherit our applications main module.                      -->
+  <inherits name='eu.hilow.xode.web.xode' />
+
+  <!-- Specify the path to any remote services.                   -->
+  <servlet path="/xode/greet" class="eu.hilow.xode.web.server.GreetingServiceImpl" />
+
+</module>

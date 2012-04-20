@@ -1,0 +1,235 @@
+<!doctype html>
+<!-- The DOCTYPE declaration above will set the    -->
+<!-- browser's rendering engine into               -->
+<!-- "Standards Mode". Replacing this declaration  -->
+<!-- with a "Quirks Mode" doctype may lead to some -->
+<!-- differences in layout.                        -->
+
+<html>
+  <head>
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+
+    <!--                                                               -->
+    <!-- Consider inlining CSS to reduce the number of requested files -->
+    <!--                                                               -->
+    <link type="text/css" rel="stylesheet" href="xode.css">
+
+    <!--                                           -->
+    <!-- Any title is fine                         -->
+    <!--                                           -->
+    <title>Web Application Starter Project</title>
+
+    <script type="text/javascript">
+            var root = {
+                    navigation: "[{url:'http://plus.google.com', label:'+Google', active:false},{url:'http://poczta.hi-low.eu', label:'Poczta', active:false},{url:'http://docs.google.com', label:'Dokumenty', active:false},{url:'hi-low.eu', label:'Xode', active:true}]"
+            };            
+    </script>
+    
+    <!--                                           -->
+    <!-- This script loads your compiled module.   -->
+    <!-- If you add any GWT meta tags, they must   -->
+    <!-- be added before this line.                -->
+    <!--                                           -->
+    <script type="text/javascript" language="javascript" src="xode/xode.nocache.js"></script>
+    <style>
+        /* Let's get this party started */
+        ::-webkit-scrollbar {    width: 8px;} 
+        /* Track */
+        ::-webkit-scrollbar-track {
+        /*      -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3);    
+                -webkit-border-radius: 10px;    
+                border-radius: 10px;*/    
+                background-color: transparent;
+        } 
+        /* Handle */
+        ::-webkit-scrollbar-thumb {    
+                -webkit-border-radius: 2px;    
+                border-radius: 2px;    
+                background: rgba(0,0,0,0.2);     
+                -webkit-box-shadow: inset 1px 1px 0 rgba(0,0,0,0.10),inset 0 -1px 0 rgba(0,0,0,0.07);
+        }        
+        
+        .tabLayoutPanel {
+                border: 0px;
+        }
+        
+        .gwt-TabLayoutPanel div.gwt-TabLayoutPanelTabs {
+                padding: 0.22em 1em;
+        }
+        
+        .gwt-TabLayoutPanel div.gwt-TabLayoutPanelTab {
+                background: whitesmoke;
+                background-image: -webkit-linear-gradient(top,whiteSmoke,#F1F1F1);
+                background-image: -moz-linear-gradient(top,whiteSmoke,#F1F1F1);
+                background-image: -ms-linear-gradient(top,whiteSmoke,#F1F1F1);
+                background-image: -o-linear-gradient(top,whiteSmoke,#F1F1F1);
+                background-image: linear-gradient(top,whiteSmoke,#F1F1F1);
+                
+                padding: 6px 12px;
+                margin-left: 0px;
+/*                border: 1px solid #ddd;*/
+                border: 1px solid gainsboro;
+                border: 1px solid rgba(0, 0, 0, 0.1);                
+        }
+        
+        .gwt-TabLayoutPanel div.gwt-TabLayoutPanelTab:first-child {
+                border-top-left-radius: 2px;
+                border-bottom-left-radius: 2px;
+        }
+
+        .gwt-TabLayoutPanel div.gwt-TabLayoutPanelTab:last-child {
+                border-top-right-radius: 2px;
+                border-bottom-right-radius: 2px;
+        }
+        
+        .gwt-TabLayoutPanel div.gwt-TabLayoutPanelTab-selected {
+                background-image: -webkit-linear-gradient(top,#EEE,#E0E0E0);
+                background-image: -moz-linear-gradient(top,#EEE,#E0E0E0);
+                background-image: -ms-linear-gradient(top,#EEE,#E0E0E0);
+                background-image: -o-linear-gradient(top,#EEE,#E0E0E0);
+                background-image: linear-gradient(top,#EEE,#E0E0E0);
+        }
+
+        .gwt-TabLayoutPanel div.gwt-TabLayoutPanelContentContainer {
+                border: 0.7em solid transparent;
+        }
+        
+        .gwt-TabLayoutPanel div.gwt-TabLayoutPanelContent {
+                border: 0px;                
+        }
+        
+        textarea.gwt-TextArea {
+                border: 1px solid lightgray;
+        }
+        
+    </style>
+    <style>
+.incoming { color: #a6002c; }
+.context .incoming { color:#A65369; }
+
+.outgoing { color: #001190; }
+.context .outgoing { color: #47508F; }
+
+.container {
+    position: relative;
+	margin: 5px 5px;
+	-webkit-border-radius: 10px;
+        border: 1px solid lightgray;
+                
+        background-color: rgba(0,0,0,0.02);
+}
+                
+.sender {
+	top: 6px;
+	left: 56px;
+    position: absolute;
+    font-size: 11px;
+    font-weight: bold;
+    text-transform: lowercase;
+}
+    
+.time_initial {
+    position: absolute;
+    right: 10px;
+    top: 6px;
+    font-size: 9px;
+    font-weight: bold;
+    text-transform: uppercase;
+    margin-bottom: 0;
+}
+     
+.time_consecutive {
+    float: left;
+    margin-left: -40px;
+    margin-top: 5px;
+    font-size: 9px;
+    padding-right: 30px;
+}
+    
+.buddyicon {
+    position: absolute;
+    z-index: 4;
+    height: 40px;
+    width: 40px;
+    top: 3px;
+    left: 6px;
+}
+	
+.buddyicon img {
+    position: absolute;
+    top: 3px;
+    left: 3px;
+    z-index: 3;
+}
+ 
+.message {
+    position: relative;
+    top: 0;
+    left: 0;
+    padding: 10px 4px 0px 50px;
+}
+ 
+.context .message {
+    color: #404040;
+}    
+   
+ p {
+    padding: 0;
+    margin-bottom: 6px;
+    overflow: auto;
+}
+    
+.status_container {
+    position: relative;
+    margin: 10px 5px;
+    padding: 0 20px;
+    color: #111111;
+    text-shadow: 1px 1px 3px #aaa;
+    font-size: 9px;
+    text-transform: lowercase;
+    min-height: 15px;
+    background: rgba(225,225,225,0.9);
+    border: 2px solid #949494;
+    -webkit-border-radius: 10px;
+}
+
+.status_message {
+	position: absolute;
+	top: 2px;
+}
+
+.status_time {
+    position: absolute;
+    top: 2px;
+    right: 10px;
+    text-transform: uppercase;
+    font-size: 8px;
+}
+
+#Chat {
+    overflow: hidden;
+    margin-bottom: -8px;
+}            
+    </style>
+  </head>
+
+  <!--                                           -->
+  <!-- The body can have arbitrary html, or      -->
+  <!-- you can leave the body empty if you want  -->
+  <!-- to create a completely dynamic UI.        -->
+  <!--                                           -->
+  <body>
+
+    <!-- OPTIONAL: include this if you want history support -->
+    <iframe src="javascript:''" id="__gwt_historyFrame" tabIndex='-1' style="position:absolute;width:0;height:0;border:0"></iframe>
+
+    <!-- RECOMMENDED if your web app will not function without JavaScript enabled -->
+    <noscript>
+      <div style="width: 22em; position: absolute; left: 50%; margin-left: -11em; color: red; background-color: white; border: 1px solid red; padding: 4px; font-family: sans-serif">
+        Your web browser must have JavaScript enabled
+        in order for this application to display correctly.
+      </div>
+    </noscript>
+
+  </body>
+</html>

@@ -1,0 +1,119 @@
+/* 
+    Document   : style.css
+    Created on : 2012-04-06, 00:12:23
+    Author     : andrzej
+    Description:
+        Purpose of the stylesheet follows.
+*/
+
+.left {
+        float: left;
+}
+
+.right {
+        float: right;
+}
+
+.navigationBar {
+        line-height: 1.7em;  
+        background-color: black;
+        padding: 0px 10px;
+        width: 100%;
+}
+
+.navigationBarItem {
+        color: #ccc;
+        border: 2px solid transparent;
+        white-space: nowrap;
+        font-weight: bold;
+        padding: 0px 7px;
+}
+
+.navigationBarItemActive {
+        border-top: 2px solid #DD4B39;
+        color: white;
+}
+
+.actionBar {
+        border-bottom: 1px solid #E5E5E5;
+        background: whiteSmoke;
+        padding: 3px;
+}
+
+.actionBarLink {
+        font-weight: bold;
+        padding: 0px 10px;
+        line-height: 2.3em;
+        font-size: 1.05em;
+        display: inline-block;
+}
+
+.actionBarSearch {
+        font-weight: normal;
+        line-height: 1.4em;
+        margin: 3px;
+        padding: 3px;
+        border: 1px solid #d9d9d9;
+        width: 24em;
+        background-color: white;
+}
+
+.actionBarActionIcon {
+        padding: 0px 6px;
+}
+
+.rosterItem {
+        border-spacing: 0px;
+        width: 100%;
+        padding-top: 1px;
+        height: 32px;
+        border-bottom: 1px solid #DEDEDE;
+}
+
+.rosterItemName {
+        font-size: 0.96em;
+        padding-left: 6px;
+}
+
+.rosterItemStatus {
+        font-size: 0.75em;
+        font-style: italic;
+}
+
+.authPanel {
+        padding: 2em;
+        margin: 100px auto;
+        width: 283px;
+        height: 215px;
+        background-color: whitesmoke;
+        border: 1px solid #E5E5E5;
+}
+
+.authHeader {
+        font-size: 1.4em;
+        margin-bottom: 0.5em;
+}
+
+.authLabel {
+        padding-top: 1em;
+        font-weight: bold;        
+}
+
+.authTextBox {
+        width: 100%;
+        border: 1px solid #E5E5E5;
+        font-size: 1.1em;
+        line-height: 1.5em;
+        margin-top: 0.5em;        
+        padding: 3px;
+}
+
+.authButton {
+        margin-top: 1.5em;
+        padding: 0.5em 1.2em;
+        font-weight: bold;
+        border: 1px solid #2F5BB7;
+        border-radius: 2px;
+        background-color: #357AE8;
+        color: white;        
+}
