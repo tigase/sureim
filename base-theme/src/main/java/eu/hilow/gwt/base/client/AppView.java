@@ -22,7 +22,8 @@ public class AppView extends ResizeComposite {
         
         private ActionBar actionBar;
         private Widget center;
-        private Widget sidebar;
+        private Widget sidebarLeft;
+        private Widget sidebarRight;
         
         public AppView(ClientFactory factory) {
                 this.factory = factory;
@@ -49,13 +50,30 @@ public class AppView extends ResizeComposite {
         public Widget getCenter() {
                 return center;
         }
-
-        public void setSidebar(Widget widget) {
-                this.sidebar = widget;
-                panel.addWest(sidebar, 20);
+        
+        public void setLeftSidebar(Widget widget) {
+                setLeftSidebar(widget, 20);
         }
         
-        public Widget getSidebar() {
-                return sidebar;
+        public void setLeftSidebar(Widget widget, double size) {
+                this.sidebarLeft = widget;
+                panel.addWest(sidebarLeft, size);
+        }
+        
+        public void setRightSidebar(Widget widget) {
+                setRightSidebar(widget, 20);
+        }
+
+        public void setRightSidebar(Widget widget, double size) {
+                this.sidebarRight = widget;
+                panel.addEast(sidebarRight, size);
+        }
+
+        public Widget getSidebarLeft() {
+                return sidebarLeft;
+        }
+
+        public Widget getSidebarRight() {
+                return sidebarRight;
         }
 }

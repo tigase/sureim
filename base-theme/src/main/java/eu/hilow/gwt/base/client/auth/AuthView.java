@@ -8,6 +8,7 @@ import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.ui.*;
 import eu.hilow.gwt.base.client.ClientFactory;
+import eu.hilow.gwt.base.client.ResizablePanel;
 import tigase.jaxmpp.core.client.JID;
 
 /**
@@ -25,7 +26,7 @@ public class AuthView extends ResizeComposite {
         public AuthView(ClientFactory factory_) {
                 this.factory = factory_;
                 
-                AbsolutePanel layout = new AbsolutePanel();
+                ResizablePanel layout = new ResizablePanel();
                 AbsolutePanel panel = new AbsolutePanel();
         
                 Label header = new Label(factory.baseI18n().authenticate());

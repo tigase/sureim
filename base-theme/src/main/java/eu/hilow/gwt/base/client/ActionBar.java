@@ -27,7 +27,7 @@ public class ActionBar extends ResizeComposite {
                 
                 Style style = factory.theme().style();
                 
-                panel = new AbsolutePanel();
+                panel = new ResizablePanel();
                 panel.setStyleName(style.actionBar());
                 
                 linkPanel = new AbsolutePanel();

@@ -28,7 +28,7 @@ public interface Icons extends ClientBundle {
         @Source("icons/1-navigation-next-item.png")
         ImageResource navigationNextItem();
 
-        @Source("icons/1-navigation-accept.png")
+        @Source("icons/1-navigation-previous-item.png")
         ImageResource navigationPreviousItem();
 
         @Source("icons/1-navigation-refresh.png")
@@ -48,4 +48,7 @@ public interface Icons extends ClientBundle {
         
         @Source("icons/status-unavailable.png")
         ImageResource statusUnavailable();
+        
+        @Source("icons/2-action-settings.png")
+        ImageResource settings();
 }

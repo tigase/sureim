@@ -68,6 +68,9 @@ public class RootView extends ResizeComposite {
         }
 
         public void setCenter(Widget widget) {
+                if (centerWidget != null || widget == null)
+                        return;
+                
                 this.centerWidget = widget;
                 dockLayout.add(widget);
         }

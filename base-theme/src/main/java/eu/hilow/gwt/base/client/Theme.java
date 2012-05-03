@@ -12,5 +12,5 @@ public interface Theme extends Icons {
         
         @Source("style.css")
         Style style();
-        
+
 }

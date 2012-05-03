@@ -34,4 +34,6 @@ public interface Style extends CssResource {
         String authHeader();
         String authButton();
                
+        String button();
+        String buttonDefault();
 }

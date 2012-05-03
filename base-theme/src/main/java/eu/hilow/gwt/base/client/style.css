@@ -117,3 +117,18 @@
         background-color: #357AE8;
         color: white;        
 }
+
+.button {
+        padding: 0.5em 1.2em;
+        font-weight: bold;
+        border: 1px solid gainsboro;
+        border-radius: 2px;
+        color: #444;             
+        background-color: whitesmoke;        
+}
+
+.buttonDefault {
+        color: white;
+        border: 1px solid #2F5BB7;
+        background-color: #357AE8;        
+}
