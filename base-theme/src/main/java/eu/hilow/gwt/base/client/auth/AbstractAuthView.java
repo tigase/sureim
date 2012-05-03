@@ -9,26 +9,32 @@ import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.ui.*;
 import eu.hilow.gwt.base.client.ClientFactory;
 import eu.hilow.gwt.base.client.ResizablePanel;
+import eu.hilow.gwt.base.client.Showdown;
 import tigase.jaxmpp.core.client.JID;
 
 /**
  *
  * @author andrzej
  */
-public class AuthView extends ResizeComposite {
+public class AbstractAuthView extends ResizeComposite {
         
-        private final ClientFactory factory;
+        protected final ClientFactory factory;
         
-        private final TextBox username;
-        private final TextBox password;
-        private final Button authButton;
+        private TextBox username;
+        private TextBox password;
+        private Button authButton;
         
-        public AuthView(ClientFactory factory_) {
+        public AbstractAuthView(ClientFactory factory_) {
                 this.factory = factory_;
-                
-                ResizablePanel layout = new ResizablePanel();
-                AbsolutePanel panel = new AbsolutePanel();
+        }
         
+        private void handle() {
+                factory.eventBus().fireEvent(new AuthRequestEvent(JID.jidInstance(username.getText()), password.getText()));
+        }
+        
+        protected Widget createAuthBox() {
+                AbsolutePanel panel = new AbsolutePanel();
+
                 Label header = new Label(factory.baseI18n().authenticate());
                 header.setStyleName(factory.theme().style().authHeader());
                 panel.add(header);
@@ -60,13 +66,7 @@ public class AuthView extends ResizeComposite {
                 
                 panel.setStyleName(factory.theme().style().authPanel());
                 
-                layout.add(panel);
-                
-                initWidget(layout);
-        }
-        
-        private void handle() {
-                factory.eventBus().fireEvent(new AuthRequestEvent(JID.jidInstance(username.getText()), password.getText()));
+                return panel;
         }
         
 }

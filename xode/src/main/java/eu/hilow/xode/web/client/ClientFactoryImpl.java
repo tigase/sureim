@@ -13,10 +13,11 @@ import eu.hilow.gwt.base.client.AbstractAvatarFactory;
 import eu.hilow.gwt.base.client.AppView;
 import eu.hilow.gwt.base.client.Theme;
 import eu.hilow.gwt.base.client.auth.AuthEvent;
-import eu.hilow.gwt.base.client.auth.AuthView;
+import eu.hilow.gwt.base.client.auth.AbstractAuthView;
 import eu.hilow.jaxmpp.ext.client.xmpp.modules.archive.MessageArchivingModule;
 import eu.hilow.xode.web.client.archive.ArchiveView;
 import eu.hilow.xode.web.client.archive.ArchiveViewImpl;
+import eu.hilow.xode.web.client.auth.AuthView;
 import eu.hilow.xode.web.client.chat.ChatView;
 import eu.hilow.xode.web.client.chat.ChatViewImpl;
 import eu.hilow.xode.web.client.events.ServerFeaturesChangedEvent;
@@ -91,14 +92,14 @@ public class ClientFactoryImpl extends eu.hilow.gwt.base.client.ClientFactoryImp
                                                         
                                                 });
                                         
-                                        if (be.getError() != null) {
-                                                Cookies.setCookie("username", 
-                                                        jaxmpp().getProperties().getUserProperty(SessionObject.USER_BARE_JID).toString(),
-                                                        new Date(new Date().getTime() + 24*60*60*1000*7));
-                                                Cookies.setCookie("password", 
-                                                        jaxmpp().getProperties().getUserProperty(SessionObject.PASSWORD).toString(),
-                                                        new Date(new Date().getTime() + 24*60*60*1000*7));
-                                        }
+//                                        if (be.getError() != null) {
+//                                                Cookies.setCookie("username", 
+//                                                        jaxmpp().getProperties().getUserProperty(SessionObject.USER_BARE_JID).toString(),
+//                                                        new Date(new Date().getTime() + 24*60*60*1000*7));
+//                                                Cookies.setCookie("password", 
+//                                                        jaxmpp().getProperties().getUserProperty(SessionObject.PASSWORD).toString(),
+//                                                        new Date(new Date().getTime() + 24*60*60*1000*7));
+//                                        }
                                         eventBus().fireEvent(new AuthEvent(be.getJid()));
                                 } catch (Exception ex) {
                                         log.log(Level.WARNING, "exception firing auth event", ex);

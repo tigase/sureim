@@ -6,8 +6,9 @@ package eu.hilow.xode.web.client;
 
 import com.google.gwt.place.shared.PlaceController;
 import com.google.web.bindery.event.shared.EventBus;
-import eu.hilow.gwt.base.client.auth.AuthView;
+import eu.hilow.gwt.base.client.auth.AbstractAuthView;
 import eu.hilow.xode.web.client.archive.ArchiveView;
+import eu.hilow.xode.web.client.auth.AuthView;
 import eu.hilow.xode.web.client.chat.ChatView;
 import eu.hilow.xode.web.client.settings.SettingsView;
 

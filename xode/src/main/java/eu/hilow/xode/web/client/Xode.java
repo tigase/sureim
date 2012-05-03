@@ -9,6 +9,7 @@ import com.google.gwt.dom.client.Style;
 import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.i18n.client.Dictionary;
 import com.google.gwt.place.shared.Place;
 import com.google.gwt.place.shared.PlaceController;
 import com.google.gwt.place.shared.PlaceHistoryHandler;
@@ -25,6 +26,7 @@ import eu.hilow.gwt.base.client.auth.AuthRequestEvent;
 import eu.hilow.gwt.base.client.auth.AuthRequestHandler;
 import eu.hilow.gwt.base.client.roster.FlatRoster;
 import eu.hilow.xode.web.client.chat.ChatPlace;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 import tigase.jaxmpp.core.client.BareJID;
 import tigase.jaxmpp.core.client.JID;
@@ -85,7 +87,12 @@ public class Xode implements EntryPoint {
                 eventBus.addHandler(AuthEvent.TYPE, new AuthHandler() {
 
                         public void authenticated(JID jid) {
-                                placeController.goTo(new ChatPlace());
+                                if (factory.jaxmpp().getSessionObject().getProperty(SessionObject.USER_BARE_JID) != null) {
+                                        placeController.goTo(new ChatPlace());
+                                }
+                                else {
+                                        placeController.goTo(new AuthPlace());
+                                }
                         }
 
                         public void deauthenticated() {
@@ -105,18 +112,39 @@ public class Xode implements EntryPoint {
                         authenticateInt(JID.jidInstance(Cookies.getCookie("username")), Cookies.getCookie("password"));
                 }
                 //authenticateTest(factory);
+                
+                authenticateInt(null, null);
         }
 
         private void authenticateInt(JID jid, String password) {
                 Jaxmpp jaxmpp = factory.jaxmpp();
-                jaxmpp.getProperties().setUserProperty(BoshConnector.BOSH_SERVICE_URL_KEY, "http://" + jid.getDomain() + ":5280/bosh");
+//                if (jaxmpp.isConnected()) {
+//                       try {
+//                                jaxmpp.disconnect();
+//                        } catch (JaxmppException ex) {
+//                                Logger.getLogger(Xode.class.getName()).log(Level.SEVERE, null, ex);
+//                        }
+//                }
+                        
+                if (jid != null) {
+                        jaxmpp.getProperties().setUserProperty(BoshConnector.BOSH_SERVICE_URL_KEY, "http://" + jid.getDomain() + ":5280/bosh");
 
-                jaxmpp.getProperties().setUserProperty(SessionObject.RESOURCE, "jaxmpp");
-                jaxmpp.getProperties().setUserProperty(SessionObject.USER_BARE_JID, jid.getBareJid());
-                jaxmpp.getProperties().setUserProperty(SessionObject.PASSWORD, password);
+//                        jaxmpp.getProperties().setUserProperty(SessionObject.RESOURCE, "jaxmpp");
+                        jaxmpp.getProperties().setUserProperty(SessionObject.USER_BARE_JID, jid.getBareJid());
+                        jaxmpp.getProperties().setUserProperty(SessionObject.PASSWORD, password);
+                        jaxmpp.getProperties().setUserProperty(SessionObject.SERVER_NAME, jid.getDomain());
+                }
+                else {
+                        Dictionary root = Dictionary.getDictionary("root");
+                        String domain = root.get("anon-domain");
+                        jaxmpp.getProperties().setUserProperty(BoshConnector.BOSH_SERVICE_URL_KEY, "http://" + domain + ":5280/bosh");
+                        jaxmpp.getProperties().setUserProperty(SessionObject.SERVER_NAME, domain);
+                }
+                
                 try {
                         jaxmpp.login();
                 } catch (JaxmppException ex) {
+                        log.log(Level.WARNING, "login exception", ex);
                         //log.log(Level.WARNING, "login exception", ex);
                 }
         }

@@ -23,6 +23,9 @@ public abstract class ClientFactoryImpl implements ClientFactory {
         private final Jaxmpp jaxmpp = new Jaxmpp() {
 
                 private void intLogin() throws JaxmppException {
+                        if (isConnected()) {
+                                this.connector.stop(true);
+                        }
                         if (this.sessionLogic != null) {
                                 this.sessionLogic.unbind();
                                 this.sessionLogic = null;

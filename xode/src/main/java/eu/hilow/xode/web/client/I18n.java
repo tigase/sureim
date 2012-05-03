@@ -89,4 +89,9 @@ public interface I18n extends Constants {
 	@DefaultStringValue("Sun")
 	String sundayShort();
         
+        @DefaultStringValue("Submitted by")
+        String submittedBy();
+        
+        @DefaultStringValue("on")
+        String onDate();
 }
