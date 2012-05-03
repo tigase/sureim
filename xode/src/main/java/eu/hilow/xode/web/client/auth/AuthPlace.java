@@ -6,7 +6,6 @@ package eu.hilow.xode.web.client.auth;
 
 import com.google.gwt.place.shared.Place;
 import com.google.gwt.place.shared.PlaceTokenizer;
-import eu.hilow.xode.web.client.chat.ChatPlace;
 
 /**
  *
@@ -18,13 +17,13 @@ public class AuthPlace extends Place {
                 
         }
         
-        public static class Tokenizer implements PlaceTokenizer<ChatPlace> {
+        public static class Tokenizer implements PlaceTokenizer<AuthPlace> {
 
-                public ChatPlace getPlace(String token) {
-                        return new ChatPlace();
+                public AuthPlace getPlace(String token) {
+                        return new AuthPlace();
                 }
 
-                public String getToken(ChatPlace place) {
+                public String getToken(AuthPlace place) {
                         return null;
                 }
                 

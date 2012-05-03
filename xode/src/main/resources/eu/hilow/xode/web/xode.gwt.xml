@@ -8,6 +8,7 @@
         <inherits name='eu.hilow.gwt.base.Base' />
 
         <inherits name="tigase.jaxmpp.gwt.JaxmppGWT" />
+        <inherits name="eu.hilow.jaxmpp.ext.JaxmppExt" />
 
   <!-- We need the JUnit module in the main module,               -->
   <!-- otherwise eclipse complains (Google plugin bug?)           -->
@@ -33,7 +34,7 @@
 
 <!--    <set-property name="gwt.logging.enabled" value="FALSE"/> -->
 
-        <set-property name="user.agent" value="safari"/>
+<!--        <set-property name="user.agent" value="safari"/>-->
 
         <set-property name="gwt.logging.enabled" value="TRUE"/>
         <set-property name="gwt.logging.logLevel" value="ALL"/>

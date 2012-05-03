@@ -21,7 +21,8 @@
 
     <script type="text/javascript">
             var root = {
-                    navigation: "[{url:'http://plus.google.com', label:'+Google', active:false},{url:'http://poczta.hi-low.eu', label:'Poczta', active:false},{url:'http://docs.google.com', label:'Dokumenty', active:false},{url:'hi-low.eu', label:'Xode', active:true}]"
+//                    navigation: "[{url:'http://plus.google.com', label:'+Google', active:false},{url:'http://poczta.hi-low.eu', label:'Poczta', active:false},{url:'http://docs.google.com', label:'Dokumenty', active:false},{url:'hi-low.eu', label:'Xode', active:true}]"
+                    navigation: "[{url:'http://sure.hi-low.eu', label:'Sure.IM', active:true},{url:'http://tigase.com', label:'Tigase.com', active:false},{url:'http://tigase.org', label:'Tigase.org', active:false}]"
             };            
     </script>
     
@@ -32,6 +33,9 @@
     <!--                                           -->
     <script type="text/javascript" language="javascript" src="xode/xode.nocache.js"></script>
     <style>
+        body {
+                background-color: white;
+        }
         /* Let's get this party started */
         ::-webkit-scrollbar {    width: 8px;} 
         /* Track */
@@ -102,6 +106,60 @@
                 border: 1px solid lightgray;
         }
         
+        .calendar-widget-header {
+                font-weight: bold;
+                width: 100%;
+                text-align: center;
+        }
+        
+        .calendar-widget-header td:first-child {
+                font-weight: bold;                
+                width: 32px;
+        }
+
+        .calendar-widget-header td:last-child {
+                font-weight: bold;            
+                width: 32px;
+        }
+
+        .calendar-widget-day {
+                text-align: center;
+                padding: 4px;
+        }
+        
+        .settingsView {
+                margin: 5% 25%;
+                width: 50%;
+        }
+        
+        .settingsPanel {
+                width: 100%;
+                border-bottom: 1px solid lightgrey;
+        }
+        
+        table.settingsPanel > tbody > tr:first-child > td {
+                font-size: 1.2em;                
+        }
+        
+        table.settingsPanel tr {
+                line-height: 1.5em;                
+        }
+
+        .settingsPanel td:first-child {
+                font-weight: bold;
+        }
+        
+        .dialogBox {
+                padding: 1em;
+                border: 3px solid lightgray;
+                border-radius: 5px;
+                background-color: white;
+        }
+        
+        .dialogBox input {
+                border: 1px solid lightgray;
+        }
+                
     </style>
     <style>
 .incoming { color: #a6002c; }

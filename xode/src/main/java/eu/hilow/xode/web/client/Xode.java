@@ -12,10 +12,12 @@ import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.place.shared.Place;
 import com.google.gwt.place.shared.PlaceController;
 import com.google.gwt.place.shared.PlaceHistoryHandler;
+import com.google.gwt.user.client.Cookies;
 import com.google.gwt.user.client.ui.*;
 import com.google.web.bindery.event.shared.EventBus;
 import eu.hilow.gwt.base.client.ActionBar;
 import eu.hilow.gwt.base.client.AppView;
+import eu.hilow.gwt.base.client.ResizablePanel;
 import eu.hilow.gwt.base.client.RootView;
 import eu.hilow.gwt.base.client.auth.AuthEvent;
 import eu.hilow.gwt.base.client.auth.AuthHandler;
@@ -23,6 +25,7 @@ import eu.hilow.gwt.base.client.auth.AuthRequestEvent;
 import eu.hilow.gwt.base.client.auth.AuthRequestHandler;
 import eu.hilow.gwt.base.client.roster.FlatRoster;
 import eu.hilow.xode.web.client.chat.ChatPlace;
+import java.util.logging.Logger;
 import tigase.jaxmpp.core.client.BareJID;
 import tigase.jaxmpp.core.client.JID;
 import tigase.jaxmpp.core.client.SessionObject;
@@ -36,46 +39,49 @@ import tigase.jaxmpp.gwt.client.connectors.BoshConnector;
  */
 public class Xode implements EntryPoint {
 
-
+        private static final Logger log = Logger.getLogger("Xode");
+        
+        private ClientFactory factory;
         /**
          * This is the entry point method.
          */
         public void onModuleLoad() {
-                
-                final ClientFactory factory = GWT.create(ClientFactory.class);
+
+                factory = GWT.create(ClientFactory.class);
                 factory.theme().style().ensureInjected();
-                
+
                 RootView view = new RootView(factory);
-                
+
 //                AbsolutePanel center = new AbsolutePanel();
 //                center.add(new Label("Center panel"));
-                
+
 //                AppView appView = new AppView(center, factory);
-                ResizeLayoutPanel appView = new ResizeLayoutPanel();                
+//                ResizeLayoutPanel appView = new ResizeLayoutPanel();
+//                view.setCenter(appView);
+                XTest appView = new XTest();
                 view.setCenter(appView);
-                                
+
                 EventBus eventBus = factory.eventBus();
                 final PlaceController placeController = factory.placeController();
-                
+
                 // Start ActivityManager for the main widget with our ActivityMapper
                 ActivityMapper activityMapper = new AppActivityMapper(factory);
                 ActivityManager activityManager = new ActivityManager(activityMapper, eventBus);
                 activityManager.setDisplay(appView);
 
                 Place defaultPlace = new AuthPlace();//new ChatPlace();
-                
+
                 // Start PlaceHistoryHandler with our PlaceHistoryMapper
-                AppPlaceHistoryMapper historyMapper= GWT.create(AppPlaceHistoryMapper.class);
+                AppPlaceHistoryMapper historyMapper = GWT.create(AppPlaceHistoryMapper.class);
                 PlaceHistoryHandler historyHandler = new PlaceHistoryHandler(historyMapper);
-                historyHandler.register(placeController, eventBus, defaultPlace);                
-                
+                historyHandler.register(placeController, eventBus, defaultPlace);
+
                 //appView.getActionBar().setSearchBox(new TextBox());
-                
+
                 RootLayoutPanel.get().add(view);
-                
-                historyHandler.handleCurrentHistory();
-                
-                
+
+                //historyHandler.handleCurrentHistory();
+
                 eventBus.addHandler(AuthEvent.TYPE, new AuthHandler() {
 
                         public void authenticated(JID jid) {
@@ -85,45 +91,95 @@ public class Xode implements EntryPoint {
                         public void deauthenticated() {
                                 placeController.goTo(new AuthPlace());
                         }
-                        
                 });
-                
                 eventBus.addHandler(AuthRequestEvent.TYPE, new AuthRequestHandler() {
 
                         public void authenticate(JID jid, String password) {
-                                Jaxmpp jaxmpp = factory.jaxmpp();
-                                jaxmpp.getProperties().setUserProperty(BoshConnector.BOSH_SERVICE_URL_KEY, "http://" + jid.getDomain() + ":5280/bosh");
-                        
-                                jaxmpp.getProperties().setUserProperty(SessionObject.RESOURCE, "jaxmpp");
-                                jaxmpp.getProperties().setUserProperty(SessionObject.USER_BARE_JID, jid.getBareJid());
-                                jaxmpp.getProperties().setUserProperty(SessionObject.PASSWORD, password);
-                                try {
-                                        jaxmpp.login();
-                                }
-                                catch (JaxmppException ex) {
-                                        //log.log(Level.WARNING, "login exception", ex);
-                                }
+                                authenticateInt(jid, password);
                         }
-                        
                 });
+
+                placeController.goTo(new AuthPlace());
                 
+                if (Cookies.getCookie("username") != null && Cookies.getCookie("password") != null) {
+                        authenticateInt(JID.jidInstance(Cookies.getCookie("username")), Cookies.getCookie("password"));
+                }
                 //authenticateTest(factory);
         }
-        
+
+        private void authenticateInt(JID jid, String password) {
+                Jaxmpp jaxmpp = factory.jaxmpp();
+                jaxmpp.getProperties().setUserProperty(BoshConnector.BOSH_SERVICE_URL_KEY, "http://" + jid.getDomain() + ":5280/bosh");
+
+                jaxmpp.getProperties().setUserProperty(SessionObject.RESOURCE, "jaxmpp");
+                jaxmpp.getProperties().setUserProperty(SessionObject.USER_BARE_JID, jid.getBareJid());
+                jaxmpp.getProperties().setUserProperty(SessionObject.PASSWORD, password);
+                try {
+                        jaxmpp.login();
+                } catch (JaxmppException ex) {
+                        //log.log(Level.WARNING, "login exception", ex);
+                }
+        }
+
         private void authenticateTest(ClientFactory factory) {
-                        Jaxmpp jaxmpp = factory.jaxmpp();
-                        jaxmpp.getProperties().setUserProperty(BoshConnector.BOSH_SERVICE_URL_KEY, "http://hi-low.eu:5280/bosh");
+                Jaxmpp jaxmpp = factory.jaxmpp();
+                jaxmpp.getProperties().setUserProperty(BoshConnector.BOSH_SERVICE_URL_KEY, "http://hi-low.eu:5280/bosh");
+
+                jaxmpp.getProperties().setUserProperty(SessionObject.RESOURCE, "jaxmpp");
+                jaxmpp.getProperties().setUserProperty(SessionObject.USER_BARE_JID, BareJID.bareJIDInstance("andrzej@hi-low.eu"));
+                jaxmpp.getProperties().setUserProperty(SessionObject.PASSWORD, "W$vve!@2gw");
+                try {
+                        jaxmpp.login();
+                } catch (JaxmppException ex) {
+                        //log.log(Level.WARNING, "login exception", ex);
+                }
+        }
+        
+        private class XTest extends ResizeComposite implements ProvidesResize, AcceptsOneWidget {
+
+                private final ResizablePanel panel;
+                private IsWidget widget = null;
+                
+                public XTest() {
+                        panel = new ResizablePanel();
                         
-                        jaxmpp.getProperties().setUserProperty(SessionObject.RESOURCE, "jaxmpp");
-                        jaxmpp.getProperties().setUserProperty(SessionObject.USER_BARE_JID, BareJID.bareJIDInstance("andrzej@hi-low.eu"));
-                        jaxmpp.getProperties().setUserProperty(SessionObject.PASSWORD, "W$vve!@2gw");
-                        try {
-                                jaxmpp.login();
+                        initWidget(panel);
+                }                
+                
+                @Override
+                public void onResize() {
+                        super.onResize();
+                        
+                        if (widget != null && widget instanceof RequiresResize) {
+                                ((RequiresResize) widget).onResize();
                         }
-                        catch (JaxmppException ex) {
-                                //log.log(Level.WARNING, "login exception", ex);
+                }
+
+                public void setWidget(IsWidget w) {
+                        
+                        if (widget != null) {
+                                panel.remove(widget);
                         }
-       }
-        
-        
+                        
+                        widget = w;
+                        
+                        log.info("setting widget = " + w);
+                        
+                        if (w != null) {
+                                panel.add(w);
+                                
+                                Style style = w.asWidget().getElement().getStyle();
+                                style.setPosition(Style.Position.ABSOLUTE);
+                                style.setLeft(0, Unit.EM);
+                                style.setRight(0, Unit.EM);
+                                style.setTop(0, Unit.EM);
+                                style.setBottom(0, Unit.EM);
+                                         
+                                if (widget != null && widget instanceof RequiresResize) {
+                                        ((RequiresResize) widget).onResize();
+                                }
+                        }
+                }
+                
+        }
 }

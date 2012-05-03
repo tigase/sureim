@@ -55,11 +55,25 @@ public class ActionBarFactory {
         
         public void setWaitingEvents(String id, int count) {
                 Link action = links.get(id);
-                String label = count > 0 ? action.name + " (" + count + ")" : action.name;
+                //String label = count > 0 ? action.name + " (" + count + ")" : action.name;
                 
                 for (IsWidget w : action.widgets) {
-                        ((Label) w).setText(label);
+                        //((Label) w).setText(label);
+                        if (count > 0) {
+                                ((Label) w).getElement().getStyle().setColor("#DD4B39");
+                        }
+                        else {
+                                ((Label) w).getElement().getStyle().clearColor();
+                        }                        
                 }
+        }
+        
+        public void setVisible(String id, boolean visible) {
+                Link action = links.get(id);
+                
+                for (IsWidget w : action.widgets) {
+                        ((Label) w).setVisible(visible);
+                }                
         }
         
         private class Link {

@@ -9,10 +9,7 @@ import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.event.dom.client.KeyCodes;
 import com.google.gwt.event.dom.client.KeyDownEvent;
 import com.google.gwt.event.dom.client.KeyDownHandler;
-import com.google.gwt.user.client.ui.DockLayoutPanel;
-import com.google.gwt.user.client.ui.Label;
-import com.google.gwt.user.client.ui.ResizeComposite;
-import com.google.gwt.user.client.ui.TextArea;
+import com.google.gwt.user.client.ui.*;
 import eu.hilow.xode.web.client.ClientFactory;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -83,7 +80,22 @@ public class ChatWidget extends ResizeComposite {
                 return ri != null ? ri.getName() : chat.getJid().toString();
         }
 
-        public void handleMessage(Message message) {
+        public boolean handleMessage(Message message) {
                 log.appendMessage(message);
+                return isVisible(this);
+        }
+        
+        public static boolean isVisible(Widget w) {
+                if (w.isAttached() && w.isVisible()) {
+                        if (w.getParent() != null) {
+                                return isVisible(w.getParent());
+                        }
+                        else {
+                                return true;
+                        }
+                }
+                else {
+                        return false;
+                }
         }
 }

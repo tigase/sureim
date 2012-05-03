@@ -7,7 +7,9 @@ package eu.hilow.xode.web.client;
 import com.google.gwt.place.shared.PlaceController;
 import com.google.web.bindery.event.shared.EventBus;
 import eu.hilow.gwt.base.client.auth.AuthView;
+import eu.hilow.xode.web.client.archive.ArchiveView;
 import eu.hilow.xode.web.client.chat.ChatView;
+import eu.hilow.xode.web.client.settings.SettingsView;
 
 /**
  *
@@ -15,10 +17,18 @@ import eu.hilow.xode.web.client.chat.ChatView;
  */
 public interface ClientFactory extends eu.hilow.gwt.base.client.ClientFactory {
 
+        ActionBarFactory actionBarFactory();
+        
+        ArchiveView archiveView();
+        
         AuthView authView();
         
         ChatView chatView();
+
+        I18n i18n();
         
         PlaceController placeController();
+
+        SettingsView settingsView();
         
 }

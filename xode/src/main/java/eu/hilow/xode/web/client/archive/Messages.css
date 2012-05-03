@@ -1,0 +1,69 @@
+@def selectionBorderWidth 0px;
+.cellTableWidget { width: 100%;  }
+.time { width: 75px; }
+.direction { width: 50px; }
+
+.cellTableHeader {
+    border-bottom: 2px solid rgba(255,255,255,0.6);
+    padding: 1px 15px;
+    color: black;
+    text-align: left;
+    text-shadow: none;
+    font-size: 0.9em;
+}
+
+.cellTableEvenRow {
+    background: transparent;
+}
+
+.cellTableEvenRowCell {
+    background: transparent;
+    font-size: 0.9em;
+}
+
+.cellTableOddRow {
+    background: transparent;
+}
+
+.cellTableOddRowCell {
+    background: transparent;
+    font-size: 0.9em;
+}
+
+.cellTableHoveredRow {
+  background: #ffa020;
+}
+
+.cellTableHoveredRowCell {
+}
+
+.cellTableKeyboardSelectedRow {
+  background: #ffa020;
+}
+
+.cellTableKeyboardSelectedRowCell {
+}
+
+.cellTableSelectedRow {
+  background: rgba(100, 50, 100, 0.3);        
+  color: white;
+  height: auto;
+  overflow: auto;
+}
+
+.cellTableSelectedRowCell {
+}
+
+/**
+ * The keyboard selected cell is visible over selection.
+ */
+.cellTableKeyboardSelectedCell {
+}
+
+.from {
+        background: rgba(128, 255, 128, 0.15);
+}
+
+.to {
+  background: rgba(128, 255, 128, 0.22);        
+}
