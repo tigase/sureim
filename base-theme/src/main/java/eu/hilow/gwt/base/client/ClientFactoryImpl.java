@@ -20,44 +20,7 @@ import tigase.jaxmpp.gwt.client.Jaxmpp;
 public abstract class ClientFactoryImpl implements ClientFactory {
 
         private final Theme theme = GWT.create(Theme.class);
-        private final Jaxmpp jaxmpp = new Jaxmpp() {
-
-                private void intLogin() throws JaxmppException {
-                        if (isConnected()) {
-                                this.connector.stop(true);
-                        }
-                        if (this.sessionLogic != null) {
-                                this.sessionLogic.unbind();
-                                this.sessionLogic = null;
-                        }
-
-                        try {
-                                ((ConnectorWrapper) this.connector).setConnector(new BoshConnector(observable, this.sessionObject));
-                        } catch (Exception ex) {
-                        }
-                        this.sessionLogic = connector.createSessionLogic(modulesManager, this.writer);
-                        this.sessionLogic.bind(new SessionListener() {
-
-                                @Override
-                                public void onException(JaxmppException e) throws JaxmppException {
-                                        //Jaxmpp.this.onException(e);
-                                }
-                        });
-
-                        try {
-                                this.connector.start();
-                        } catch (XMLException e1) {
-                                throw new JaxmppException(e1);
-                        }
-                }
-
-                @Override
-                public void login() throws JaxmppException {
-                        super.login();
-                        sessionObject.clear();
-                        intLogin();
-                }
-        };
+        private final Jaxmpp jaxmpp = new Jaxmpp();
         
         private final EventBus eventBus = GWT.create(SimpleEventBus.class);
         
