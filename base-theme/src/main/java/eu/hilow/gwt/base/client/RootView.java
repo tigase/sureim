@@ -20,6 +20,7 @@ public class RootView extends ResizeComposite {
         
         private final DockLayoutPanel dockLayout;
         private final AbsolutePanel navPanel;
+        private final AbsolutePanel footerPanel;
         private Widget centerWidget;
         
         public RootView(ClientFactory factory) {
@@ -62,6 +63,26 @@ public class RootView extends ResizeComposite {
                 }
                 
                 dockLayout.addNorth(navPanel, 2.0);
+                
+                footerPanel = new AbsolutePanel();
+                footerPanel.addStyleName(factory.theme().style().footerBar());
+                Anchor anchor  = new Anchor("© " + factory.baseI18n().copyright());                
+                anchor.addStyleName(factory.theme().style().footerBarItem());
+                footerPanel.add(anchor);
+                anchor = new Anchor(factory.baseI18n().termsOfService(), "terms.txt");                
+                anchor.addStyleName(factory.theme().style().footerBarItem());
+                anchor.setTarget("_blank");
+                footerPanel.add(anchor);
+                anchor = new Anchor(factory.baseI18n().privacyPolicy(), "privacy.txt");                
+                anchor.addStyleName(factory.theme().style().footerBarItem());
+                anchor.setTarget("_blank");
+                footerPanel.add(anchor);
+                anchor = new Anchor(factory.baseI18n().contactForm(), "mailto:support@tigase.com");                
+                anchor.addStyleName(factory.theme().style().footerBarItem());
+                anchor.setTarget("_blank");
+                footerPanel.add(anchor);
+                
+                dockLayout.addSouth(footerPanel, 1.1);
                 
                 initWidget(dockLayout);
                 

@@ -21,4 +21,15 @@ public interface BaseI18n extends Constants {
         @DefaultStringValue("Password")
         String password();
         
+        @DefaultStringValue("Tigase")
+        String copyright();
+        
+        @DefaultStringValue("Terms of Service")
+        String termsOfService();
+        
+        @DefaultStringValue("Privacy Policy")
+        String privacyPolicy();
+        
+        @DefaultStringValue("Contact")
+        String contactForm();
 }

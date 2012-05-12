@@ -34,6 +34,18 @@
         color: white;
 }
 
+.footerBar {
+        color: #666;
+        text-align: center;
+}
+
+.footerBarItem {
+        padding: 10px;
+        color: #666 !important;
+        text-decoration: none;
+        font-size: 0.85em;        
+}
+
 .actionBar {
         border-bottom: 1px solid #E5E5E5;
         background: whiteSmoke;

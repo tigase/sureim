@@ -1,0 +1,184 @@
+Terms of Service
+
+The website located at internet addresses sure.im, tigase.im, jabber.me and subdomains of those and other DNS domains registered by users on the service (the “Site”) is a copyrighted work belonging to Tigase, Inc. (“Tigase”, “us” or “we”). Tigase provides Tigase Messenger, a smartphone and a web messenger software application, and related services (collectively, “Tigase Messenger”).
+
+This Terms of Service (“Agreement”) sets forth the legally binding terms for your use of the Site and Tigase Messenger. By using the Site or Tigase Messenger, you are accepting this Agreement and you represent and warrant that you have the right, authority, and capacity to enter into this Agreement. If you do not agree with all of the provisions of this Agreement, please do not use the Site or Tigase Messenger. This Agreement is the final, complete and exclusive agreement of you and Tigase with respect to the subject matters hereof (including the Site and Tigase Messenger) and supersedes and merges all prior discussions and agreements between the parties with respect to such subject matters (including any prior End User License Agreements and Terms of Service or Privacy Policy).
+
+Agreement Version Date: May 11, 2012
+
+1. Privacy Policy
+
+1.1 PLEASE REVIEW TIGASE'S PRIVACY POLICY [http://www.sure.im/privacy.txt].
+
+2. Account
+
+Parts of the Site are available without an account. In order to fully use the Site and to use Tigase Messenger, you must register for an account with Tigase (“Tigase Account”) and provide certain information about yourself as prompted by the registration form. You represent and warrant that: (a) all required registration information you submit is truthful and accurate, (b) that you will maintain the accuracy of such information, and (c) your use of the Site and Tigase Messenger does not violate any applicable laws. You may terminate your Tigase Account at any time, for any reason, by following the instructions on the Site. Tigase may suspend or terminate your Tigase Account in accordance with Section 5. You are responsible for maintaining the confidentiality of your Tigase Account login information and are fully responsible for all activities that occur under your Tigase Account. You agree to immediately notify Tigase of any unauthorized use, or suspected unauthorized use, of your Tigase Account or any other breach of security. Tigase cannot and will not be liable for any loss or damage arising from your failure to comply with the above requirements.
+
+3. End User License Agreement
+
+3.1	License. 
+
+Subject to the terms of this Agreement, Tigase grants you a non-transferable, non-exclusive, license to (a) use the Site for your use, and (b) download, install and use one copy of Tigase Messenger on a mobile device that you own or control for your use (the “License”).
+
+3.2	Certain Restrictions. 
+
+The rights granted to you in this Agreement are subject to the following restrictions: (a) you shall not license, sell, rent, lease, transfer, assign, distribute, host, or otherwise commercially exploit the Site or Tigase Messenger; (b) you shall not modify, translate, adapt, merge, make derivative works of, disassemble, decompile, reverse compile or reverse engineer any part of the Site or Tigase Messenger, except to the extent the foregoing restrictions are expressly prohibited by applicable law; (c) you shall not access the Site or Tigase Messenger in order to build a similar or competitive service; (d) except as expressly stated herein, no part of the Site or Tigase Messenger may be copied, reproduced, distributed, republished, downloaded, displayed, posted or transmitted in any form or by any means, or (e) you shall not remove or destroy any copyright notices or other proprietary markings contained on or in Tigase Messenger. Any future release, update, or other addition to functionality of the Site or Tigase Messenger shall be subject to the terms of this Agreement. All copyright and other proprietary notices on any Site content must be retained on any copies. 
+
+3.3	Local Laws. 
+
+Tigase make no representation that the Site or Tigase Messenger is appropriate for use in locations other than the United States and Canada. You are solely responsible for compliance with all applicable laws, including without limitation export and import regulations. Any diversion of the Site or Tigase Messenger contrary to United States law is prohibited.
+
+3.4	Modification. 
+
+Tigase reserves the right, at any time, to modify, suspend, or discontinue the Site or Tigase Messenger or any part thereof with or without notice. You agree that Tigase will not be liable to you or to any third party for any modification, suspension, or discontinuance of the Site or Tigase Messenger or any part thereof.
+
+3.5	Ownership. 
+
+Tigase Messenger provided to you is licensed to you and not sold. Tigase (and its licensors, where applicable) own all right, title and interest, including all related intellectual property rights, in and to the Site and Tigase Messenger, excluding your User Content (defined below). This Agreement is not a sale and does not convey to you any rights of ownership in or related to Tigase Messenger. The Tigase name, logo, and the product names associated with Tigase Messenger belong to Tigase (or its licensors, where applicable), and no right or license is granted to use them by implication, estoppel or otherwise. Tigase (and its licensors, where applicable) reserve all rights not granted in this Agreement.
+
+4. User Content
+
+4.1	User Content.
+
+“User Content” of a user means any and all content that such user uploads, distribute, or otherwise uses with the Site or Tigase Messenger, and includes (a) the messages and images that you send to one or more other Tigase users (“Private Messages”) and (b) your first name, last name, Tigase username, and profile picture (“User Profile”). You are solely responsible for your User Content. You assume all risks associated with use of your User Content, including any reliance on its accuracy, completeness or usefulness by others, or any disclosure of your User Content that makes you or any third party personally identifiable. You hereby represent and warrant that your User Content does not violate the Acceptable Use Policy (defined below). You may not state or imply that your User Content is in any way provided, sponsored or endorsed by Tigase. Tigase is not obligated to backup any User Content and User Content may be deleted at anytime. You are solely responsible for creating backup copies of your User Content if you desire.
+
+4.2	License. 
+
+By uploading, distributing, or otherwise using your User Content with the Site or Tigase Messenger, you automatically grant, and you represent and warrant that you have the right to grant, to Tigase an irrevocable, nonexclusive, royalty-free and fully paid, worldwide license, with the right to grant sublicenses, (a) to reproduce, distribute, publicly display, publicly perform, prepare derivative works of, incorporate into other works, and otherwise use your Public Profile, solely to display your Public Profile on the Site and Tigase Messenger, (b) to reproduce and distribute your Private Messages, solely to provide the Private Message to the intended recipient(s), and (c) to reproduce, distribute, publicly display, publicly perform, prepare derivative works of, incorporate into other works, and otherwise use your User Content (including your Public Profile but excluding your Private Messages), solely to provide you and other users the Site and Tigase Messenger and to improve our Site and Tigase Messenger, and (b) you agree to irrevocably waive (and cause to be waived) any claims and assertions of moral rights or attribution with respect to your User Content.
+
+4.3	Feedback. 
+
+If you provide Tigase any feedback or suggestions (“Feedback”), you hereby assign to Tigase all rights in the Feedback and agree that Tigase shall have the right to use such Feedback and related information in any manner it deems appropriate. Tigase will treat any Feedback you provide to Tigase as non-confidential and non-proprietary. You agree that you will not submit to Tigase any information or ideas that you consider to be confidential or proprietary.
+
+4.4	Acceptable Use Policy. 
+
+The following sets forth Tigase’s “Acceptable Use Policy”:
+(a)	You agree not to use the Site or Tigase Messenger to upload, distribute, or otherwise use any User Content (a) that violates any third-party right, including any copyright, trademark, patent, trade secret, moral right, privacy right, right of publicity, or any other intellectual property or proprietary right; (b) that is tortious, trade libelous, defamatory, false, or intentionally misleading, (c) that is harassing, abusive, threatening, harmful, vulgar, obscene, or offensive, or that contains pornography, nudity, or graphic or gratuitous violence, or that promotes violence, racism, discrimination, bigotry, hatred, or physical harm of any kind against any group or individual, or is otherwise objectionable, (d) that is harmful to minors in any way; (e) that constitutes unsolicited or unauthorized advertising, promotional materials, junk mail, spam, chain letters, pyramid schemes, or any other form of duplicative or unsolicited messages, whether commercial or otherwise; or (f) that violates of any law, regulation, or contractual obligations.
+(b)	You agree not to use the Site or Tigase Messenger to: (a) upload or distribute any computer viruses, worms, malicious code, or any software intended to damage or alter a computer system or data; (b) collect information or data regarding other users, including e-mail addresses, without their consent (e.g., using harvesting bots, robots, spiders, or scrapers); (c) disable, overly burden, impair, or otherwise interfere with servers or networks connected to the Site (e.g., a denial of service attack); (d) attempt to gain unauthorized access to the Site or Tigase Messenger or servers or networks connected to the Site (e.g., through password mining); or (e) interfere with another user’s use and enjoyment of the Site or Tigase Messenger.
+
+4.5	Enforcement. 
+
+We reserve the right (but have no obligation) to review any User Content in our sole discretion. We may remove or modify your User Content at any time for any reason in our sole discretion with or without notice to you. We may suspend or terminate your Tigase Account in accordance with Section 5.
+
+5. Term and Termination
+
+5.1	This Agreement commences on the date you accept this Agreement (as described in the preamble) and will remain in full force and effect while you use the Site or Tigase Messenger, unless earlier terminated in accordance with this Agreement. 
+
+5.2	Notwithstanding the forgoing, if you used the Site or Tigase Messenger prior to the date you accepted this Agreement (as described in the preamble), you hereby acknowledge and agree that this Agreement commences on the date you first use the Site or Tigase Messenger (whichever is earlier and which may be prior to the Agreement Version Date) and will remain in full force and effect while you use the Site or Tigase Messenger, unless earlier terminated in accordance with this Agreement.
+
+5.3	We may (a) suspend your rights to use the Site, Tigase Messenger, and/or your Tigase Account or (b) terminate this Agreement, at any time for any reason at our sole discretion with or without notice to you, including if we in good faith believe you have violated the Acceptable Use Policy or any other provision of this Agreement. Without limiting the foregoing, Tigase reserves the right to terminate its Agreement with any user who repeatedly infringes third party copyright rights upon prompt notification to Tigase by the copyright owner or the copyright owner’s legal agent. 
+
+5.4	Upon termination of this Agreement, your Tigase Account and right to use the Site and Tigase Messenger will automatically terminate immediately. You understand that any termination of your Tigase Account involves deletion of your User Content associated therewith from our live databases. Tigase will not have any liability whatsoever to you for any termination of this Agreement, including for termination of your Tigase Account or deletion of your User Content. Even after this Agreement is terminated, the following provisions of this Agreement will remain in effect: Sections 1, 3.2, 3.3, 3.4, 3.5, 4, 5.4, 6, 7, 8, 9, 10 and 11.
+
+6. Indemnity
+
+You agree to defend, indemnify and hold harmless Tigase (and its suppliers) from and against any claims, suits, losses, damages, liabilities, costs, and expenses (including reasonable attorneys’ fees) brought by third parties resulting from or relating to: (i) your use of the Site or Tigase Messenger, (ii) your User Content, or (iii) your violation of this Agreement. Tigase reserves the right, at your expense, to assume the exclusive defense and control of any matter for which you are required to indemnify Tigase and you agree to cooperate with our defense of these claims. You agree not to settle any matter without the prior written consent of Tigase. Tigase will use reasonable efforts to notify you of any such claim, action or proceeding upon becoming aware of it.
+
+7. Third Parties
+
+7.1	App Stores.
+
+You acknowledge and agree that the availability of the Services is dependent on the third party from which you received Tigase Messenger, e.g., the Apple iPhone, BackBerry, or Android app stores (“App Store”). You acknowledge that this Agreement is between you and Tigase and not with the App Store. Tigase, not the App Store, is solely responsible for Tigase Messenger, the content thereof, maintenance, support services, and warranty therefor, and addressing any claims relating thereto (e.g., product liability, legal compliance, or intellectual property infringement). You agree to pay all fees charged by the App Store in connection with Tigase Messenger (if any). You agree to comply with, and your license to use Tigase Messenger is conditioned upon your compliance with, all applicable third party terms of agreement (e.g., the App Store’s terms and policies) when using Tigase Messenger. You acknowledge that the App Store (and its subsidiaries) are third party beneficiaries of this Agreement and will have the right to enforce this Agreement.
+
+7.2	Third Party Applications. 
+
+Tigase may permit certain third party applications to provide content through Tigase Messenger (“Third Party Apps”). Tigase Messenger may be used to send content provided by the Third Party App between users who have the Third Party App installed on their smartphone. When you do so, Tigase will share information with the Third Party App as described in the Tigase Privacy Policy. Tigase is not responsible for and does not control Third Party Apps. Tigase provides these Third Party Apps only as a convenience to you. Tigase has no obligation to review or monitor, and does not approve, endorse, or make any representations or warranties with respect to Third Party Apps. You use all Third Party Apps at your own risk. When you access a Third Party App, the applicable third party’s terms and policies apply, including the third party’s privacy policies. You should make whatever investigation you feel necessary or appropriate before proceeding with any transaction in connection with any Third Party Apps. 
+
+7.3	Third Party Sites & Ads. 
+
+The Site may contain links to third party websites and advertisements for third parties (collectively, “Third Party Sites & Ads”). Tigase is not responsible for and does not control Third Party Sites & Ads. Tigase provides these Third Party Sites & Ads only as a convenience to you. Tigase has no obligation to review or monitor, and does not approve, endorse, or make any representations or warranties with respect to Third Party Sites & Ads. You use all Third Party Sites & Ads at your own risk. When you access a Third Party Site & Ad, the applicable third party’s terms and policies apply, including the third party’s privacy policies. You should make whatever investigation you feel necessary or appropriate before proceeding with any transaction in connection with any Third Party Sites & Ads.
+
+7.4	Other Users. 
+
+The Site and Tigase Messenger may contain User Content provided by other users of the Site and Tigase Messenger. Tigase is not responsible for and does not control User Content. Tigase has no obligation to review or monitor, and does not approve, endorse, or make any representations or warranties with respect to User Content. You use all User Content and interact with other users at your own risk. Your interactions with other users are solely between you and the other user and we are under no obligation to become involved. You agree that Tigase will not be responsible for any liability incurred as the result of any such interactions.
+
+7.5	Release. 
+
+You hereby irrevocably and unconditionally release and forever discharge Tigase (and its suppliers) from any and all claims, demands, and rights of action, whether now known or unknown, which relates to any interactions with, or act or omission of, any Third Party App, other Site or Tigase Messenger users, or Third Party Sites & Ads. IF YOU ARE A CALIFORNIA RESIDENT, YOU HEREBY WAIVE CALIFORNIA CIVIL CODE SECTION 1542 IN CONNECTION WITH THE FOREGOING, WHICH STATES: "A GENERAL RELEASE DOES NOT EXTEND TO CLAIMS WHICH THE CREDITOR DOES NOT KNOW OR SUSPECT TO EXIST IN HIS OR HER FAVOR AT THE TIME OF EXECUTING THE RELEASE, WHICH IF KNOWN BY HIM OR HER MUST HAVE MATERIALLY AFFECTED HIS OR HER SETTLEMENT WITH THE DEBTOR."
+
+8. Disclaimers
+
+8.1	THE SITE AND TIGASE MESSENGER ARE PROVIDED “AS-IS” AND AS AVAILABLE AND TIGASE (AND ITS SUPPLIERS) EXPRESSLY DISCLAIM ANY WARRANTIES AND CONDITIONS OF ANY KIND, WHETHER EXPRESS OR IMPLIED, INCLUDING THE WARRANTIES OR CONDITIONS OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE, TITLE, QUIET ENJOYMENT, ACCURACY, OR NON-INFRINGEMENT. TIGASE (AND ITS SUPPLIERS) MAKE NO WARRANTY THAT THE SITE OR TIGASE MESSENGER: (A) WILL MEET YOUR REQUIREMENTS; (B) WILL BE AVAILABLE ON AN UNINTERRUPTED, TIMELY, SECURE, OR ERROR-FREE BASIS; OR (C) WILL BE ACCURATE, RELIABLE, COMPLETE, LEGAL, OR SAFE.
+
+8.2	SOME JURISDICTIONS DO NOT ALLOW THE EXCLUSION OF IMPLIED WARRANTIES, SO THE ABOVE EXCLUSION MAY NOT APPLY TO YOU. 
+
+9. Limitation on Liability
+
+9.1	IN NO EVENT SHALL TIGASE (OR ITS SUPPLIERS) BE LIABLE TO YOU OR ANY THIRD PARTY FOR ANY LOST PROFIT OR ANY INDIRECT, CONSEQUENTIAL, EXEMPLARY, INCIDENTAL, SPECIAL OR PUNITIVE DAMAGES ARISING FROM THIS AGREEMENT, THE SITE OR TIGASE MESSENGER, EVEN IF TIGASE HAS BEEN ADVISED OF THE POSSIBILITY OF SUCH DAMAGES. ACCESS TO, AND USE OF, THE SITE AND TIGASE MESSENGER ARE AT YOUR OWN DISCRETION AND RISK, AND YOU WILL BE SOLELY RESPONSIBLE FOR ANY DAMAGE TO YOUR COMPUTER SYSTEM OR MOBILE DEVICE OR LOSS OF DATA RESULTING THEREFROM. NOTWITHSTANDING ANYTHING TO THE CONTRARY CONTAINED HEREIN, TIGASE’S LIABILITY TO YOU FOR ANY DAMAGES ARISING FROM OR RELATED TO THIS AGREEMENT (FOR ANY CAUSE WHATSOEVER AND REGARDLESS OF THE FORM OF THE ACTION), WILL AT ALL TIMES BE LIMITED TO THE GREATER OF (A) FIFTY U.S. DOLLARS ($50) OR (B) AMOUNTS YOU’VE PAID TIGASE IN THE PRIOR 12 MONTHS (IF ANY). IN NO EVENT SHALL TIGASE’S SUPPLIERS HAVE ANY LIABILITY ARISING OUT OF OR IN ANY WAY CONNECTED TO THIS AGREEMENT. 
+
+9.2	SOME JURISDICTIONS DO NOT ALLOW THE LIMITATION OR EXCLUSION OF LIABILITY FOR INCIDENTAL OF CONSEQUENTIAL DAMAGES, SO THE ABOVE LIMITATION OR EXCLUSION MAY NOT APPLY TO YOU AND YOU MAY ALSO HAVE OTHER LEGAL RIGHTS THAT VARY FROM JURISDICTION TO JURISDICTION. 
+
+10. General
+
+10.1	Changes to this Agreement. 
+
+This Agreement is subject to occasional revision, and if we make any substantial changes, we may notify you by sending you an e-mail to the last e-mail address you provided to Tigase (if any) and/or by prominently posting notice of the changes on our Site. Any changes to this Agreement will be effective upon the earlier of thirty (30) calendar days following our dispatch of an e-mail notice to you (if applicable) or thirty (30) calendar days following our posting of notice of the changes on our Site. These changes will be effective immediately for new users of our Site or Tigase Messenger. Continued use of our Site or Tigase Messenger following notice of such changes shall indicate your acknowledgement of such changes and agreement to be bound by the terms and conditions of such changes. The date on which the latest update was made is indicated at the top of this document. We recommend that you print a copy of this Agreement for your reference and revisit this policy from time to time to ensure you are aware of any changes.
+
+10.2	Notice. 
+
+You are responsible for providing Tigase with your most current e-mail address. In the event that the last e-mail address you have provided to Tigase is not valid, or for any reason is not capable of delivering to you any notices required/permitted by this Agreement, Tigase’s dispatch of the e-mail containing such notice will nonetheless constitute effective notice. Any notice provided to Tigase pursuant to this Agreement should be sent to:
+
+Community Manager
+Tigase, Inc.
+900 Kearny Street
+Suite 228
+Suite I
+San Francisco
+CA 94133
+support@sure.im
+
+10.3	Governing Law. 
+
+This Agreement shall be governed by the laws of California, United States without giving effect to any conflict of laws principles that may provide the application of the law of another jurisdiction. You agree to submit to the personal jurisdiction of the courts located within California, United States for the purpose of litigating all such claims or disputes. Notwithstanding the foregoing, we may seek injunctive or other equitable relief to protect its intellectual property rights in any court of competent jurisdiction. The United Nations Convention on Contracts for the International Sale of Goods does not apply to this Agreement.
+
+10.4	Severability. 
+
+If any provision of this Agreement is, for any reason, held to be invalid or unenforceable, the other provisions of this Agreement will be unimpaired and the invalid or unenforceable provision will be deemed modified so that it is valid and enforceable to the maximum extent permitted by law.
+
+10.5	Entire Agreement. 
+
+This Agreement is the final, complete and exclusive agreement of you and Tigase with respect to the subject matters hereof (including the Site and Tigase Messenger) and supersede and merge all prior discussions and agreements between the parties with respect to such subject matters (including any prior End User License Agreements and Terms of Service or Privacy Policy). Our failure to exercise or enforce any right or provision of this Agreement shall not operate as a waiver of such right or provision. The section titles in this Agreement are for convenience only and have no legal or contractual effect. The word including means including without limitation. Your relationship to Tigase is that of an independent contractor, and neither party is an agent or partner of the other. This Agreement, and your rights and obligations herein, may not be assigned by you without Tigase’s prior written consent, and any attempted assignment in violation of the foregoing will be null and void. Tigase may assign this Agreement in connection with a merger, acquisition, reorganization or sale of all or substantially all of its assets, or other operation of law, without your consent. The terms of this Agreement shall be binding upon assignees. 
+
+11. Apple App Store Additional Terms and Conditions
+
+The following additional terms and conditions apply to you if you are using a Tigase Messenger from the Apple App Store. To the extent the other terms and conditions of this Agreement are less restrictive than, or otherwise conflict with, the terms and conditions of this Section 11, the more restrictive or conflicting terms and conditions in this Section 11 apply, but solely with respect to Tigase Messengers from the Apple App Store.
+
+11.1	Acknowledgement: 
+
+Tigase and you acknowledge that this Agreement is concluded between Tigase and you only, and not with Apple, and Tigase, not Apple, is solely responsible for Tigase Messenger and the content thereof. To the extent this Agreement provides for usage rules for Tigase Messenger that are less restrictive than the Usage Rules set forth for Tigase Messenger in, or otherwise is in conflict with, the App Store Terms of Service, the more restrictive or conflicting Apple term applies.
+
+11.2	Scope of License: 
+
+The license granted to you for Tigase Messenger is limited to a non-transferable license to use Tigase Messenger on an iOS Product that you own or control and as permitted by the Usage Rules set forth in the App Store Terms of Service.
+
+11.3	Maintenance and Support: 
+
+Tigase is solely responsible for providing any maintenance and support services with respect to Tigase Messenger, as specified in this Agreement (if any), or as required under applicable law. Tigase and you acknowledge that Apple has no obligation whatsoever to furnish any maintenance and support services with respect to Tigase Messenger.
+
+11.4	Warranty: 
+
+Tigase is solely responsible for any product warranties, whether express or implied by law, to the extent not effectively disclaimed. In the event of any failure of Tigase Messenger to conform to any applicable warranty, you may notify Apple, and Apple will refund the purchase price for Tigase Messenger to you; and to the maximum extent permitted by applicable law, Apple will have no other warranty obligation whatsoever with respect to Tigase Messenger, and any other claims, losses, liabilities, damages, costs or expenses attributable to any failure to conform to any warranty will be Tigase’s sole responsibility.
+
+11.5	Product Claims: 
+
+Tigase and you acknowledge that Tigase, not Apple, is responsible for addressing any claims of you or any third party relating to Tigase Messenger or your possession and/or use of Tigase Messenger, including, but not limited to: (i) product liability claims; (ii) any claim that Tigase Messenger fails to conform to any applicable legal or regulatory requirement; and (iii) claims arising under consumer protection or similar legislation. This Agreement does not limit Tigase’s liability to you beyond what is permitted by applicable law.
+
+11.6	Intellectual Property Rights: 
+
+Tigase and you acknowledge that, in the event of any third party claim that Tigase Messenger or your possession and use of Tigase Messenger infringes that third party’s intellectual property rights, Tigase, not Apple, will be solely responsible for the investigation, defense, settlement and discharge of any such intellectual property infringement claim.
+
+11.7	Legal Compliance: 
+
+You represent and warrant that (i) you are not located in a country that is subject to a U.S. Government embargo, or that has been designated by the U.S. Government as a “terrorist supporting” country; and (ii) you are not listed on any U.S. Government list of prohibited or restricted parties. 
+
+11.8	Developer Name and Address: 
+
+Tigase’s contact information for any end-user questions, complaints or claims with respect to Tigase Messenger is set forth in Section 10.2.
+
+11.9	Third Party Terms of Agreement: 
+
+You must comply with applicable third party terms of agreement when using Tigase Messenger.
+
+11.10 Third Party Beneficiary: 
+
+Tigase and you acknowledge and agree that Apple, and Apple’s subsidiaries, are third party beneficiaries of this Agreement, and that, upon your acceptance of the terms and conditions of this Agreement, Apple will have the right (and will be deemed to have accepted the right) to enforce this Agreement against you as a third party beneficiary thereof.

@@ -26,6 +26,7 @@ import eu.hilow.gwt.base.client.auth.AuthRequestEvent;
 import eu.hilow.gwt.base.client.auth.AuthRequestHandler;
 import eu.hilow.gwt.base.client.roster.FlatRoster;
 import eu.hilow.xode.web.client.chat.ChatPlace;
+import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import tigase.jaxmpp.core.client.BareJID;
@@ -127,7 +128,8 @@ public class Xode implements EntryPoint {
 //                }
                         
                 if (jid != null) {
-                        jaxmpp.getProperties().setUserProperty(BoshConnector.BOSH_SERVICE_URL_KEY, "http://" + jid.getDomain() + ":5280/bosh");
+                        String url = getBoshUrl(jid.getDomain());
+                        jaxmpp.getProperties().setUserProperty(BoshConnector.BOSH_SERVICE_URL_KEY, url);
 
 //                        jaxmpp.getProperties().setUserProperty(SessionObject.RESOURCE, "jaxmpp");
                         jaxmpp.getProperties().setUserProperty(SessionObject.USER_BARE_JID, jid.getBareJid());
@@ -137,7 +139,8 @@ public class Xode implements EntryPoint {
                 else {
                         Dictionary root = Dictionary.getDictionary("root");
                         String domain = root.get("anon-domain");
-                        jaxmpp.getProperties().setUserProperty(BoshConnector.BOSH_SERVICE_URL_KEY, "http://" + domain + ":5280/bosh");
+                        String url = getBoshUrl(domain);
+                        jaxmpp.getProperties().setUserProperty(BoshConnector.BOSH_SERVICE_URL_KEY, url);
                         jaxmpp.getProperties().setUserProperty(SessionObject.SERVER_NAME, domain);
                 }
                 
@@ -161,6 +164,20 @@ public class Xode implements EntryPoint {
                 } catch (JaxmppException ex) {
                         //log.log(Level.WARNING, "login exception", ex);
                 }
+        }
+        
+        private String getBoshUrl(String domain) {
+                Dictionary domains = Dictionary.getDictionary("domains");
+                String url = "http://" + domain + ":5280/bosh";
+                if (domains != null) {
+                        Set<String> keys = domains.keySet();
+                        if (keys.contains(domain)) {
+                                url = domains.get(domain);
+                        } else if (keys.contains("default")) {
+                                url = domains.get("default");
+                        }
+                }
+                return url;
         }
         
         private class XTest extends ResizeComposite implements ProvidesResize, AcceptsOneWidget {

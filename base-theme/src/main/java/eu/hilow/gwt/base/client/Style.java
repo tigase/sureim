@@ -19,6 +19,9 @@ public interface Style extends CssResource {
         String navigationBarItem();
         String navigationBarItemActive();
         
+        String footerBar();
+        String footerBarItem();
+        
         String actionBar();
         String actionBarLink();
         String actionBarSearch();
