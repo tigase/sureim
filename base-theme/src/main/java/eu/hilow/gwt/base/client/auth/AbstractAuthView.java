@@ -32,7 +32,7 @@ public class AbstractAuthView extends ResizeComposite {
                 factory.eventBus().fireEvent(new AuthRequestEvent(JID.jidInstance(username.getText()), password.getText()));
         }
         
-        protected Widget createAuthBox() {
+        protected AbsolutePanel createAuthBox() {
                 AbsolutePanel panel = new AbsolutePanel();
 
                 Label header = new Label(factory.baseI18n().authenticate());

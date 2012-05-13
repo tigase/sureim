@@ -94,4 +94,7 @@ public interface I18n extends Constants {
         
         @DefaultStringValue("on")
         String onDate();
+        
+        @DefaultStringValue("Sure.IM, Tigase.IM, Jabber.ME and more...")
+        String authViewHeaderTitle();
 }

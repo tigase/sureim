@@ -85,9 +85,9 @@ public class PubSubPanel extends ResizeComposite {
                 
                 for (AtomEntry entry : entries) {
                         SafeHtmlBuilder safeHtml = new SafeHtmlBuilder();
-                        safeHtml.appendHtmlConstant("<h1 style='margin-bottom: 3px;'>");
+                        safeHtml.appendHtmlConstant("<h2 style='margin-bottom: 3px;'>");
                         safeHtml.appendEscaped(entry.getTitle());
-                        safeHtml.appendHtmlConstant("</h1>");
+                        safeHtml.appendHtmlConstant("</h2>");
                         safeHtml.appendHtmlConstant("<span style='font-size: 0.7em; color: #555; display: block;'>");
                         if (entry.getAuthorName() != null) {
                                 safeHtml.appendEscaped(factory.i18n().submittedBy() + " " + entry.getAuthorName());
