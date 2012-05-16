@@ -4,8 +4,7 @@
  */
 package eu.hilow.gwt.base.client.auth;
 
-import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.event.dom.client.*;
 import com.google.gwt.user.client.ui.*;
 import eu.hilow.gwt.base.client.ClientFactory;
 import eu.hilow.gwt.base.client.ResizablePanel;
@@ -65,6 +64,19 @@ public class AbstractAuthView extends ResizeComposite {
                 panel.add(authButton);
                 
                 panel.setStyleName(factory.theme().style().authPanel());
+               
+                KeyUpHandler handler = new KeyUpHandler() {
+
+                        public void onKeyUp(KeyUpEvent event) {
+                                if (event.getNativeEvent().getKeyCode() == KeyCodes.KEY_ENTER) {
+                                        authButton.click();
+                                }
+                        }
+                        
+                };
+                
+                username.addKeyUpHandler(handler);
+                password.addKeyUpHandler(handler);
                 
                 return panel;
         }

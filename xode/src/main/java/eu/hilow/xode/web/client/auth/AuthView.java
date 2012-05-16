@@ -53,12 +53,13 @@ public class AuthView extends AbstractAuthView {
                 layout.add(w);
                 w.getElement().getStyle().setFloat(Style.Float.RIGHT);
                 w.getElement().getStyle().setMargin(2, Style.Unit.PCT);
+                w.getElement().getStyle().setMarginBottom(1, Style.Unit.PCT);
                 
                 final PubSubPanel panel = new PubSubPanel(factory);
                 layout.add(panel);
                 panel.getElement().getStyle().setFloat(Style.Float.LEFT);
                 panel.getElement().getStyle().setProperty("margin", "0% 2%");
-                panel.getElement().getStyle().setWidth(28, Style.Unit.PCT);
+                panel.getElement().getStyle().setWidth(33, Style.Unit.PCT);
                 panel.getElement().getStyle().setProperty("clear", "left");
                 factory.eventBus().addHandler(AuthEvent.TYPE, new AuthHandler() {
 

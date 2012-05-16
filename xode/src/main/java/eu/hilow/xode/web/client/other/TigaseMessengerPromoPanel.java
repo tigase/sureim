@@ -27,9 +27,12 @@ public class TigaseMessengerPromoPanel extends Composite {
                 //style.setColor("#333");
                 style.setFloat(Style.Float.RIGHT);
                 style.setProperty("clear", "right");
-                style.setWidth(28, Style.Unit.PCT);
-                style.setHeight(300, Style.Unit.PX);
-                style.setMargin(2, Style.Unit.PCT);
+                style.setWidth(33, Style.Unit.PCT);
+//                style.setHeight(300, Style.Unit.PX);
+                style.setMarginLeft(2, Style.Unit.PCT);
+                style.setMarginRight(2, Style.Unit.PCT);
+                style.setMarginBottom(2, Style.Unit.PCT);
+                style.setMarginTop(0, Style.Unit.PCT);
                 
                 AbsolutePanel textPanel = new AbsolutePanel();
                 textPanel.getElement().getStyle().setColor("#333");
@@ -42,12 +45,14 @@ public class TigaseMessengerPromoPanel extends Composite {
                 
                 head.setInnerText("Tigase Messenger on Android");
                 
-                textPanel.getElement().setInnerText("Some description needed here."
-                        + "Some description needed here.Some description needed here.Some description needed here."
-                        + "Some description needed here.Some description needed here.Some description needed here."
-                        + "Some description needed here.Some description needed here.Some description needed here."
-                        + "Some description needed here.Some description needed here.Some description needed here."
-                        + "Some description needed here.");                
+                textPanel.getElement().setInnerHTML("Are you there? Sure, I'm!"
+                        + "<br/>Tigase Messenger is a mobile chat client to use with Jabber.org,"
+                        + " Google Talk, Live Journal Talk, Nimbuzz, Ovi, and thousands of other "
+                        + "services run by companies, ISPs, and volunteers around the world (a small"
+                        + " list is on the page: http://xmpp.net/). <br/>If you happen to have a few "
+                        + "accounts on different servers, if you want to stay online when you are on "
+                        + "the go, to be in contact with your friends and family all the time, if you "
+                        + "love to share photos once you take them, then Tigase Messenger is for you.");                
                 textPanel.getElement().insertFirst(head);
                 
                 final Dictionary links = Dictionary.getDictionary("root");
@@ -80,13 +85,13 @@ public class TigaseMessengerPromoPanel extends Composite {
                 grid.setWidget(0, 2, adsFree);
                 
                 Image promo = new Image("mobile.png");
-                promo.setHeight("100px");
+                promo.setHeight("90px");
                 grid.setWidget(0, 1, promo);
                 grid.getCellFormatter().getElement(0,1).setAttribute("rowspan", "2");
                 grid.getCellFormatter().getElement(1,1).setAttribute("style", "display: none;");
                                 
                 Image image = new Image("android.jpg");
-                image.setHeight("80px");
+                image.setHeight("70px");
                 image.addClickHandler(new ClickHandler() {
 
                         public void onClick(ClickEvent event) {
@@ -97,7 +102,7 @@ public class TigaseMessengerPromoPanel extends Composite {
                 grid.setWidget(1, 0, image);
                 
                 Image image1 = new Image("android.jpg");
-                image1.setHeight("80px");
+                image1.setHeight("70px");
                 image1.addClickHandler(new ClickHandler() {
 
                         public void onClick(ClickEvent event) {

@@ -21,10 +21,9 @@
 
     <script type="text/javascript">
             var root = {
-                    'anon-domain': "anon.hi-low.eu",
+                    'anon-domain': "sure.im",
                     
-//                    navigation: "[{url:'http://plus.google.com', label:'+Google', active:false},{url:'http://poczta.hi-low.eu', label:'Poczta', active:false},{url:'http://docs.google.com', label:'Dokumenty', active:false},{url:'hi-low.eu', label:'Xode', active:true}]"
-                    navigation: "[{url:'http://sure.hi-low.eu', label:'Sure.IM', active:true},{url:'http://tigase.com', label:'Tigase.com', active:false},{url:'http://tigase.org', label:'Tigase.org', active:false}]",
+                    navigation: "[{url:'http://sure.im', label:'Sure.IM', active:true},{url:'http://tigase.im', label:'Tigase.IM', active:false},{url:'http://jabber.me', label:'Jabber.ME', active:false},{url:'http://tigase.com', label:'Tigase.com', active:false},{url:'http://tigase.org', label:'Tigase.org', active:false}]",
                     'version-link-free' : "http://play.google.com",
                     'version-link-ads-free' : "http://play.google.com"
             };            
@@ -175,7 +174,8 @@
                 background-image: url(background.png);
                 background-repeat: no-repeat;
                 background-position: center;
-                background-size: contain;
+                background-size: 350px;
+                overflow-y: auto !important;
         }
         
         .authViewStyle h2 {
@@ -187,6 +187,10 @@
                 color: #357AE8;
                 text-shadow: 2px 2px 5px lightBlue;
                 float: left;
+        }
+        
+        .navigationBar a:hover {
+                color: white;
         }
     </style>
     <style>

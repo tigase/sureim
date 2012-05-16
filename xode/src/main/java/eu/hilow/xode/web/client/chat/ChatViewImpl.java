@@ -10,28 +10,35 @@ import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.logical.shared.SelectionEvent;
 import com.google.gwt.event.logical.shared.SelectionHandler;
 import com.google.gwt.place.shared.Place;
-import com.google.gwt.user.client.ui.ResizeComposite;
-import com.google.gwt.user.client.ui.TabLayoutPanel;
-import com.google.gwt.user.client.ui.Widget;
+import com.google.gwt.user.client.Command;
+import com.google.gwt.user.client.ui.*;
 import eu.hilow.gwt.base.client.ActionBar;
 import eu.hilow.gwt.base.client.AppView;
 import eu.hilow.gwt.base.client.roster.FlatRoster;
 import eu.hilow.gwt.base.client.roster.FlatRoster.RosterItemClickHandler;
 import eu.hilow.xode.web.client.ClientFactory;
+import eu.hilow.xode.web.client.roster.ContactDialog;
+import eu.hilow.xode.web.client.roster.ContactSubscribeRequestDialog;
 import eu.hilow.xode.web.client.settings.SettingsPlace;
 import java.util.HashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import tigase.jaxmpp.core.client.AsyncCallback;
 import tigase.jaxmpp.core.client.BareJID;
 import tigase.jaxmpp.core.client.JID;
+import tigase.jaxmpp.core.client.XMPPException.ErrorCondition;
 import tigase.jaxmpp.core.client.exceptions.JaxmppException;
 import tigase.jaxmpp.core.client.observer.Listener;
+import tigase.jaxmpp.core.client.xml.XMLException;
 import tigase.jaxmpp.core.client.xmpp.modules.chat.Chat;
 import tigase.jaxmpp.core.client.xmpp.modules.chat.ChatSelector;
 import tigase.jaxmpp.core.client.xmpp.modules.chat.DefaultChatSelector;
 import tigase.jaxmpp.core.client.xmpp.modules.chat.MessageModule;
 import tigase.jaxmpp.core.client.xmpp.modules.chat.MessageModule.MessageEvent;
+import tigase.jaxmpp.core.client.xmpp.modules.presence.PresenceModule;
+import tigase.jaxmpp.core.client.xmpp.modules.presence.PresenceModule.PresenceEvent;
 import tigase.jaxmpp.core.client.xmpp.modules.roster.RosterItem;
+import tigase.jaxmpp.core.client.xmpp.stanzas.Stanza;
 
 /**
  *
@@ -47,6 +54,7 @@ public class ChatViewImpl extends ResizeComposite implements ChatView {
         private final ChatSelector chatSelector = new DefaultChatSelector();
         private final Listener<MessageEvent> listener;
         
+        private final Widget addContactAction;
         private final Widget closeChatAction;
         private final Widget settingsAction;
         
@@ -56,6 +64,17 @@ public class ChatViewImpl extends ResizeComposite implements ChatView {
                 
                 appView = new AppView(factory);                
                 appView.setActionBar(factory.actionBarFactory().createActionBar(this));
+
+                addContactAction = appView.getActionBar().addAction(factory.theme().addPerson(), new ClickHandler() {
+
+                        public void onClick(ClickEvent event) {
+                                final DialogBox dlg = new ContactDialog(factory, null);                
+                
+                                dlg.show();
+                                dlg.center();
+                        }
+                        
+                });
                 
                 closeChatAction = appView.getActionBar().addAction(factory.theme().navigationCancel(), new ClickHandler() {
 
@@ -104,12 +123,27 @@ public class ChatViewImpl extends ResizeComposite implements ChatView {
 //                roster.sinkEvents(Event.ONCONTEXTMENU);
 //                roster.sinkEvents(Event.ONMOUSEUP);
                 roster.addClickHandler("click", new RosterItemClickHandler() {
-
-                        public void itemClicked(RosterItem ri) {
+                        public void itemClicked(RosterItem ri, int left, int top) {
                                 openChat(ri.getJid());
+                        }                        
+                });
+                
+                roster.addClickHandler("contextmenu", new RosterItemClickHandler() {
+                        public void itemClicked(RosterItem ri, int left, int top) {
+                                showContactContextMenu(ri, left, top);
+                        }                        
+                });
+                
+                factory.jaxmpp().getModulesManager().getModule(PresenceModule.class).addListener(PresenceModule.SubscribeRequest, new Listener<PresenceEvent>() {
+
+                        public void handleEvent(PresenceEvent be) throws JaxmppException {
+                                DialogBox dlg = new ContactSubscribeRequestDialog(factory, be.getJid().getBareJid());
+                                dlg.show();
+                                dlg.center();
                         }
                         
                 });
+                
                 appView.setLeftSidebar(roster);
 //                appView.sinkEvents(Event.ONCONTEXTMENU);
 //                appView.sinkEvents(Event.ONMOUSEUP);
@@ -200,6 +234,50 @@ public class ChatViewImpl extends ResizeComposite implements ChatView {
                                 }
                         }
                 }
+        }
+        
+        protected void showContactContextMenu(final RosterItem ri, int left, int top) {
+                final PopupPanel popup = new PopupPanel(true);
+                popup.setStyleName(factory.theme().style().popupPanel());
+                MenuBar menu = new MenuBar(true);
+                
+                menu.addItem(factory.i18n().chat(), new Command() {
+                        public void execute() {
+                                popup.hide();
+                                openChat(ri.getJid());
+                        }                        
+                });
+                
+                menu.addItem(factory.baseI18n().modify(), new Command() {
+                        public void execute() {
+                                popup.hide();
+                                ContactDialog dlg = new ContactDialog(factory, ri.getJid());
+                                dlg.show();
+                                dlg.center();
+                        }                        
+                });
+                
+                menu.addItem(factory.baseI18n().delete(), new Command() {
+                        public void execute() {
+                                try {
+                                        popup.hide();
+                                        factory.jaxmpp().getRoster().remove(ri.getJid());
+                                } catch (XMLException ex) {
+                                        Logger.getLogger(ChatViewImpl.class.getName()).log(Level.SEVERE, null, ex);
+                                } catch (JaxmppException ex) {
+                                        Logger.getLogger(ChatViewImpl.class.getName()).log(Level.SEVERE, null, ex);
+                                }
+                        }                        
+                });
+
+                menu.setStyleName("");
+                popup.add(menu);
+                popup.setPopupPosition(left, top);
+                popup.show();
+//                final DialogBox dlg = new ContactDialog(factory, ri.getJid());                
+//                
+//                dlg.show();
+//                dlg.center();                
         }
         
         protected void updateActionBar() {

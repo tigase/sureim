@@ -31,19 +31,25 @@ public class RootView extends ResizeComposite {
 
                 navPanel = new AbsolutePanel();                
                 navPanel.setStyleName(style.navigationBar());
+                navPanel.addStyleName("navigationBar");
                 
                 Dictionary root = Dictionary.getDictionary("root");
                 String navStr = root.get("navigation");
                 JSONArray navArr = (JSONArray) JSONParser.parseLenient(navStr);
+                
+                String host = Window.Location.getHostName();
                 
                 for (int i=0; i < navArr.size(); i++) {
                         JSONObject obj = (JSONObject) navArr.get(i);
                         
                         final String url = ((JSONString) obj.get("url")).stringValue();
                         final String label = ((JSONString) obj.get("label")).stringValue();
-                        boolean active = ((JSONBoolean) obj.get("active")).booleanValue();
+                        boolean active = url.contains(host);//((JSONBoolean) obj.get("active")).booleanValue();
+                        if (active) {
+                                Window.setTitle(label);
+                        }
                         
-                        Label link = new Label(label);
+                        Anchor link = new Anchor(label);
                         link.setStyleName(style.navigationBarItem());
                         link.addClickHandler(new ClickHandler() {
 

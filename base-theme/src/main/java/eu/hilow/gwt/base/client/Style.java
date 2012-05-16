@@ -39,4 +39,6 @@ public interface Style extends CssResource {
                
         String button();
         String buttonDefault();
+        
+        String popupPanel();        
 }

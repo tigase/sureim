@@ -30,6 +30,9 @@ import tigase.jaxmpp.core.client.xml.XMLException;
 import tigase.jaxmpp.core.client.xmpp.modules.presence.PresenceModule;
 import tigase.jaxmpp.core.client.xmpp.modules.presence.PresenceModule.PresenceEvent;
 import tigase.jaxmpp.core.client.xmpp.modules.roster.RosterItem;
+import tigase.jaxmpp.core.client.xmpp.modules.roster.RosterItem.Subscription;
+import tigase.jaxmpp.core.client.xmpp.modules.roster.RosterModule;
+import tigase.jaxmpp.core.client.xmpp.modules.roster.RosterModule.RosterEvent;
 import tigase.jaxmpp.core.client.xmpp.stanzas.Presence;
 import tigase.jaxmpp.gwt.client.Jaxmpp;
 
@@ -37,11 +40,11 @@ import tigase.jaxmpp.gwt.client.Jaxmpp;
  *
  * @author andrzej
  */
-public class FlatRoster extends ResizeComposite implements Listener<PresenceEvent>, AvatarChangedHandler {
+public class FlatRoster extends ResizeComposite implements AvatarChangedHandler {
         
         public static interface RosterItemClickHandler {
                 
-                void itemClicked(RosterItem ri);
+                void itemClicked(RosterItem ri, int left, int top);
                 
         }
         
@@ -53,6 +56,9 @@ public class FlatRoster extends ResizeComposite implements Listener<PresenceEven
         
         private final HashMap<String,RosterItemClickHandler> handlers;
         private final HashSet<String> itemEvents;
+        
+        private final PresenceListener presenceListener;
+        private final RosterListener rosterListener;
         
         public FlatRoster(ClientFactory factory) {
                 this.factory = factory;
@@ -73,17 +79,19 @@ public class FlatRoster extends ResizeComposite implements Listener<PresenceEven
                 
                 roster.addDataDisplay(widget);
                 
-                jaxmpp.getModulesManager().getModule(PresenceModule.class).addListener(PresenceModule.ContactChangedPresence, this);
-                jaxmpp.getModulesManager().getModule(PresenceModule.class).addListener(PresenceModule.ContactAvailable, this);
-                jaxmpp.getModulesManager().getModule(PresenceModule.class).addListener(PresenceModule.ContactUnavailable, this);
+                presenceListener = new PresenceListener();
+                jaxmpp.getModulesManager().getModule(PresenceModule.class).addListener(PresenceModule.ContactChangedPresence, presenceListener);
+                jaxmpp.getModulesManager().getModule(PresenceModule.class).addListener(PresenceModule.ContactAvailable, presenceListener);
+                jaxmpp.getModulesManager().getModule(PresenceModule.class).addListener(PresenceModule.ContactUnavailable, presenceListener);
                
+                rosterListener = new RosterListener();
+                jaxmpp.getModulesManager().getModule(RosterModule.class).addListener(RosterModule.ItemAdded, rosterListener);
+                jaxmpp.getModulesManager().getModule(RosterModule.class).addListener(RosterModule.ItemRemoved, rosterListener);
+                jaxmpp.getModulesManager().getModule(RosterModule.class).addListener(RosterModule.ItemUpdated, rosterListener);
+                
                 scroll = new ScrollPanel(widget);
                 
                 initWidget(scroll);
-        }
-
-        public void handleEvent(PresenceEvent be) throws JaxmppException {
-                updateItem(be.getJid().getBareJid());
         }
         
         public void updateItem(BareJID jid) {
@@ -91,11 +99,20 @@ public class FlatRoster extends ResizeComposite implements Listener<PresenceEven
                               
                 if (ri == null)
                         return;
-                
+
+                updateItem(ri);
+        }
+        
+        public void updateItem(RosterItem ri) {                
                 roster.getList().remove(ri);
                 
+                if (ri.getSubscription() == Subscription.remove) {
+                        roster.refresh();                
+                        return;
+                }
+                
                 try {
-                        if (!factory.jaxmpp().getPresence().isAvailable(jid))
+                        if (!factory.jaxmpp().getPresence().isAvailable(ri.getJid()))
                                 return;
                 } catch (XMLException ex) {
                         Logger.getLogger(FlatRoster.class.getName()).log(Level.SEVERE, null, ex);
@@ -111,7 +128,14 @@ public class FlatRoster extends ResizeComposite implements Listener<PresenceEven
                                 if (r2 == null)
                                         return 1;
                                 
-                                return r1.getName().compareToIgnoreCase(r2.getName());
+                                String name1 = r1.getName();
+                                if (name1 == null) 
+                                        name1 = r1.getJid().toString();
+                                String name2 = r2.getName();
+                                if (name2 == null) 
+                                        name2 = r2.getJid().toString();
+                                
+                                return name1.compareToIgnoreCase(name2);
                         }
                 });
                 
@@ -134,6 +158,22 @@ public class FlatRoster extends ResizeComposite implements Listener<PresenceEven
         
         public void removeClickHandler(String action, RosterItemClickHandler handler) {
                 handlers.remove(action);
+        }
+        
+        private class PresenceListener implements Listener<PresenceEvent> {
+
+                public void handleEvent(PresenceEvent be) throws JaxmppException {
+                        updateItem(be.getJid().getBareJid());
+                }
+                
+        }
+        
+        private class RosterListener implements Listener<RosterEvent> {
+
+                public void handleEvent(RosterEvent be) throws JaxmppException {
+                        updateItem(be.getItem());
+                }
+                
         }
         
         private class RosterItemCell extends AbstractCell<RosterItem> {
@@ -195,7 +235,7 @@ public class FlatRoster extends ResizeComposite implements Listener<PresenceEven
                         RosterItemClickHandler handler = handlers.get(event.getType());
                         Logger.getLogger("FlatRoster").warning("received event of type = " + event.getType());
                         if (handler != null) {
-                                handler.itemClicked(value);
+                                handler.itemClicked(value, event.getClientX(), event.getClientY());
                                 event.stopPropagation();
                                 event.preventDefault();
                         }

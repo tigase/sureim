@@ -97,4 +97,16 @@ public interface I18n extends Constants {
         
         @DefaultStringValue("Sure.IM, Tigase.IM, Jabber.ME and more...")
         String authViewHeaderTitle();
+        
+        @DefaultStringValue("Add contact")
+        String addContact();
+        
+        @DefaultStringValue("Modify contact")
+        String modifyContact();               
+        
+        @DefaultStringValue("Subscription request")
+        String subscriptionRequestContact();
+        
+        @DefaultStringValue("from user")
+        String subscriptionRequestMessageContact();
 }
