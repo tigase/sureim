@@ -115,6 +115,6 @@ Tigase, Inc.
 900 Kearny Street, Suite 228
 San Francisco
 CA 94133
-support@sure.im
+help@sure.im
 
 9.2 We take compliance with the privacy laws seriously and if you have a complaint concerning our compliance we will investigate your complaint and if it is justified, we will take appropriate measures.
