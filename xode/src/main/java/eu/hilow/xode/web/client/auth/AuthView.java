@@ -70,7 +70,6 @@ public class AuthView extends AbstractAuthView {
                         }
 
                         public void deauthenticated() {
-                                throw new UnsupportedOperationException("Not supported yet.");
                         }
                 
                 });

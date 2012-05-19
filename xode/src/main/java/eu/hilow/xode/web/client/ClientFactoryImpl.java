@@ -28,6 +28,8 @@ import java.util.Date;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import tigase.jaxmpp.core.client.JID;
+import tigase.jaxmpp.core.client.JaxmppCore;
+import tigase.jaxmpp.core.client.JaxmppCore.JaxmppEvent;
 import tigase.jaxmpp.core.client.SessionObject;
 import tigase.jaxmpp.core.client.XMPPException.ErrorCondition;
 import tigase.jaxmpp.core.client.exceptions.JaxmppException;
@@ -39,6 +41,7 @@ import tigase.jaxmpp.core.client.xmpp.modules.disco.DiscoInfoModule;
 import tigase.jaxmpp.core.client.xmpp.modules.disco.DiscoInfoModule.DiscoInfoAsyncCallback;
 import tigase.jaxmpp.core.client.xmpp.modules.disco.DiscoInfoModule.Identity;
 import tigase.jaxmpp.core.client.xmpp.stanzas.Stanza;
+import tigase.jaxmpp.gwt.client.Jaxmpp;
 
 /**
  *
@@ -109,6 +112,20 @@ public class ClientFactoryImpl extends eu.hilow.gwt.base.client.ClientFactoryImp
 
                 jaxmpp().addListener(ResourceBinderModule.ResourceBindError, jaxmppBindListener);
                 jaxmpp().addListener(ResourceBinderModule.ResourceBindSuccess, jaxmppBindListener);
+                
+                jaxmpp().addListener(Jaxmpp.Disconnected, new Listener<Jaxmpp.JaxmppEvent>() {
+
+                        public void handleEvent(JaxmppEvent be) throws JaxmppException {
+                                if (be.getCaught() != null) {
+                                        log.log(Level.WARNING, "Disconnected = " + be.getCaught().getMessage(), be.getCaught());
+                                        ErrorDialog dlg = new ErrorDialog(ClientFactoryImpl.this, be.getCaught().getMessage());
+                                        dlg.show();
+                                        dlg.center();
+                                }
+                                eventBus().fireEvent(new AuthEvent(null));
+                        }
+                
+                });
         }
 
         @Override

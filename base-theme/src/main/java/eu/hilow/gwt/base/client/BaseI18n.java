@@ -44,12 +44,18 @@ public interface BaseI18n extends Constants {
        
         @DefaultStringValue("Delete")
         String delete();
+
+        @DefaultStringValue("Error")
+        String error();
         
         @DefaultStringValue("Cancel")
         String cancel();
         
         @DefaultStringValue("Confirm")
         String confirm();
+        
+        @DefaultStringValue("Close")
+        String close();
         
         @DefaultStringValue("Name")
         String name();
