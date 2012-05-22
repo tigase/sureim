@@ -26,6 +26,10 @@ public abstract class ClientFactoryImpl implements ClientFactory {
         
         private BaseI18n baseI18n = GWT.create(BaseI18n.class);
 
+        public ClientFactoryImpl() {
+                theme().verticalTabPanelStyles().ensureInjected();
+        }
+        
         public EventBus eventBus() {
                 return eventBus;
         }

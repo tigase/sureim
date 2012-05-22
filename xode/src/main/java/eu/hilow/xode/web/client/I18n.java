@@ -109,4 +109,7 @@ public interface I18n extends Constants {
         
         @DefaultStringValue("from user")
         String subscriptionRequestMessageContact();
+        
+        @DefaultStringValue("Request timed out")
+        String requestTimedOut();
 }

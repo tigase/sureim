@@ -32,8 +32,8 @@
             var domains = {
                     'default'  : 'http://xmpp-2.hi-low.eu:5280/bosh',
                     'tigase.org' : 'http://tigase.org:5280/bosh',
-                    'tigase.im' : 'http://tigase.im:5280/bosh',
-                    'sure.im' : 'http://sure.im:5280/bosh'
+                    'tigase.im' : 'http://blue.tigase.im:5280/bosh',
+                    'sure.im' : 'http://blue.tigase.im:5280/bosh'
             }
     </script>
     
@@ -46,6 +46,8 @@
     <style>
         input {
                 background-color: white;
+                border: 1px solid gainsboro;
+                padding: 4px;
         }
         /* Let's get this party started */
         ::-webkit-scrollbar {    width: 8px;} 
@@ -139,13 +141,37 @@
         }
         
         .settingsView {
-                margin: 5% 25%;
+                margin: 1% 25%;
                 width: 50%;
+                font-size: 1.1em;
         }
         
         .settingsPanel {
                 width: 100%;
                 border-bottom: 1px solid lightgrey;
+        }
+
+        .settingsView img {
+/*                float: right;*/
+                border-radius: 4px;
+        }
+        
+        .settingsView td:first-child {
+                width: 60%;
+        }
+        
+        .settingsView td:last-child {
+                width: 40%;
+        }
+        
+        .settingsView div.gwt-Label {
+                font-weight: bold;
+        }
+        
+        .settingsView input.gwt-TextBox {
+                width: 100%;
+                font-size: 1.1em;
+                padding: 4px;
         }
         
         table.settingsPanel > tbody > tr:first-child > td {
