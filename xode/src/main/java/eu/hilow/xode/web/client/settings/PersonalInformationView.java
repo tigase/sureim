@@ -63,21 +63,14 @@ public class PersonalInformationView extends ResizeComposite implements View {
                 layout = new FlexTable();
                 layout.addStyleName("settingsView");
                 
-                Label label = new Label("Avatar");
+                Label label = new Label(factory.i18n().avatar());
                 layout.setWidget(0, 0, label);
                 
                 avatar = new Image();
                 avatar.setHeight("160px");                
                 avatar.setUrl(factory.theme().socialPerson().getSafeUri());
                 layout.setWidget(0, 1, avatar);
-//                final Element avatarFile = Document.get().createFileInputElement();
-//                Event.addNativePreviewHandler(new NativePreviewHandler() {
-//                        public void onPreviewNativeEvent(NativePreviewEvent preview) {
-//                                NativeEvent event = preview.getNativeEvent();                
-//                                JavaScriptObject jso = avatarFile.getPropertyJSO("files");
-//                        }
-//                });
-//                layout.getCellFormatter().getElement(0, 1).appendChild(avatarFile);
+
                 final FileInput avatarFile = new FileInput();
                 final Element avatarEl = avatarFile.getElement();
                 avatarEl.getStyle().setWidth(100, Style.Unit.PCT);
@@ -86,7 +79,6 @@ public class PersonalInformationView extends ResizeComposite implements View {
                 avatarFile.setChangeHandler(new ChangeHandler() {
 
                         public void onChange(ChangeEvent event) {
-                                log.warning("on change");
                                 File file = avatarFile.getFiles().getItem(0);                                
                                 FileReader reader = FileReader.newInstance();
                                 reader.addLoadEndHandler(new com.google.gwt.user.client.rpc.AsyncCallback<String>() {
@@ -103,43 +95,24 @@ public class PersonalInformationView extends ResizeComposite implements View {
                                 reader.readAsDataURL(file);
                         }
                         
-                });
-//                Event.addNativePreviewHandler(new NativePreviewHandler() {
-//                        public void onPreviewNativeEvent(NativePreviewEvent preview) {
-//                                File file = avatarFile.getFiles().getItem(0);
-//                                FileReader reader = FileReader.newInstance();
-//                                reader.addLoadEndHandler(new com.google.gwt.user.client.rpc.AsyncCallback<String>() {
-//                                        
-//                                        public void onFailure(Throwable caught) {
-//                                                throw new UnsupportedOperationException("Not supported yet.");
-//                                        }
-//
-//                                        public void onSuccess(String result) {
-//                                                avatar.setUrl(result);
-//                                        }
-//                                        
-//                                });
-//                                reader.readAsDataURL(file);
-//                        }
-//                });
+                });                
                 
-                
-                label = new Label("Full name");
+                label = new Label(factory.i18n().fullName());
                 layout.setWidget(1, 0, label);
                 fullname = new TextBox();
                 layout.setWidget(1, 1, fullname);
                 
-                label = new Label("Nick");
+                label = new Label(factory.i18n().nick());
                 layout.setWidget(2, 0, label);
                 nick = new TextBox();
                 layout.setWidget(2, 1, nick);
                 
-                label = new Label("Email");
+                label = new Label(factory.i18n().email());
                 layout.setWidget(3, 0, label);
                 email = new TextBox();
                 layout.setWidget(3, 1, email);
                 
-                label = new Label("Birthday");
+                label = new Label(factory.i18n().birthday());
                 layout.setWidget(4, 0, label);
                 birthday = new TextBox();
                 layout.setWidget(4, 1, birthday);                
@@ -233,8 +206,10 @@ public class PersonalInformationView extends ResizeComposite implements View {
                                 return;
                         }
                         String[] params = url.substring(idx, idx2).split(";");
-                        log.info("type = " + params[0] + ", encoding = " + params[1]);
-                        log.info("data = " + url.substring(idx2 + 1));
+                        if (log.isLoggable(Level.FINEST)) {
+                                log.finest("type = " + params[0] + ", encoding = " + params[1]);
+                                log.finest("data = " + url.substring(idx2 + 1));
+                        }
                         vcard.setPhotoType(params[0]);
                         vcard.setPhotoVal(url.substring(idx2 + 1));
                 }

@@ -31,12 +31,12 @@ public class GeneralSettingsView extends ResizeComposite implements View {
 
                 FlexTable panel = new FlexTable();
                 
-                Label label = new Label("Security");                
+                Label label = new Label(factory.i18n().security());                
                 panel.setWidget(0, 0, label);
                 
-                label = new Label("Password");
+                label = new Label(factory.i18n().password());
                 panel.setWidget(1, 0, label);
-                Anchor anchor = new Anchor("Change password");
+                Anchor anchor = new Anchor(factory.i18n().changePassword());
                 panel.setWidget(1, 1, anchor);
                 anchor.addClickHandler(new ClickHandler() {
 
@@ -57,23 +57,23 @@ public class GeneralSettingsView extends ResizeComposite implements View {
                 final DialogBox dlg = new DialogBox(true);
                 
                 dlg.setStyleName("dialogBox");
-                dlg.setTitle("Change password");
+                dlg.setTitle(factory.i18n().changePassword());
                 
                 FlexTable table = new FlexTable();
-                Label label = new Label("Change password");
+                Label label = new Label(factory.i18n().changePassword());
                 label.getElement().getStyle().setFontSize(1.2, Style.Unit.EM);
                 label.getElement().getStyle().setFontWeight(Style.FontWeight.BOLD);
                 table.setWidget(0, 0, label);
-                label = new Label("New password");
+                label = new Label(factory.i18n().newPassword());
                 table.setWidget(1, 0, label);
                 final TextBox pass1 = new PasswordTextBox();
                 table.setWidget(1, 1, pass1);
-                label = new Label("Confirm password");
+                label = new Label(factory.i18n().confirmPassword());
                 table.setWidget(2, 0, label);
                 final TextBox pass2 = new PasswordTextBox();
                 table.setWidget(2, 1, pass2);
                
-                Button cancel = new Button("Cancel");
+                Button cancel = new Button(factory.baseI18n().cancel());
                 cancel.setStyleName(factory.theme().style().button());
                 table.setWidget(3, 0, cancel);
                 cancel.addClickHandler(new ClickHandler() {
@@ -84,7 +84,7 @@ public class GeneralSettingsView extends ResizeComposite implements View {
                         
                 });                
                 
-                Button ok = new Button("Confirm");
+                Button ok = new Button(factory.baseI18n().confirm());
                 ok.setStyleName(factory.theme().style().button());
                 ok.addStyleName(factory.theme().style().buttonDefault());
                 ok.addStyleName(factory.theme().style().right());

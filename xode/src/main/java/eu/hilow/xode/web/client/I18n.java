@@ -112,4 +112,44 @@ public interface I18n extends Constants {
         
         @DefaultStringValue("Request timed out")
         String requestTimedOut();
+        
+        
+        // -- Settings 
+        // ---- General
+        @DefaultStringValue("General")
+        String generalSettings();
+        
+        @DefaultStringValue("Change password")
+        String changePassword();
+        
+        @DefaultStringValue("Password")
+        String password();
+        
+        @DefaultStringValue("Security")
+        String security();
+        
+        @DefaultStringValue("New password")
+        String newPassword();
+        
+        @DefaultStringValue("Confirm password")
+        String confirmPassword();
+        
+        // ---- Personal information
+        @DefaultStringValue("Personal information")
+        String personalInformation();
+        
+        @DefaultStringValue("Avatar")
+        String avatar();
+        
+        @DefaultStringValue("Full name")
+        String fullName();
+        
+        @DefaultStringValue("Nick")
+        String nick();
+        
+        @DefaultStringValue("Email")
+        String email();
+        
+        @DefaultStringValue("Birthday")
+        String birthday();
 }

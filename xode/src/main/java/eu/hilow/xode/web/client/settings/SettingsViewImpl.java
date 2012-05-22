@@ -57,10 +57,10 @@ public class SettingsViewImpl extends ResizeComposite implements SettingsView {
 
                 generalSettings = new GeneralSettingsView(factory);
                 
-                layout.add(generalSettings, "General");
+                layout.add(generalSettings, factory.i18n().generalSettings());
 
                 personalInformation = new PersonalInformationView(factory);
-                layout.add(personalInformation, "Personal information");
+                layout.add(personalInformation, factory.i18n().personalInformation());
                 
                 layout.itemSelected(0);
                 
