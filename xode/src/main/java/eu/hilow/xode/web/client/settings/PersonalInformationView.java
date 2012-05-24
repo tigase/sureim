@@ -22,7 +22,7 @@ import eu.hilow.gwt.base.client.widgets.View;
 import eu.hilow.gwt.base.client.widgets.file.File;
 import eu.hilow.gwt.base.client.widgets.file.FileReader;
 import eu.hilow.xode.web.client.ClientFactory;
-import eu.hilow.xode.web.client.ErrorDialog;
+import eu.hilow.xode.web.client.MessageDialog;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import tigase.jaxmpp.core.client.AsyncCallback;
@@ -225,7 +225,7 @@ public class PersonalInformationView extends ResizeComposite implements View {
                 factory.jaxmpp().getWriter().write(iq, new AsyncCallback() {
 
                         public void onError(Stanza responseStanza, ErrorCondition error) throws JaxmppException {
-                                ErrorDialog dlg = new ErrorDialog(factory, error.getElementName());
+                                MessageDialog dlg = new MessageDialog(factory, factory.baseI18n().error(), error.getElementName());
                                 dlg.show();
                                 dlg.center();
                         }
@@ -235,7 +235,7 @@ public class PersonalInformationView extends ResizeComposite implements View {
                         }
 
                         public void onTimeout() throws JaxmppException {
-                                ErrorDialog dlg = new ErrorDialog(factory, factory.i18n().requestTimedOut());
+                                MessageDialog dlg = new MessageDialog(factory, factory.baseI18n().error(), factory.i18n().requestTimedOut());
                                 dlg.show();
                                 dlg.center();
                         }

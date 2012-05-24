@@ -5,11 +5,10 @@
 package eu.hilow.xode.web.client.auth;
 
 import com.google.gwt.dom.client.Style;
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.i18n.client.Dictionary;
-import com.google.gwt.user.client.ui.AbsolutePanel;
-import com.google.gwt.user.client.ui.HTML;
-import com.google.gwt.user.client.ui.Image;
-import com.google.gwt.user.client.ui.Widget;
+import com.google.gwt.user.client.ui.*;
 import eu.hilow.gwt.base.client.ResizablePanel;
 import eu.hilow.gwt.base.client.auth.AbstractAuthView;
 import eu.hilow.gwt.base.client.auth.AuthEvent;
@@ -17,6 +16,7 @@ import eu.hilow.gwt.base.client.auth.AuthHandler;
 import eu.hilow.xode.web.client.ClientFactory;
 import eu.hilow.xode.web.client.other.TigaseMessengerPromoPanel;
 import eu.hilow.xode.web.client.pubsub.PubSubPanel;
+import eu.hilow.xode.web.client.register.RegisterDialog;
 import tigase.jaxmpp.core.client.BareJID;
 import tigase.jaxmpp.core.client.JID;
 
@@ -49,6 +49,22 @@ public class AuthView extends AbstractAuthView {
                 logo.getElement().getStyle().setFloat(Style.Float.RIGHT);
                 logo.setWidth("64px");
                 w.insert(logo, 0);
+                
+                //Anchor register = new Anchor("Register");
+                Button register = new Button(factory.i18n().register());
+                register.setStyleName(factory.theme().style().button());
+                register.getElement().getStyle().setFloat(Style.Float.RIGHT);
+                register.getElement().getStyle().setBackgroundColor("white");
+                register.getElement().getStyle().setMarginTop(1.5, Style.Unit.EM);
+                register.getElement().getStyle().setMarginRight(-0.5, Style.Unit.EM);
+                register.addClickHandler(new ClickHandler() {
+                        public void onClick(ClickEvent event) {
+                                RegisterDialog regDlg = new RegisterDialog(factory);
+                                regDlg.show();
+                                regDlg.center();
+                        }                        
+                });
+                w.add(register);
                 
                 layout.add(w);
                 w.getElement().getStyle().setFloat(Style.Float.RIGHT);

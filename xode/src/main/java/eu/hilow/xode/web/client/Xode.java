@@ -151,22 +151,8 @@ public class Xode implements EntryPoint {
                         //log.log(Level.WARNING, "login exception", ex);
                 }
         }
-
-        private void authenticateTest(ClientFactory factory) {
-                Jaxmpp jaxmpp = factory.jaxmpp();
-                jaxmpp.getProperties().setUserProperty(BoshConnector.BOSH_SERVICE_URL_KEY, "http://hi-low.eu:5280/bosh");
-
-                jaxmpp.getProperties().setUserProperty(SessionObject.RESOURCE, "jaxmpp");
-                jaxmpp.getProperties().setUserProperty(SessionObject.USER_BARE_JID, BareJID.bareJIDInstance("andrzej@hi-low.eu"));
-                jaxmpp.getProperties().setUserProperty(SessionObject.PASSWORD, "W$vve!@2gw");
-                try {
-                        jaxmpp.login();
-                } catch (JaxmppException ex) {
-                        //log.log(Level.WARNING, "login exception", ex);
-                }
-        }
         
-        private String getBoshUrl(String domain) {
+        public static String getBoshUrl(String domain) {
                 Dictionary domains = Dictionary.getDictionary("domains");
                 String url = "http://" + domain + ":5280/bosh";
                 if (domains != null) {

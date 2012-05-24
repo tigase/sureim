@@ -118,7 +118,7 @@ public class ClientFactoryImpl extends eu.hilow.gwt.base.client.ClientFactoryImp
                         public void handleEvent(JaxmppEvent be) throws JaxmppException {
                                 if (be.getCaught() != null) {
                                         log.log(Level.WARNING, "Disconnected = " + be.getCaught().getMessage(), be.getCaught());
-                                        ErrorDialog dlg = new ErrorDialog(ClientFactoryImpl.this, be.getCaught().getMessage());
+                                        MessageDialog dlg = new MessageDialog(ClientFactoryImpl.this, baseI18n().error(), be.getCaught().getMessage());
                                         dlg.show();
                                         dlg.center();
                                 }

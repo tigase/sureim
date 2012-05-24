@@ -113,6 +113,11 @@ public interface I18n extends Constants {
         @DefaultStringValue("Request timed out")
         String requestTimedOut();
         
+        @DefaultStringValue("Register account")
+        String registerAccount();
+        
+        @DefaultStringValue("Register")
+        String register();
         
         // -- Settings 
         // ---- General

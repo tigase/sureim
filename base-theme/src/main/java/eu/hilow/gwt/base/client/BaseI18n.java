@@ -47,6 +47,9 @@ public interface BaseI18n extends Constants {
 
         @DefaultStringValue("Error")
         String error();
+
+        @DefaultStringValue("Success")
+        String success();
         
         @DefaultStringValue("Cancel")
         String cancel();

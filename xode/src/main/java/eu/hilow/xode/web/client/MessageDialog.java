@@ -13,19 +13,19 @@ import com.google.gwt.user.client.ui.*;
  *
  * @author andrzej
  */
-public class ErrorDialog extends DialogBox {
+public class MessageDialog extends DialogBox {
         
         private final ClientFactory factory;
         
-        public ErrorDialog(ClientFactory factory_, String msg) {
+        public MessageDialog(ClientFactory factory_, String title, String msg) {
                 super(true);
                 factory = factory_;
    
                 setStyleName("dialogBox");
-                setTitle(factory.baseI18n().error());
+                setTitle(title);
 
                 FlexTable table = new FlexTable();
-                Label label = new Label(factory.baseI18n().error());
+                Label label = new Label(title);
                 label.getElement().getStyle().setFontSize(1.2, Style.Unit.EM);
                 label.getElement().getStyle().setFontWeight(Style.FontWeight.BOLD);
                 table.setWidget(0, 0, label);
