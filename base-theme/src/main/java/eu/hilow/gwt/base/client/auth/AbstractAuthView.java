@@ -25,9 +25,30 @@ public class AbstractAuthView extends ResizeComposite {
         
         public AbstractAuthView(ClientFactory factory_) {
                 this.factory = factory_;
+                
+                this.factory.eventBus().addHandler(AuthEvent.TYPE, new AuthHandler() {
+
+                        public void authenticated(JID jid) {
+                                authFinished();
+                        }
+
+                        public void deauthenticated() {
+                                authFinished();
+                        }
+                        
+                });
+        }
+
+        private void authFinished() {
+                authButton.setEnabled(true);
+                authButton.addStyleName(factory.theme().style().buttonDefault());
+                authButton.removeStyleName(factory.theme().style().buttonDisabled());                
         }
         
         private void handle() {
+                authButton.setEnabled(false);
+                authButton.removeStyleName(factory.theme().style().buttonDefault());
+                authButton.addStyleName(factory.theme().style().buttonDisabled());
                 factory.eventBus().fireEvent(new AuthRequestEvent(JID.jidInstance(username.getText()), password.getText()));
         }
         

@@ -55,6 +55,9 @@ public class PersonalInformationView extends ResizeComposite implements View {
         private final TextBox email;
         private final TextBox birthday;
         
+        private final Button cancel;
+        private final Button ok;
+        
         private VCard vcard = null;
         
         public PersonalInformationView(ClientFactory factory) {
@@ -117,7 +120,7 @@ public class PersonalInformationView extends ResizeComposite implements View {
                 birthday = new TextBox();
                 layout.setWidget(4, 1, birthday);                
                 
-                Button cancel = new Button(factory.baseI18n().cancel());
+                cancel = new Button(factory.baseI18n().cancel());
                 cancel.setStyleName(factory.theme().style().button());
                 cancel.addStyleName(factory.theme().style().left());
                 layout.setWidget(5, 0, cancel);
@@ -128,7 +131,7 @@ public class PersonalInformationView extends ResizeComposite implements View {
                         }
                 });                
                 
-                Button ok = new Button(factory.baseI18n().confirm());
+                ok = new Button(factory.baseI18n().confirm());
                 ok.setStyleName(factory.theme().style().button());
                 ok.addStyleName(factory.theme().style().buttonDefault());
                 ok.addStyleName(factory.theme().style().right());
@@ -136,7 +139,7 @@ public class PersonalInformationView extends ResizeComposite implements View {
                 ok.addClickHandler(new ClickHandler() {
 
                         public void onClick(ClickEvent event) {
-                                try {
+                                try {                                        
                                         publish();
                                 }
                                 catch (Exception ex) {                                        
@@ -150,6 +153,7 @@ public class PersonalInformationView extends ResizeComposite implements View {
         public void update() {
                 try {
                         if (!factory.jaxmpp().isConnected()) return;
+                        disableButtons();
                         
                         BareJID userJid = factory.jaxmpp().getSessionObject().getUserBareJid();
                         VCardModule vcardModule = factory.jaxmpp().getModulesManager().getModule(VCardModule.class);
@@ -169,23 +173,29 @@ public class PersonalInformationView extends ResizeComposite implements View {
                                         nick.setText(vcard.getNickName());
                                         email.setText(vcard.getHomeEmail());
                                         birthday.setText(vcard.getBday());
+                                        enableButtons();                                        
                                 }
 
                                 public void onError(Stanza responseStanza, ErrorCondition error) throws JaxmppException {
+                                        enableButtons();
                                         throw new UnsupportedOperationException("Not supported yet.");
                                 }
 
                                 public void onTimeout() throws JaxmppException {
+                                        enableButtons();
                                         throw new UnsupportedOperationException("Not supported yet.");
                                 }
                                 
                         });
                 } catch (JaxmppException ex) {
                         log.log(Level.SEVERE, null, ex);
+                        enableButtons();
                 }
         }
         
         public void publish() throws XMLException, JaxmppException {
+                disableButtons();
+                
                 if (vcard == null) {
                         vcard = new VCard();
                 }
@@ -216,6 +226,7 @@ public class PersonalInformationView extends ResizeComposite implements View {
                 
                 
                 if (!factory.jaxmpp().isConnected()) {
+                        enableButtons();
                         return;
                 }
 
@@ -228,6 +239,7 @@ public class PersonalInformationView extends ResizeComposite implements View {
                                 MessageDialog dlg = new MessageDialog(factory, factory.baseI18n().error(), error.getElementName());
                                 dlg.show();
                                 dlg.center();
+                                enableButtons();
                         }
 
                         public void onSuccess(Stanza responseStanza) throws JaxmppException {
@@ -238,9 +250,26 @@ public class PersonalInformationView extends ResizeComposite implements View {
                                 MessageDialog dlg = new MessageDialog(factory, factory.baseI18n().error(), factory.i18n().requestTimedOut());
                                 dlg.show();
                                 dlg.center();
+                                enableButtons();
                         }
                         
                 });
+        }
+        
+        private void disableButtons() {
+                ok.removeStyleName(factory.theme().style().buttonDefault());
+                ok.addStyleName(factory.theme().style().buttonDisabled());
+                ok.setEnabled(false);
+                cancel.addStyleName(factory.theme().style().buttonDisabled());
+                cancel.setEnabled(false);
+        }
+        
+        private void enableButtons() {
+                ok.removeStyleName(factory.theme().style().buttonDisabled());
+                ok.addStyleName(factory.theme().style().buttonDefault());
+                ok.setEnabled(true);
+                cancel.removeStyleName(factory.theme().style().buttonDisabled());
+                cancel.setEnabled(true);
         }
         
 }

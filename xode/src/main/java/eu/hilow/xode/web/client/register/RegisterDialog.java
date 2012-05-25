@@ -44,6 +44,8 @@ public class RegisterDialog extends DialogBox {
         private static final Logger log = Logger.getLogger("RegisterDialog");
         private final ClientFactory factory;
         
+        private final Button ok;
+        
         public RegisterDialog(ClientFactory factory_) {
                 super(true);
                 factory = factory_;
@@ -83,7 +85,7 @@ public class RegisterDialog extends DialogBox {
                         }
                 });                
                 
-                Button ok = new Button(factory.baseI18n().confirm());
+                ok = new Button(factory.baseI18n().confirm());
                 ok.setStyleName(factory.theme().style().button());
                 ok.addStyleName(factory.theme().style().buttonDefault());
                 ok.addStyleName(factory.theme().style().right());
@@ -92,6 +94,7 @@ public class RegisterDialog extends DialogBox {
 
                         public void onClick(ClickEvent event) {
                                 try {
+                                        disableOkButton();
                                         final Jaxmpp jaxmpp = new Jaxmpp();
                                         
                                         final BareJID jid = BareJID.bareJIDInstance(jidTextBox.getText());
@@ -151,6 +154,7 @@ public class RegisterDialog extends DialogBox {
                                                                                 dlg.show();
                                                                                 dlg.center();
                                                                                 jaxmpp.disconnect();
+                                                                                enableOkButton();
                                                                         }
 
                                                                         public void onSuccess(Stanza responseStanza) throws JaxmppException {
@@ -160,6 +164,7 @@ public class RegisterDialog extends DialogBox {
                                                                                 dlg.center();
                                                                                 hide();
                                                                                 jaxmpp.disconnect();
+                                                                                enableOkButton();
                                                                         }
 
                                                                         public void onTimeout() throws JaxmppException {
@@ -168,6 +173,7 @@ public class RegisterDialog extends DialogBox {
                                                                                 dlg.show();
                                                                                 dlg.center();
                                                                                 jaxmpp.disconnect();
+                                                                                enableOkButton();
                                                                         }
                                                                         
                                                                 });
@@ -177,6 +183,7 @@ public class RegisterDialog extends DialogBox {
                                                                 dlg.show();
                                                                 dlg.center();
                                                                 jaxmpp.disconnect();
+                                                                enableOkButton();
                                                         }
                                                 }                                                
                                         });
@@ -205,8 +212,10 @@ public class RegisterDialog extends DialogBox {
                                         jaxmpp.login();
                                 } catch (XMLException ex) {
                                         Logger.getLogger(ChatViewImpl.class.getName()).log(Level.SEVERE, null, ex);
+                                        enableOkButton();
                                 } catch (JaxmppException ex) {
                                         Logger.getLogger(ChatViewImpl.class.getName()).log(Level.SEVERE, null, ex);
+                                        enableOkButton();                                        
                                 }
                         }
                         
@@ -215,4 +224,16 @@ public class RegisterDialog extends DialogBox {
                 setWidget(table);                
         }
         
+        private void disableOkButton() {
+                ok.setEnabled(false);
+                ok.removeStyleName(factory.theme().style().buttonDefault());
+                ok.addStyleName(factory.theme().style().buttonDefault());
+        }
+
+        private void enableOkButton() {
+                ok.setEnabled(false);
+                ok.removeStyleName(factory.theme().style().buttonDefault());
+                ok.addStyleName(factory.theme().style().buttonDefault());
+        }
+
 }

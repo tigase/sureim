@@ -146,6 +146,12 @@
         background-color: #357AE8;        
 }
 
+.buttonDisabled {
+        color: white;
+        border: 1px solid gainsboro;
+        background-color: lightgray;                
+}
+
 .popupPanel {
         background-color: white;
         color:#333;
