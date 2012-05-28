@@ -20,6 +20,7 @@ import eu.hilow.xode.web.client.ClientFactory;
 import eu.hilow.xode.web.client.roster.ContactDialog;
 import eu.hilow.xode.web.client.roster.ContactSubscribeRequestDialog;
 import eu.hilow.xode.web.client.settings.SettingsPlace;
+import eu.hilow.xode.web.client.vcard.VCardDialog;
 import java.util.HashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -268,6 +269,17 @@ public class ChatViewImpl extends ResizeComposite implements ChatView {
                                         Logger.getLogger(ChatViewImpl.class.getName()).log(Level.SEVERE, null, ex);
                                 }
                         }                        
+                });
+                
+                menu.addItem(factory.baseI18n().info(), new Command() {
+
+                        public void execute() {
+                                popup.hide();
+                                VCardDialog dlg = new VCardDialog(factory, ri.getJid());
+                                dlg.show();
+                                dlg.center();
+                        }
+                        
                 });
 
                 menu.setStyleName("");
