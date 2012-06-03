@@ -20,6 +20,8 @@ import eu.hilow.xode.web.client.archive.ArchiveViewImpl;
 import eu.hilow.xode.web.client.auth.AuthView;
 import eu.hilow.xode.web.client.chat.ChatView;
 import eu.hilow.xode.web.client.chat.ChatViewImpl;
+import eu.hilow.xode.web.client.disco.DiscoView;
+import eu.hilow.xode.web.client.disco.DiscoViewImpl;
 import eu.hilow.xode.web.client.events.ServerFeaturesChangedEvent;
 import eu.hilow.xode.web.client.settings.SettingsView;
 import eu.hilow.xode.web.client.settings.SettingsViewImpl;
@@ -55,6 +57,7 @@ public class ClientFactoryImpl extends eu.hilow.gwt.base.client.ClientFactoryImp
         private final AbstractAvatarFactory avatarFactory;
         private final AuthView authView;
         private final ChatView chatView;
+        private final DiscoView discoView;
         private final SettingsView settingsView;
         private final I18n i18n = GWT.create(I18n.class);
         private final PlaceController placeController;
@@ -69,6 +72,7 @@ public class ClientFactoryImpl extends eu.hilow.gwt.base.client.ClientFactoryImp
                 authView = new AuthView(this);
                 chatView = new ChatViewImpl(this);
                 archiveView = new ArchiveViewImpl(this);                
+                discoView = new DiscoViewImpl(this);
                 settingsView = new SettingsViewImpl(this);
                 
                 jaxmpp().getModulesManager().register(new MessageArchivingModule(jaxmpp().getSessionObject(), jaxmpp().getWriter()));
@@ -153,6 +157,11 @@ public class ClientFactoryImpl extends eu.hilow.gwt.base.client.ClientFactoryImp
                 return chatView;
         }
 
+        @Override
+        public DiscoView discoView() {
+                return discoView;
+        }
+        
         public I18n i18n() {
                 return i18n;
         }

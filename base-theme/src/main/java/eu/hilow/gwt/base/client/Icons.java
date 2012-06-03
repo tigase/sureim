@@ -52,6 +52,17 @@ public interface Icons extends ClientBundle {
         @Source("icons/2-action-settings.png")
         ImageResource settings();
         
+        @Source("icons/4-collections-cloud.png")
+        ImageResource collectionsCloud();
+
+        @Source("icons/5-content-import-export.png")
+        ImageResource gateway();
+        
         @Source("icons/6-social-add-person.png")
         ImageResource addPerson();
+        
+        @Source("icons/6-social-cc-bcc.png")
+        ImageResource muc();
+        
+        
 }

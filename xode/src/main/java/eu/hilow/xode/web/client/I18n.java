@@ -157,4 +157,17 @@ public interface I18n extends Constants {
         
         @DefaultStringValue("Birthday")
         String birthday();
+                
+        // -- Discovery
+        @DefaultStringValue("Discovery")
+        String discovery();
+
+        @DefaultStringValue("Browse")
+        String browse();
+        
+        @DefaultStringValue("Execute command")
+        String executeCommand();
+
+        @DefaultStringValue("Available commands")
+        String availableCommands();              
 }
