@@ -55,6 +55,8 @@
 }
 
 .actionBarLink {
+        color: black !important;
+        text-decoration: none !important;
         font-weight: bold;
         padding: 0px 10px;
         line-height: 2.3em;

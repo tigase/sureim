@@ -51,7 +51,7 @@ public class ActionBar extends ResizeComposite {
         }
         
         public IsWidget addLink(String text, ClickHandler handler) {
-                Label label = new Label(text);
+                Anchor label = new Anchor(text);
                 label.addClickHandler(handler);
                 label.addStyleName(factory.theme().style().actionBarLink());
                 linkPanel.add(label);
