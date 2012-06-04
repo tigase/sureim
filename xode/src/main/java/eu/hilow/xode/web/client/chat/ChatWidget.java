@@ -6,9 +6,7 @@ package eu.hilow.xode.web.client.chat;
 
 import com.google.gwt.dom.client.Style;
 import com.google.gwt.dom.client.Style.Unit;
-import com.google.gwt.event.dom.client.KeyCodes;
-import com.google.gwt.event.dom.client.KeyDownEvent;
-import com.google.gwt.event.dom.client.KeyDownHandler;
+import com.google.gwt.event.dom.client.*;
 import com.google.gwt.user.client.ui.*;
 import eu.hilow.xode.web.client.ClientFactory;
 import java.util.logging.Level;
@@ -52,13 +50,30 @@ public class ChatWidget extends ResizeComposite {
                                                 msg.setThread(chat.getThreadId());
                                                 msg.setBody(text);
 
-                                                input.setText(null);
+                                                // input is cleared in keyuphandler
+//                                                input.setText(null);
                                                 handleMessage(msg);
                                                 factory.jaxmpp().send(msg);
                                         } catch (Exception ex) {
                                                 Logger.getLogger("Chat").log(Level.WARNING, "sending message exception", ex);
                                         }
                                         input.setFocus(true);
+                                        event.stopPropagation();
+                                }
+                        }
+                });
+                input.addKeyUpHandler(new KeyUpHandler() {
+
+                        public void onKeyUp(KeyUpEvent event) {
+                                if (event.getNativeEvent().getKeyCode() == KeyCodes.KEY_ENTER) {
+                                        input.setFocus(false);
+                                        try {
+                                                // clearing input field after sending message
+                                                input.setText(null);
+                                        } catch (Exception ex) {
+                                        }
+                                        input.setFocus(true);
+                                        event.stopPropagation();
                                 }
                         }
                 });
