@@ -42,7 +42,7 @@ public class AuthView extends AbstractAuthView {
                 
                 layout.addStyleName("authViewStyle");
                                 
-                AbsolutePanel w = createAuthBox();
+                AbsolutePanel w = createAuthBox(true);
                 Image logo = new Image();                
                 logo.setUrl("logo.png");
                 logo.getElement().getStyle().setMarginTop(-20, Style.Unit.PX);

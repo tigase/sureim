@@ -68,5 +68,10 @@ public interface BaseI18n extends Constants {
         
         @DefaultStringValue("Group")
         String group();
+
+        @DefaultStringValue("Advanced")
+        String advanced();
         
+        @DefaultStringValue("Bosh URL")
+        String boshUrl();
 }

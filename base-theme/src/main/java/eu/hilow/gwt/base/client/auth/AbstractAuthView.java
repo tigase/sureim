@@ -4,6 +4,7 @@
  */
 package eu.hilow.gwt.base.client.auth;
 
+import com.google.gwt.dom.client.Style;
 import com.google.gwt.event.dom.client.*;
 import com.google.gwt.user.client.ui.*;
 import eu.hilow.gwt.base.client.ClientFactory;
@@ -22,6 +23,8 @@ public class AbstractAuthView extends ResizeComposite {
         private TextBox username;
         private TextBox password;
         private Button authButton;
+        private DisclosurePanel disclosure;
+        private TextBox boshUrl;
         
         public AbstractAuthView(ClientFactory factory_) {
                 this.factory = factory_;
@@ -48,11 +51,18 @@ public class AbstractAuthView extends ResizeComposite {
         private void handle() {
                 authButton.setEnabled(false);
                 authButton.removeStyleName(factory.theme().style().buttonDefault());
-                authButton.addStyleName(factory.theme().style().buttonDisabled());
-                factory.eventBus().fireEvent(new AuthRequestEvent(JID.jidInstance(username.getText()), password.getText()));
+                authButton.addStyleName(factory.theme().style().buttonDisabled());                
+                String url = (boshUrl != null) ? boshUrl.getText() : null;
+                if (url != null) {
+                        url = url.trim();
+                        if (url.isEmpty()) {
+                                url = null;
+                        }
+                }
+                factory.eventBus().fireEvent(new AuthRequestEvent(JID.jidInstance(username.getText()), password.getText(), url));
         }
         
-        protected AbsolutePanel createAuthBox() {
+        protected AbsolutePanel createAuthBox(boolean advanced) {
                 AbsolutePanel panel = new AbsolutePanel();
 
                 Label header = new Label(factory.baseI18n().authenticate());
@@ -74,6 +84,23 @@ public class AbstractAuthView extends ResizeComposite {
                 password = new PasswordTextBox();
                 password.setStyleName(factory.theme().style().authTextBox());
                 panel.add(password);
+                
+                if (advanced) {
+                        disclosure = new DisclosurePanel(factory.baseI18n().advanced());
+
+                        Label boshUrlLabel = new Label(factory.baseI18n().boshUrl() + ":");
+                        FlowPanel disclosurePanel = new FlowPanel();
+                        disclosurePanel.add(boshUrlLabel);
+                        boshUrl = new TextBox();
+                        boshUrl.setStyleName(factory.theme().style().authTextBox());
+                        boshUrl.getElement().getStyle().setWidth(97, Style.Unit.PCT);
+                        disclosurePanel.add(boshUrl);
+
+                        disclosure.add(disclosurePanel);
+                        disclosure.getElement().getStyle().setWidth(100, Style.Unit.PCT);
+
+                        panel.add(disclosure);
+                }
                 
                 authButton = new Button(factory.baseI18n().authenticate());
                 authButton.addClickHandler(new ClickHandler() {

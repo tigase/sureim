@@ -102,22 +102,22 @@ public class Xode implements EntryPoint {
                 });
                 eventBus.addHandler(AuthRequestEvent.TYPE, new AuthRequestHandler() {
 
-                        public void authenticate(JID jid, String password) {
-                                authenticateInt(jid, password);
+                        public void authenticate(JID jid, String password, String boshUrl) {
+                                authenticateInt(jid, password, boshUrl);
                         }
                 });
 
                 placeController.goTo(new AuthPlace());
                 
                 if (Cookies.getCookie("username") != null && Cookies.getCookie("password") != null) {
-                        authenticateInt(JID.jidInstance(Cookies.getCookie("username")), Cookies.getCookie("password"));
+                        authenticateInt(JID.jidInstance(Cookies.getCookie("username")), Cookies.getCookie("password"), null);
                 }
                 //authenticateTest(factory);
                 
-                authenticateInt(null, null);
+                authenticateInt(null, null, null);
         }
 
-        private void authenticateInt(JID jid, String password) {
+        private void authenticateInt(JID jid, String password, String boshUrl) {
                 Jaxmpp jaxmpp = factory.jaxmpp();
 //                if (jaxmpp.isConnected()) {
 //                       try {
@@ -128,7 +128,7 @@ public class Xode implements EntryPoint {
 //                }
                         
                 if (jid != null) {
-                        String url = getBoshUrl(jid.getDomain());
+                        String url = boshUrl != null ? boshUrl : getBoshUrl(jid.getDomain());
                         jaxmpp.getProperties().setUserProperty(BoshConnector.BOSH_SERVICE_URL_KEY, url);
 
 //                        jaxmpp.getProperties().setUserProperty(SessionObject.RESOURCE, "jaxmpp");

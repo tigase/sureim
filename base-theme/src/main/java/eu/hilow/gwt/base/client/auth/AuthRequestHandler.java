@@ -13,6 +13,6 @@ import tigase.jaxmpp.core.client.JID;
  */
 public interface AuthRequestHandler extends EventHandler {
 
-        void authenticate(JID jid, String password);
+        void authenticate(JID jid, String password, String boshUrl);
         
 }
