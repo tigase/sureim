@@ -80,7 +80,15 @@ public class DiscoViewImpl extends ResizeComposite implements DiscoView, Provide
 
                         public void onKeyUp(KeyUpEvent event) {
                                 if (event.getNativeEvent().getKeyCode() == KeyCodes.KEY_ENTER) {
-                                        discover(JID.jidInstance(jidBox.getText()), null);
+                                        String jidStr = jidBox.getText();
+                                        JID jid = null;
+                                        if (jidStr != null) {
+                                                jidStr = jidStr.trim();
+                                                if (!jidStr.isEmpty()) {
+                                                        jid = JID.jidInstance(jidStr);
+                                                }
+                                        }
+                                        discover(jid, null);
                                 }
                         }
                         
