@@ -25,7 +25,9 @@ import eu.hilow.xode.web.client.disco.DiscoViewImpl;
 import eu.hilow.xode.web.client.events.ServerFeaturesChangedEvent;
 import eu.hilow.xode.web.client.settings.SettingsView;
 import eu.hilow.xode.web.client.settings.SettingsViewImpl;
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Date;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -81,6 +83,7 @@ public class ClientFactoryImpl extends eu.hilow.gwt.base.client.ClientFactoryImp
 
                         public void handleEvent(ResourceBindEvent be) throws JaxmppException {
                                 try {  
+                                        eventBus().fireEvent(new ServerFeaturesChangedEvent(new ArrayList<Identity>(), new ArrayList<String>()));
                                         jaxmpp().getModulesManager().getModule(DiscoInfoModule.class).getInfo(
                                                 JID.jidInstance(be.getJid().getDomain()), new DiscoInfoAsyncCallback(null) {
 

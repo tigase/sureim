@@ -5,6 +5,7 @@
 package eu.hilow.xode.web.client;
 
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.user.client.ui.Anchor;
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Label;
 import eu.hilow.gwt.base.client.ActionBar;
@@ -60,10 +61,10 @@ public class ActionBarFactory {
                 for (IsWidget w : action.widgets) {
                         //((Label) w).setText(label);
                         if (count > 0) {
-                                ((Label) w).getElement().getStyle().setColor("#DD4B39");
+                                ((Anchor) w).getElement().getStyle().setColor("#DD4B39");
                         }
                         else {
-                                ((Label) w).getElement().getStyle().clearColor();
+                                ((Anchor) w).getElement().getStyle().clearColor();
                         }                        
                 }
         }
@@ -72,7 +73,7 @@ public class ActionBarFactory {
                 Link action = links.get(id);
                 
                 for (IsWidget w : action.widgets) {
-                        ((Label) w).setVisible(visible);
+                        ((Anchor) w).setVisible(visible);
                 }                
         }
         

@@ -33,6 +33,7 @@ import tigase.jaxmpp.core.client.BareJID;
 import tigase.jaxmpp.core.client.JID;
 import tigase.jaxmpp.core.client.SessionObject;
 import tigase.jaxmpp.core.client.exceptions.JaxmppException;
+import tigase.jaxmpp.core.client.xmpp.modules.disco.DiscoInfoModule;
 import tigase.jaxmpp.gwt.client.Jaxmpp;
 import tigase.jaxmpp.gwt.client.connectors.BoshConnector;
 
@@ -87,7 +88,7 @@ public class Xode implements EntryPoint {
 
                 eventBus.addHandler(AuthEvent.TYPE, new AuthHandler() {
 
-                        public void authenticated(JID jid) {
+                        public void authenticated(JID jid) {                                
                                 if (factory.jaxmpp().getSessionObject().getProperty(SessionObject.USER_BARE_JID) != null) {
                                         placeController.goTo(new ChatPlace());
                                 }
