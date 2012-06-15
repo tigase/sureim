@@ -170,4 +170,17 @@ public interface I18n extends Constants {
 
         @DefaultStringValue("Available commands")
         String availableCommands();              
-}
+        
+        // -- MUC
+        @DefaultStringValue("Room")
+        String room();
+        
+        @DefaultStringValue("Server")
+        String server();
+        
+        @DefaultStringValue("Join to room")
+        String joinRoom();
+        
+        @DefaultStringValue("Join")
+        String join();
+}       

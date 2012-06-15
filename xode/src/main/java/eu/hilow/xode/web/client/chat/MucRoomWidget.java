@@ -7,34 +7,37 @@ package eu.hilow.xode.web.client.chat;
 import com.google.gwt.dom.client.Style;
 import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.event.dom.client.*;
-import com.google.gwt.user.client.ui.*;
+import com.google.gwt.user.client.ui.DockLayoutPanel;
+import com.google.gwt.user.client.ui.ResizeComposite;
+import com.google.gwt.user.client.ui.TextArea;
+import com.google.gwt.user.client.ui.Widget;
 import eu.hilow.xode.web.client.ClientFactory;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import tigase.jaxmpp.core.client.xmpp.modules.chat.Chat;
-import tigase.jaxmpp.core.client.xmpp.modules.roster.RosterItem;
+import tigase.jaxmpp.core.client.xmpp.modules.muc.Room;
 import tigase.jaxmpp.core.client.xmpp.stanzas.Message;
-import tigase.jaxmpp.core.client.xmpp.stanzas.StanzaType;
 
 /**
  *
  * @author andrzej
  */
-public class ChatWidget extends ResizeComposite {
-
+public class MucRoomWidget extends ResizeComposite {
+        
         private final ClientFactory factory;
-        private final Chat chat;
-        private final ChatLogPanel log;
+        
+        private final DockLayoutPanel layout;
+        
+        private final Room room;
+        private final MucLogPanel log;
         private final TextArea input;
-
-        public ChatWidget(ClientFactory factory_, Chat chat_) {
-                super();
-
+        
+        public MucRoomWidget(ClientFactory factory_, Room room_) {
                 this.factory = factory_;
-                this.chat = chat_;
-
-                DockLayoutPanel layout = new DockLayoutPanel(Unit.EM);
-
+                
+                layout = new DockLayoutPanel(Unit.EM);
+                
+                room = room_;
+                
                 input = new TextArea();
                 input.setWidth("99%");
                 input.addKeyDownHandler(new KeyDownHandler() {
@@ -44,18 +47,9 @@ public class ChatWidget extends ResizeComposite {
                                         input.setFocus(false);
                                         try {
                                                 String text = input.getText();
-                                                Message msg = Message.create();
-                                                msg.setType(StanzaType.chat);
-                                                msg.setTo(chat.getJid());
-                                                msg.setThread(chat.getThreadId());
-                                                msg.setBody(text);
-
-                                                // input is cleared in keyuphandler
-//                                                input.setText(null);
-                                                handleMessage(msg);
-                                                factory.jaxmpp().send(msg);
+                                                room.sendMessage(text);
                                         } catch (Exception ex) {
-                                                Logger.getLogger("Chat").log(Level.WARNING, "sending message exception", ex);
+                                                Logger.getLogger("MucRoomWidget").log(Level.WARNING, "sending message exception", ex);
                                         }
                                         input.setFocus(true);
                                         event.stopPropagation();
@@ -78,25 +72,25 @@ public class ChatWidget extends ResizeComposite {
                         }
                 });
                 layout.addSouth(input, 2.0);
-
-                log = new ChatLogPanel(factory, chat.getJid().toString(), getTitle());
+                
+                log = new MucLogPanel(factory, room);                
                 layout.add(log);
-
+                
                 initWidget(layout);
         }
-
-        public Chat getChat() {
-                return chat;
+        
+        public Room getRoom() {
+                return room;
         }
         
         @Override
         public String getTitle() {
-                RosterItem ri = chat.getSessionObject().getRoster().get(chat.getJid().getBareJid());
-                return ri != null ? ri.getName() : chat.getJid().toString();
-        }
-
-        public boolean handleMessage(Message message) {
-                log.appendMessage(message);
+                return room.getRoomJid().toString();
+        }       
+        
+        public boolean handleMessage(Message m) {
+                log.appendMessage(m);
+                
                 return isVisible(this);
         }
         
@@ -113,4 +107,5 @@ public class ChatWidget extends ResizeComposite {
                         return false;
                 }
         }
+        
 }

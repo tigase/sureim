@@ -29,7 +29,7 @@ import tigase.jaxmpp.core.client.xmpp.utils.delay.XmppDelay;
  *
  * @author andrzej
  */
-public class LogPanel extends Composite {
+public class ChatLogPanel extends Composite {
 
         private enum Sender {
 
@@ -45,7 +45,7 @@ public class LogPanel extends Composite {
         private Sender lastFrom = Sender.unknown;
         private HTMLPanel log;
 
-        public LogPanel(ClientFactory factory, String jid, String name) {
+        public ChatLogPanel(ClientFactory factory, String jid, String name) {
                 this.name = name;
                 this.jid = jid;
                 this.factory = factory;
@@ -132,38 +132,4 @@ public class LogPanel extends Composite {
                 scroll.scrollToBottom();
         }
         
-//    private VerticalPanel log = new VerticalPanel();
-//
-//    public LogPanel(String name) {
-//        this.name = name;
-//        scroll = new ScrollPanel(log);
-//        initWidget(scroll);
-//    }
-//
-//    public void appendMessage(Message msg) {
-//        String body = msg.getBody();
-//
-//        if (msg == null)
-//            return;
-//
-//        SafeHtmlBuilder sb = new SafeHtmlBuilder();
-//        sb.appendHtmlConstant("<div style=\"width: 100%;\"><p>");
-//        sb.appendHtmlConstant("<span style=\"font-weight: bold;\">");
-//
-//        String from = msg.getFrom() == null ? "Me" : name;
-//        sb.appendEscaped(from);
-//
-//        sb.appendHtmlConstant(": </span>");
-//
-//        body = body.replaceAll("\n", "<br/>");
-//
-//        sb.appendEscaped(body);
-//        sb.appendHtmlConstant("</p></div>");
-//
-//        HTML html = new HTML(sb.toSafeHtml());
-//        html.setWordWrap(true);
-//        log.add(html);
-//
-//        scroll.scrollToBottom();
-//    }
 }
