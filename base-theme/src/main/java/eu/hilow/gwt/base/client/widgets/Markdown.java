@@ -192,5 +192,29 @@ public class Markdown {
         public static boolean isDigit(char c) {
                 return c == '0' || c == '1' || c == '2' || c == '3' || c == '4' || c == '5' || c == '6' || c == '7' || c == '8' || c == '9';
         }
+
+        public static final String MARKDOWN_EXAMPLE = "## Header 2\n"
+                + "### Header 3\n\n"
+                + "**Strong Item**\n\n"
+                + "*EM item*\n\n"
+                + "Simple unordered list\n\n"
+                + "* Type Markdown text in the left window\n"
+                + "* See the HTML in the right\n"
+                + "Simple ordered list\n"
+                + "1. Item 1\n"
+                + "2. Item 2\n"
+                + "4. Item 3\n\n"
+                + "Simple text with link to [Tigase.IM](http://tigase.im) site and with simple image ![image](http://www.tigase.org/files/image/tiger-oiled-292x170.jpg)[200x150] where 200x150 are dimensions passed to img tag.\n\n"                        
+                + "> The overriding design goal for Markdown's\n"
+                + "> formatting syntax is to make it as readable\n"
+                + "> as possible. The idea is that a\n"
+                + "> Markdown-formatted document should be\n"
+                + "> publishable as-is, as plain text, without\n"
+                + "> looking like it's been marked up with tags\n"
+                + "> or formatting instructions.\n\n"
+                + "This document is written in Markdown; you can see the plain-text version on the left.  To get a feel for Markdown's syntax, type some text into the left window and watch the results in the right.  You can see a Markdown syntax guide by switching the right-hand window from *Preview* to *Syntax Guide*.\n\n"
+                + "[video:youtube](http://www.youtube.com/embed/RBOdNa4Ps7o)[300x200]\n\n"
+                + "Above line inserts movie with id RBOdNa4Ps7o from YouTube resized to width = 300 and height = 200\n\n"
+                + "Showdown is a Javascript port of Markdown.  You can get the full [source code] by clicking on the version number at the bottom of the page.";
         
 }

@@ -90,18 +90,23 @@ public class PubSubPublishViewImpl extends ResizeComposite implements PubSubPubl
                 layout.setWidget(0, 0, new Label("PubSub JID"));
                 pubSubJidBox = new TextBox();
                 layout.setWidget(0, 1, pubSubJidBox);
+                layout.setWidget(0, 2, new Label("e.g. pubsub@sure.im"));
                 layout.setWidget(1, 0, new Label("Node"));
                 nodeBox = new TextBox();
                 layout.setWidget(1, 1, nodeBox);
-                layout.setWidget(2, 0, new Label("ID"));
+                layout.setWidget(1, 2, new Label("e.g. news"));                
+                layout.setWidget(2, 0, new Label("Item ID"));
                 idBox = new TextBox();
                 layout.setWidget(2, 1, idBox);
+                layout.setWidget(2, 2, new Label("ID of pubsub entry (can be anything)"));                
                 layout.setWidget(3, 0, new Label("Author"));
                 authorBox = new TextBox();
                 layout.setWidget(3, 1, authorBox);
+                layout.setWidget(3, 2, new Label("Name of author"));
                 layout.setWidget(4, 0, new Label("Title"));
                 titleBox = new TextBox();
                 layout.setWidget(4, 1, titleBox);
+                layout.setWidget(4, 2, new Label("Title of article"));
                 layout.setWidget(5, 0, new Label("Content"));
                 
                 content = new TextArea();
@@ -109,6 +114,7 @@ public class PubSubPublishViewImpl extends ResizeComposite implements PubSubPubl
                 content.setHeight("150px");
                 
                 layout.setWidget(5, 1, content);
+                layout.setWidget(5, 2, new Label());
                 
                 preview = new AbsolutePanel();
                 
@@ -122,6 +128,7 @@ public class PubSubPublishViewImpl extends ResizeComposite implements PubSubPubl
                 
                 layout.setWidget(6, 0, new Label("Preview"));
                 layout.setWidget(6, 1, preview);
+                layout.setWidget(6, 2, new Label());
                 
                 appView.setCenter(new ScrollPanel(layout));
                 
@@ -147,6 +154,8 @@ public class PubSubPublishViewImpl extends ResizeComposite implements PubSubPubl
                         }
                         
                 });
+
+                reset();
                 
                 initWidget(appView);
         }
@@ -213,6 +222,7 @@ public class PubSubPublishViewImpl extends ResizeComposite implements PubSubPubl
                 idBox.setText(null);
                 titleBox.setText(null);
                 authorBox.setText(null);
-                content.setText("");
+                content.setText(Markdown.MARKDOWN_EXAMPLE);
+                updatePreview();
         }
 }

@@ -37,6 +37,7 @@
             };
             
             var admins = { 
+                    'admin@tigase.im' : 'true',
                     'kobit@tigase.org' : 'true',
                     'wojtek@tigase.org' : 'true',
                     'bmalkow@malkowscy.net' : 'true',
@@ -310,6 +311,10 @@
                 color: darkgreen;
         }
         
+        .pubSubPublishForm td {
+                width: 63%;                
+        }
+
         .pubSubPublishForm td:first-child {
                 width: 10%;
                 text-align: right;
@@ -317,8 +322,13 @@
         }
         
         .pubSubPublishForm td:last-child {
-                width: 88%;                
+                width: 25%;                
         }
+
+        .pubSubPublishForm td > input {
+                width: 99%;                
+        }
+
     </style>
     <style>
 .incoming { color: #a6002c; }
