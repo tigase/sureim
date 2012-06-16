@@ -117,6 +117,7 @@ public class ChatViewImpl extends ResizeComposite implements ChatView {
                                                         mucModule.leave(room);
                                                         rooms.remove(room.getRoomJid());
                                                         tabLayout.remove(widget);
+                                                        updateActionBar();
                                                 } catch (XMLException ex) {
                                                         Logger.getLogger(ChatViewImpl.class.getName()).log(Level.SEVERE, null, ex);
                                                 } catch (JaxmppException ex) {
@@ -250,6 +251,20 @@ public class ChatViewImpl extends ResizeComposite implements ChatView {
                         tabLayout.selectTab(chatWidget);
                 }
         }
+
+        protected MucRoomWidget openRoom(Room room) {
+                BareJID roomJID = room.getRoomJid();
+                MucRoomWidget roomWidget = rooms.get(roomJID);
+                if (roomWidget == null) {
+                        roomWidget = new MucRoomWidget(factory, room);
+                        rooms.put(roomJID, roomWidget);
+                        tabLayout.add(roomWidget, roomWidget.getTitle());
+                        tabLayout.selectTab(roomWidget);
+                        updateActionBar();
+                }
+                
+                return roomWidget;
+        }
         
         protected void handleMessageEvent(MessageEvent be) {
                 if (be.getType() == MessageModule.ChatCreated) {
@@ -287,30 +302,9 @@ public class ChatViewImpl extends ResizeComposite implements ChatView {
         }
         
         protected void handleMucEvent(MucEvent be) {
-                Logger.getLogger("ChatViewImpl").info("handling MucEvent = " + be.getType() + " = " + MucModule.YouJoined);
-                
-                String type = "";
-                if (MucModule.YouJoined == be.getType()) {
-                        type = "YouJoined";
-                }
-                else if (MucModule.MucMessageReceived == be.getType()) {
-                        type = "MucMessageReceived";
-                }
-                else if (MucModule.OccupantComes == be.getType()) {
-                        type = "OccupantComes";
-                }
-                else if (MucModule.PresenceError == be.getType()) {
-                        type = "PresenceError";
-                }
-                else if (MucModule.StateChange == be.getType()) {
-                        type = "StateChange";
-                }
-                else {
-                        type = "other";
-                }
-                Logger.getLogger("ChatViewImpl").info("handling MucEvent = " + type);
                 if (be.getType() == MucModule.MucMessageReceived) {
-                        try {
+                        try {              
+                                openRoom(be.getRoom());
                                 handleMucMessage(be.getMessage());
                         }
                         catch (JaxmppException ex) {
@@ -319,12 +313,10 @@ public class ChatViewImpl extends ResizeComposite implements ChatView {
                 }
                 else if (be.getType() == MucModule.YouJoined) {
                         Room room = be.getRoom();
-                        MucRoomWidget roomWidget = new MucRoomWidget(factory, room);
-                        BareJID roomJID = room.getRoomJid();
-                        rooms.put(roomJID, roomWidget);
-                        tabLayout.add(roomWidget, roomWidget.getTitle());
-                        tabLayout.selectTab(roomWidget);
-                        updateActionBar();
+                        MucRoomWidget roomWidget = openRoom(room);
+                        if (roomWidget != null) {
+                                roomWidget.handleMucEvent(be);
+                        }
                 }       
                 else if (be.getType() == MucModule.RoomClosed) {
                         Room room = be.getRoom();
@@ -333,6 +325,13 @@ public class ChatViewImpl extends ResizeComposite implements ChatView {
                                 rooms.remove(room.getRoomJid());
                                 tabLayout.remove(roomWidget);
                                 updateActionBar();
+                        }
+                }
+                else {
+                        Room room = be.getRoom();
+                        MucRoomWidget roomWidget = rooms.get(room.getRoomJid());
+                        if (roomWidget != null) {
+                                roomWidget.handleMucEvent(be);
                         }
                 }
         }

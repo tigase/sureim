@@ -6,6 +6,7 @@ package eu.hilow.xode.web.client.chat;
 
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.place.shared.Place;
 import com.google.gwt.user.client.ui.*;
 import eu.hilow.xode.web.client.ClientFactory;
 import java.util.logging.Level;
@@ -50,13 +51,13 @@ public class JoinRoomDialog extends DialogBox {
                 roomBox.setText(room);
                 table.setWidget(1, 1, roomBox);
 
-                label = new Label(factory.i18n().room());
+                label = new Label(factory.i18n().nick());
                 table.setWidget(2, 0, label);
                 final TextBox nickBox = new TextBox();
 //                nickBox.setText(room);
                 table.setWidget(2, 1, nickBox);
 
-                label = new Label(factory.i18n().room());
+                label = new Label(factory.i18n().password());
                 table.setWidget(3, 0, label);
                 final PasswordTextBox passwordBox = new PasswordTextBox();
                 table.setWidget(3, 1, passwordBox);
@@ -86,6 +87,7 @@ public class JoinRoomDialog extends DialogBox {
                                         String nick = nickBox.getText();
                                         String password = passwordBox.getText();
 
+                                        factory.placeController().goTo(new ChatPlace());
                                         MucModule mucModule = factory.jaxmpp().getModulesManager().getModule(MucModule.class);
                                         if (password != null && !password.isEmpty()) {
                                                 mucModule.join(room, server, nick, password);

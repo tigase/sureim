@@ -16,6 +16,7 @@ import eu.hilow.gwt.base.client.AppView;
 import eu.hilow.gwt.base.client.ResizablePanel;
 import eu.hilow.xode.web.client.ClientFactory;
 import eu.hilow.xode.web.client.MessageDialog;
+import eu.hilow.xode.web.client.chat.JoinRoomDialog;
 import java.util.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -37,6 +38,7 @@ public class DiscoViewImpl extends ResizeComposite implements DiscoView, Provide
         
         public static final String COMMANDS_FEATURE = "http://jabber.org/protocol/commands";
         private static final String DISCO_ITEMS_FEATURE = "http://jabber.org/protocol/disco#items";
+        private static final String MUC_FEATURE = "http://jabber.org/protocol/muc";
         
         private final ClientFactory factory;
         private final FlowPanel layout;
@@ -51,6 +53,7 @@ public class DiscoViewImpl extends ResizeComposite implements DiscoView, Provide
         private final ResizablePanel buttonsPanel;
         private final HorizontalPanel buttons;
         private final Button executeCommand;
+        private final Button joinRoom;
         private final Button browse;
         
         private final CommandsWidget.FinishHandler commandFinishHandler;
@@ -124,6 +127,21 @@ public class DiscoViewImpl extends ResizeComposite implements DiscoView, Provide
                 setButtonEnabled(browse, false);
                 buttons.add(browse);
 
+                joinRoom = new Button(factory.i18n().joinRoom());
+                joinRoom.setStyleName(factory.theme().style().button());
+                joinRoom.getElement().getStyle().setMargin(5, Style.Unit.PX);
+                joinRoom.addClickHandler(new ClickHandler() {
+                        public void onClick(ClickEvent event) {
+                                DiscoItem item = selectionModel.getSelectedObject();                                
+                                JID jid = item.getJid();
+                                JoinRoomDialog dlg = new JoinRoomDialog(factory, jid.getDomain(), jid.getLocalpart());
+                                dlg.show();
+                                dlg.center();
+                        }
+                });
+                setButtonEnabled(joinRoom, false);
+                buttons.add(joinRoom);
+                
                 executeCommand = new Button(factory.i18n().executeCommand());
                 executeCommand.setStyleName(factory.theme().style().button());
                 executeCommand.getElement().getStyle().setMargin(5, Style.Unit.PX);
@@ -186,9 +204,11 @@ public class DiscoViewImpl extends ResizeComposite implements DiscoView, Provide
                 selectionModel.addSelectionChangeHandler(new Handler() {
 
                         public void onSelectionChange(SelectionChangeEvent event) {
-                                DiscoItem item = selectionModel.getSelectedObject();
+                                DiscoItem item = selectionModel.getSelectedObject();                                
                                 setButtonEnabled(executeCommand, item.hasFeature(COMMANDS_FEATURE));
-                                setButtonEnabled(browse, item.hasFeature(DISCO_ITEMS_FEATURE));
+                                setButtonEnabled(browse, item.hasFeature(DISCO_ITEMS_FEATURE) 
+                                        || (item.hasFeature(MUC_FEATURE) && item.getJid() != null && item.getJid().getLocalpart() == null));
+                                setButtonEnabled(joinRoom, item.hasFeature(MUC_FEATURE));
                                 buttonsPanel.setVisible(true);
                                 commandsWidget.reset();
                         }
