@@ -10,13 +10,14 @@ import eu.hilow.xode.web.client.archive.ArchivePlace;
 import eu.hilow.xode.web.client.auth.AuthPlace;
 import eu.hilow.xode.web.client.chat.ChatPlace;
 import eu.hilow.xode.web.client.disco.DiscoPlace;
+import eu.hilow.xode.web.client.pubsub.PubSubPublishPlace;
 import eu.hilow.xode.web.client.settings.SettingsPlace;
 
 /**
  *
  * @author andrzej
  */
-@WithTokenizers({ChatPlace.Tokenizer.class,ArchivePlace.Tokenizer.class,AuthPlace.Tokenizer.class,SettingsPlace.Tokenizer.class,DiscoPlace.Tokenizer.class})
+@WithTokenizers({ChatPlace.Tokenizer.class,ArchivePlace.Tokenizer.class,AuthPlace.Tokenizer.class,SettingsPlace.Tokenizer.class,DiscoPlace.Tokenizer.class,PubSubPublishPlace.Tokenizer.class})
 public interface AppPlaceHistoryMapper extends PlaceHistoryMapper {      
         
 }

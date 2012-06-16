@@ -12,7 +12,7 @@ import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.ResizeComposite;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import eu.hilow.gwt.base.client.ResizablePanel;
-import eu.hilow.gwt.base.client.Showdown;
+import eu.hilow.gwt.base.client.widgets.Markdown;
 import eu.hilow.xode.web.client.ClientFactory;
 import java.util.*;
 import java.util.logging.Level;
@@ -99,7 +99,8 @@ public class PubSubPanel extends ResizeComposite {
                         }
                         safeHtml.appendHtmlConstant("</span>");
                         if (entry.getContent() != null) {                                
-                                safeHtml.appendHtmlConstant(Showdown.convertToHtml(entry.getContent()));
+                                String result = Markdown.parse(entry.getContent());
+                                safeHtml.appendHtmlConstant(result);
                         }
                         HTML html = new HTML(safeHtml.toSafeHtml());
                         itemsPanel.add(html);

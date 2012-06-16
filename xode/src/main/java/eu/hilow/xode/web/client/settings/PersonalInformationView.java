@@ -178,12 +178,10 @@ public class PersonalInformationView extends ResizeComposite implements View {
 
                                 public void onError(Stanza responseStanza, ErrorCondition error) throws JaxmppException {
                                         enableButtons();
-                                        throw new UnsupportedOperationException("Not supported yet.");
                                 }
 
                                 public void onTimeout() throws JaxmppException {
                                         enableButtons();
-                                        throw new UnsupportedOperationException("Not supported yet.");
                                 }
                                 
                         });

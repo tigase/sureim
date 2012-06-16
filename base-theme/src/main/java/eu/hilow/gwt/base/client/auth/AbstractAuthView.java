@@ -9,7 +9,6 @@ import com.google.gwt.event.dom.client.*;
 import com.google.gwt.user.client.ui.*;
 import eu.hilow.gwt.base.client.ClientFactory;
 import eu.hilow.gwt.base.client.ResizablePanel;
-import eu.hilow.gwt.base.client.Showdown;
 import tigase.jaxmpp.core.client.JID;
 
 /**

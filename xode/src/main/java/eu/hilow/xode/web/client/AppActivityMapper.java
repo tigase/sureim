@@ -15,6 +15,8 @@ import eu.hilow.xode.web.client.chat.ChatActivity;
 import eu.hilow.xode.web.client.chat.ChatPlace;
 import eu.hilow.xode.web.client.disco.DiscoActivity;
 import eu.hilow.xode.web.client.disco.DiscoPlace;
+import eu.hilow.xode.web.client.pubsub.PubSubPublishActivity;
+import eu.hilow.xode.web.client.pubsub.PubSubPublishPlace;
 import eu.hilow.xode.web.client.settings.SettingsActivity;
 import eu.hilow.xode.web.client.settings.SettingsPlace;
 
@@ -46,6 +48,9 @@ public class AppActivityMapper implements ActivityMapper {
         }
         else if (place instanceof SettingsPlace) {
                 return new SettingsActivity((SettingsPlace) place, clientFactory);
+        }
+        else if (place instanceof PubSubPublishPlace) {
+                return new PubSubPublishActivity((PubSubPublishPlace) place, clientFactory);
         }
         return null;
     }

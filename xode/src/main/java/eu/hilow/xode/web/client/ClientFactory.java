@@ -11,6 +11,7 @@ import eu.hilow.xode.web.client.archive.ArchiveView;
 import eu.hilow.xode.web.client.auth.AuthView;
 import eu.hilow.xode.web.client.chat.ChatView;
 import eu.hilow.xode.web.client.disco.DiscoView;
+import eu.hilow.xode.web.client.pubsub.PubSubPublishView;
 import eu.hilow.xode.web.client.settings.SettingsView;
 
 /**
@@ -33,6 +34,8 @@ public interface ClientFactory extends eu.hilow.gwt.base.client.ClientFactory {
         
         PlaceController placeController();
 
+        PubSubPublishView pubSubPublishView();
+        
         SettingsView settingsView();
         
 }

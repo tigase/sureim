@@ -34,7 +34,19 @@
                     'tigase.org' : 'http://tigase.org:5280/bosh',
                     'tigase.im' : 'http://blue.tigase.im:5280/bosh',
                     'hi-low.eu'  : 'http://xmpp-2.hi-low.eu:5280/bosh'
-            }
+            };
+            
+            var admins = { 
+                    'kobit@tigase.org' : 'true',
+                    'wojtek@tigase.org' : 'true',
+                    'bmalkow@malkowscy.net' : 'true',
+                    'andrzej.wojcik@tigase.org' : 'true',
+                    'kobit@tigase.im' : 'true',
+                    'wojtek@tigase.im' : 'true',
+                    'andrzej.wojcik@tigase.im' : 'true',
+                    'admin@sure.im' : 'true',
+                    'kobit@sure.im' : 'true'
+            };
     </script>
     
     <!--                                           -->
@@ -296,6 +308,16 @@
         }
         td.mucOccupants-visitor {
                 color: darkgreen;
+        }
+        
+        .pubSubPublishForm td:first-child {
+                width: 10%;
+                text-align: right;
+                font-weight: bold;
+        }
+        
+        .pubSubPublishForm td:last-child {
+                width: 88%;                
         }
     </style>
     <style>

@@ -23,6 +23,8 @@ import eu.hilow.xode.web.client.chat.ChatViewImpl;
 import eu.hilow.xode.web.client.disco.DiscoView;
 import eu.hilow.xode.web.client.disco.DiscoViewImpl;
 import eu.hilow.xode.web.client.events.ServerFeaturesChangedEvent;
+import eu.hilow.xode.web.client.pubsub.PubSubPublishView;
+import eu.hilow.xode.web.client.pubsub.PubSubPublishViewImpl;
 import eu.hilow.xode.web.client.settings.SettingsView;
 import eu.hilow.xode.web.client.settings.SettingsViewImpl;
 import java.util.ArrayList;
@@ -60,6 +62,7 @@ public class ClientFactoryImpl extends eu.hilow.gwt.base.client.ClientFactoryImp
         private final AuthView authView;
         private final ChatView chatView;
         private final DiscoView discoView;
+        private final PubSubPublishView pubSubPublishView;
         private final SettingsView settingsView;
         private final I18n i18n = GWT.create(I18n.class);
         private final PlaceController placeController;
@@ -75,6 +78,7 @@ public class ClientFactoryImpl extends eu.hilow.gwt.base.client.ClientFactoryImp
                 chatView = new ChatViewImpl(this);
                 archiveView = new ArchiveViewImpl(this);                
                 discoView = new DiscoViewImpl(this);
+                pubSubPublishView = new PubSubPublishViewImpl(this);
                 settingsView = new SettingsViewImpl(this);
                 
                 jaxmpp().getModulesManager().register(new MessageArchivingModule(jaxmpp().getSessionObject(), jaxmpp().getWriter()));
@@ -172,6 +176,11 @@ public class ClientFactoryImpl extends eu.hilow.gwt.base.client.ClientFactoryImp
         @Override
         public PlaceController placeController() {
                 return placeController;
+        }
+        
+        @Override
+        public PubSubPublishView pubSubPublishView() {
+                return pubSubPublishView;
         }
         
         @Override
