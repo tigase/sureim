@@ -88,7 +88,7 @@ public class RootView extends ResizeComposite {
                 anchor.setTarget("_blank");
                 footerPanel.add(anchor);
                 
-                dockLayout.addSouth(footerPanel, 1.1);
+                dockLayout.addSouth(footerPanel, 1.4);
                 
                 initWidget(dockLayout);
                 
