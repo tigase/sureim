@@ -18,6 +18,7 @@ import eu.hilow.jaxmpp.ext.client.xmpp.modules.archive.MessageArchivingModule;
 import eu.hilow.xode.web.client.archive.ArchiveView;
 import eu.hilow.xode.web.client.archive.ArchiveViewImpl;
 import eu.hilow.xode.web.client.auth.AuthView;
+import eu.hilow.xode.web.client.bookmarks.BookmarksManager;
 import eu.hilow.xode.web.client.chat.ChatView;
 import eu.hilow.xode.web.client.chat.ChatViewImpl;
 import eu.hilow.xode.web.client.disco.DiscoView;
@@ -41,6 +42,7 @@ import tigase.jaxmpp.core.client.XMPPException.ErrorCondition;
 import tigase.jaxmpp.core.client.exceptions.JaxmppException;
 import tigase.jaxmpp.core.client.observer.Listener;
 import tigase.jaxmpp.core.client.xml.XMLException;
+import tigase.jaxmpp.core.client.xmpp.modules.BookmarksModule;
 import tigase.jaxmpp.core.client.xmpp.modules.ResourceBinderModule;
 import tigase.jaxmpp.core.client.xmpp.modules.ResourceBinderModule.ResourceBindEvent;
 import tigase.jaxmpp.core.client.xmpp.modules.disco.DiscoInfoModule;
@@ -60,6 +62,7 @@ public class ClientFactoryImpl extends eu.hilow.gwt.base.client.ClientFactoryImp
         private final ArchiveView archiveView;
         private final AbstractAvatarFactory avatarFactory;
         private final AuthView authView;
+        private final BookmarksManager bookmarksManager;
         private final ChatView chatView;
         private final DiscoView discoView;
         private final PubSubPublishView pubSubPublishView;
@@ -67,12 +70,14 @@ public class ClientFactoryImpl extends eu.hilow.gwt.base.client.ClientFactoryImp
         private final I18n i18n = GWT.create(I18n.class);
         private final PlaceController placeController;
         private final Listener<ResourceBindEvent> jaxmppBindListener;
-
+        
         public ClientFactoryImpl() {
                 super();
                 placeController = new PlaceController(eventBus());
                 avatarFactory = new AvatarFactory(this);
                 actionBarFactory = new ActionBarFactory(this);
+                
+                bookmarksManager = new BookmarksManager(this);
                 
                 authView = new AuthView(this);
                 chatView = new ChatViewImpl(this);
@@ -82,12 +87,14 @@ public class ClientFactoryImpl extends eu.hilow.gwt.base.client.ClientFactoryImp
                 settingsView = new SettingsViewImpl(this);
                 
                 jaxmpp().getModulesManager().register(new MessageArchivingModule(jaxmpp().getSessionObject(), jaxmpp().getWriter()));
+                jaxmpp().getModulesManager().register(new BookmarksModule(jaxmpp().getSessionObject(), jaxmpp().getWriter()));
                 
                 jaxmppBindListener = new Listener<ResourceBinderModule.ResourceBindEvent>() {
 
                         public void handleEvent(ResourceBindEvent be) throws JaxmppException {
                                 try {  
                                         eventBus().fireEvent(new ServerFeaturesChangedEvent(new ArrayList<Identity>(), new ArrayList<String>()));
+                                        bookmarksManager().retrieve();
                                         jaxmpp().getModulesManager().getModule(DiscoInfoModule.class).getInfo(
                                                 JID.jidInstance(be.getJid().getDomain()), new DiscoInfoAsyncCallback(null) {
 
@@ -158,7 +165,12 @@ public class ClientFactoryImpl extends eu.hilow.gwt.base.client.ClientFactoryImp
         public AuthView authView() {
                 return authView;
         }
-
+        
+        @Override
+        public BookmarksManager bookmarksManager() {
+                return bookmarksManager;
+        }
+        
         @Override
         public ChatView chatView() {
                 return chatView;

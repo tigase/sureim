@@ -11,6 +11,7 @@ import com.google.gwt.event.logical.shared.SelectionEvent;
 import com.google.gwt.event.logical.shared.SelectionHandler;
 import com.google.gwt.place.shared.Place;
 import com.google.gwt.user.client.Command;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.*;
 import eu.hilow.gwt.base.client.ActionBar;
 import eu.hilow.gwt.base.client.AppView;
@@ -22,6 +23,7 @@ import eu.hilow.xode.web.client.roster.ContactSubscribeRequestDialog;
 import eu.hilow.xode.web.client.settings.SettingsPlace;
 import eu.hilow.xode.web.client.vcard.VCardDialog;
 import java.util.HashMap;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import tigase.jaxmpp.core.client.AsyncCallback;
@@ -30,6 +32,7 @@ import tigase.jaxmpp.core.client.JID;
 import tigase.jaxmpp.core.client.XMPPException.ErrorCondition;
 import tigase.jaxmpp.core.client.exceptions.JaxmppException;
 import tigase.jaxmpp.core.client.observer.Listener;
+import tigase.jaxmpp.core.client.xml.Element;
 import tigase.jaxmpp.core.client.xml.XMLException;
 import tigase.jaxmpp.core.client.xmpp.modules.chat.Chat;
 import tigase.jaxmpp.core.client.xmpp.modules.chat.ChatSelector;
@@ -65,6 +68,7 @@ public class ChatViewImpl extends ResizeComposite implements ChatView {
         private final Widget joinRoomAction;
         private final Widget closeChatAction;
         private final Widget settingsAction;
+        private final Widget bookmarksAction;
         
         public ChatViewImpl(ClientFactory factory_) {                
                 this.factory = factory_;
@@ -91,6 +95,15 @@ public class ChatViewImpl extends ResizeComposite implements ChatView {
                                 JoinRoomDialog joinRoomDlg = new JoinRoomDialog(factory, null, null);
                                 joinRoomDlg.show();
                                 joinRoomDlg.center();
+                        }
+                        
+                });
+                
+                bookmarksAction = appView.getActionBar().addAction(factory.theme().bookmarks(), new ClickHandler() {
+
+                        public void onClick(ClickEvent event) {
+//                                throw new UnsupportedOperationException("Not supported yet.");
+                                showBookmarksMenu();
                         }
                         
                 });
@@ -356,6 +369,61 @@ public class ChatViewImpl extends ResizeComposite implements ChatView {
                                         factory.actionBarFactory().setWaitingEvents("chat", 1);
                                 }
                         }
+                }
+        }
+        
+        protected void showBookmarksMenu() {
+                final PopupPanel popup = new PopupPanel(true);
+                popup.setStyleName("actionBarActionMenu");
+                MenuBar menu = new MenuBar(true);
+
+                List<Element> bookmarks = factory.bookmarksManager().getBookmarks();
+                if (bookmarks != null) {
+                        for (Element bookmark : bookmarks) {
+                                try {
+                                        if ("conference".equals(bookmark.getName())) {
+                                                final String name = bookmark.getAttribute("name");
+                                                final JID jid = JID.jidInstance(bookmark.getAttribute("jid"));
+                                                final Boolean autojoin = bookmark.getAttribute("autojoin") != null ? Boolean.parseBoolean(bookmark.getAttribute("autojoin")) : null;
+                                                List<Element> nicksEl = bookmark.getChildren("nick");
+                                                final String nick = nicksEl.isEmpty() ? null : nicksEl.get(0).getValue();
+                                                List<Element> passwordEl = bookmark.getChildren("password");
+                                                final String password = passwordEl.isEmpty() ? null : passwordEl.get(0).getValue();                                                
+                                                menu.addItem(name, new Command() {
+                                                        public void execute() {
+                                                                if (autojoin == null) {
+                                                                        JoinRoomDialog joinRoomDlg = new JoinRoomDialog(factory, jid.getDomain(), jid.getLocalpart());
+                                                                        joinRoomDlg.show();
+                                                                        joinRoomDlg.center();                                                                        
+                                                                }
+                                                                else {
+                                                                        MucModule mucModule = factory.jaxmpp().getModulesManager().getModule(MucModule.class);
+                                                                        try {
+                                                                                mucModule.join(jid.getLocalpart(), jid.getDomain(), nick, password);
+                                                                        } catch (XMLException ex) {
+                                                                                Logger.getLogger(ChatViewImpl.class.getName()).log(Level.SEVERE, null, ex);
+                                                                        } catch (JaxmppException ex) {
+                                                                                Logger.getLogger(ChatViewImpl.class.getName()).log(Level.SEVERE, null, ex);
+                                                                        }
+                                                                }
+                                                                popup.hide();
+                                                        }                                                        
+                                                });
+                                        }
+                                } catch (XMLException ex) {
+                                        Logger.getLogger(ChatViewImpl.class.getName()).log(Level.SEVERE, null, ex);
+                                }
+                        }
+                }
+                
+                menu.setStyleName("");
+                popup.add(menu);
+                int left = bookmarksAction.getAbsoluteLeft();
+                popup.setPopupPosition(left, bookmarksAction.getAbsoluteTop() + bookmarksAction.getOffsetHeight());
+                popup.show();
+                if (popup.getOffsetWidth() + left > Window.getClientWidth()) {
+                        left = (bookmarksAction.getAbsoluteLeft() - popup.getOffsetWidth()) + bookmarksAction.getOffsetWidth();
+                        popup.setPopupPosition(left, bookmarksAction.getAbsoluteTop() + bookmarksAction.getOffsetHeight());
                 }
         }
         

@@ -9,6 +9,7 @@ import com.google.web.bindery.event.shared.EventBus;
 import eu.hilow.gwt.base.client.auth.AbstractAuthView;
 import eu.hilow.xode.web.client.archive.ArchiveView;
 import eu.hilow.xode.web.client.auth.AuthView;
+import eu.hilow.xode.web.client.bookmarks.BookmarksManager;
 import eu.hilow.xode.web.client.chat.ChatView;
 import eu.hilow.xode.web.client.disco.DiscoView;
 import eu.hilow.xode.web.client.pubsub.PubSubPublishView;
@@ -25,6 +26,8 @@ public interface ClientFactory extends eu.hilow.gwt.base.client.ClientFactory {
         ArchiveView archiveView();
         
         AuthView authView();
+   
+        BookmarksManager bookmarksManager();
         
         ChatView chatView();
 

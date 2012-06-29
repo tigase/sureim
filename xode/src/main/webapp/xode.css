@@ -32,3 +32,32 @@
 #closeButton {
   margin: 15px 6px 6px;
 }
+
+/*.popupContent td.gwt-MenuItem {
+        white-space: nowrap;
+}*/
+
+.actionBarActionMenu {
+        border: 1px solid #e5e5e5;
+        background-color: whitesmoke;
+        color:#333;
+        font-weight: bold;
+        padding: 3px;
+}
+
+.actionBarActionMenu td {
+        padding-left: 4px;
+        padding-right: 4px;
+        padding-top: 4px;
+        padding-bottom: 4px;
+        white-space: nowrap;
+}
+
+.actionBarActionMenu tr {
+        display:block;
+        border-bottom: 1px solid #e5e5e5;        
+}
+
+.actionBarActionMenu tr:last-child {
+        border-bottom: 0px;
+}

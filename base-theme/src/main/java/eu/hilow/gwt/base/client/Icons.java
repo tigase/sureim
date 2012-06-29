@@ -64,5 +64,6 @@ public interface Icons extends ClientBundle {
         @Source("icons/6-social-cc-bcc.png")
         ImageResource muc();
         
-        
+        @Source("icons/4-collections-labels.png")
+        ImageResource bookmarks();
 }
