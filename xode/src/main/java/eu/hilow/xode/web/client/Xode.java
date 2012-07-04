@@ -5,15 +5,19 @@ import com.google.gwt.activity.shared.ActivityManager;
 import com.google.gwt.activity.shared.ActivityMapper;
 import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.core.client.JsArray;
 import com.google.gwt.dom.client.Style;
 import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.http.client.*;
 import com.google.gwt.i18n.client.Dictionary;
+import com.google.gwt.jsonp.client.JsonpRequestBuilder;
 import com.google.gwt.place.shared.Place;
 import com.google.gwt.place.shared.PlaceController;
 import com.google.gwt.place.shared.PlaceHistoryHandler;
 import com.google.gwt.user.client.Cookies;
+import com.google.gwt.user.client.Random;
 import com.google.gwt.user.client.ui.*;
 import com.google.web.bindery.event.shared.EventBus;
 import eu.hilow.gwt.base.client.ActionBar;
@@ -26,6 +30,8 @@ import eu.hilow.gwt.base.client.auth.AuthRequestEvent;
 import eu.hilow.gwt.base.client.auth.AuthRequestHandler;
 import eu.hilow.gwt.base.client.roster.FlatRoster;
 import eu.hilow.xode.web.client.chat.ChatPlace;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -118,7 +124,7 @@ public class Xode implements EntryPoint {
                 authenticateInt(null, null, null);
         }
 
-        private void authenticateInt(JID jid, String password, String boshUrl) {
+        private void authenticateInt2(JID jid, String password, String boshUrl) {
                 Jaxmpp jaxmpp = factory.jaxmpp();
 //                if (jaxmpp.isConnected()) {
 //                       try {
@@ -140,7 +146,7 @@ public class Xode implements EntryPoint {
                 else {
                         Dictionary root = Dictionary.getDictionary("root");
                         String domain = root.get("anon-domain");
-                        String url = getBoshUrl(domain);
+                        String url = boshUrl != null ? boshUrl : getBoshUrl(domain);
                         jaxmpp.getProperties().setUserProperty(BoshConnector.BOSH_SERVICE_URL_KEY, url);
                         jaxmpp.getProperties().setUserProperty(SessionObject.SERVER_NAME, domain);
                 }
@@ -151,6 +157,65 @@ public class Xode implements EntryPoint {
                         log.log(Level.WARNING, "login exception", ex);
                         //log.log(Level.WARNING, "login exception", ex);
                 }
+        }
+
+        public void authenticateInt(final JID jid, final String password, String boshUrl) {                 
+                if (boshUrl != null) {
+                        authenticateInt2(jid, password, boshUrl);
+                        return;
+                }
+                
+                final Dictionary root = Dictionary.getDictionary("root");
+                String domain;
+                if (jid == null) {
+                        domain = root.get("anon-domain");
+                }
+                else {
+                        domain = jid.getDomain();
+                }
+                
+                String url = root.get("dns-resolver");
+                url += "?domain=" + URL.encodeQueryString(domain);
+                JsonpRequestBuilder builder = new JsonpRequestBuilder();
+                builder.requestObject(url, new com.google.gwt.user.client.rpc.AsyncCallback<DnsResult>() {
+                        
+                        public void onFailure(Throwable caught) {
+                                String boshUrl = getBoshUrl((jid != null) ? jid.getDomain() : root.get("anon-domain"));
+                                authenticateInt2(jid, password, boshUrl);                                
+                        }
+
+                        public void onSuccess(DnsResult result) {
+                                JsArray<DnsEntry> entriesJs = result.getEntries();
+                                String domain = null;
+                                int port = 0;
+                                // filter only IPv4
+                                List<DnsEntry> entries = new ArrayList<DnsEntry>();
+                                for (int i=0; i<entriesJs.length(); i++) {
+                                        DnsEntry entry = entriesJs.get(i);
+                                        if (entry.getIp().contains(":"))
+                                                continue;
+                                        
+                                        entries.add(entry);
+                                }
+                                if (entries.size() > 1) {
+                                        while (domain == null || domain.contains(":")) {
+                                                int rand = Random.nextInt(entries.size());
+                                                domain = entries.get(rand).getIp();
+                                                port = entries.get(rand).getPort();
+                                        }                                        
+                                }
+                                else if (entries.size() > 0) {
+                                        domain = entries.get(0).getResultHost();
+                                        port = entries.get(0).getPort();
+                                }
+                                else {
+                                        domain = jid.getDomain();
+                                }                                
+                                String boshUrl = "http://" + domain + (port != 0 ? (":" + port) : "") + "/bosh";                                
+                                authenticateInt2(jid, password, boshUrl);                                
+                        }
+                        
+                });                
         }
         
         public static String getBoshUrl(String domain) {

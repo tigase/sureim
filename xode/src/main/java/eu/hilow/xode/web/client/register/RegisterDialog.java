@@ -227,12 +227,12 @@ public class RegisterDialog extends DialogBox {
         private void disableOkButton() {
                 ok.setEnabled(false);
                 ok.removeStyleName(factory.theme().style().buttonDefault());
-                ok.addStyleName(factory.theme().style().buttonDefault());
+                ok.addStyleName(factory.theme().style().buttonDisabled());
         }
 
         private void enableOkButton() {
                 ok.setEnabled(false);
-                ok.removeStyleName(factory.theme().style().buttonDefault());
+                ok.removeStyleName(factory.theme().style().buttonDisabled());
                 ok.addStyleName(factory.theme().style().buttonDefault());
         }
 
