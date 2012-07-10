@@ -36,10 +36,16 @@ import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import tigase.jaxmpp.core.client.BareJID;
+import tigase.jaxmpp.core.client.Connector;
 import tigase.jaxmpp.core.client.JID;
 import tigase.jaxmpp.core.client.SessionObject;
+import tigase.jaxmpp.core.client.connector.AbstractBoshConnector;
+import tigase.jaxmpp.core.client.connector.AbstractBoshConnector.BoshConnectorEvent;
 import tigase.jaxmpp.core.client.exceptions.JaxmppException;
+import tigase.jaxmpp.core.client.observer.Listener;
+import tigase.jaxmpp.core.client.xml.Element;
 import tigase.jaxmpp.core.client.xmpp.modules.disco.DiscoInfoModule;
+import tigase.jaxmpp.core.client.xmpp.stanzas.ErrorElement;
 import tigase.jaxmpp.gwt.client.Jaxmpp;
 import tigase.jaxmpp.gwt.client.connectors.BoshConnector;
 
@@ -50,6 +56,10 @@ import tigase.jaxmpp.gwt.client.connectors.BoshConnector;
 public class Xode implements EntryPoint {
 
         private static final Logger log = Logger.getLogger("Xode");
+
+        // need this for reconnect during reaction on see-other-host
+        private JID jid = null;
+        private String password = null;
         
         private ClientFactory factory;
         /**
@@ -62,6 +72,21 @@ public class Xode implements EntryPoint {
 
                 RootView view = new RootView(factory);
 
+                factory.jaxmpp().addListener(Connector.Error, new Listener<BoshConnectorEvent>() {
+
+                        public void handleEvent(BoshConnectorEvent be) throws JaxmppException {
+                                // needed to handle see-other-host
+                                Element error = be.getStreamErrorElement();
+                                if (error != null) {
+                                        Element seeOtherHost = error.getChildrenNS("see-other-host", "urn:ietf:params:xml:ns:xmpp-streams");
+                                        if (seeOtherHost != null) {
+                                                authenticateInt2(jid, password, seeOtherHost.getValue());
+                                        }
+                                }
+                        }
+                        
+                });
+                
 //                AbsolutePanel center = new AbsolutePanel();
 //                center.add(new Label("Center panel"));
 
@@ -124,7 +149,7 @@ public class Xode implements EntryPoint {
                 authenticateInt(null, null, null);
         }
 
-        private void authenticateInt2(JID jid, String password, String boshUrl) {
+        private void authenticateInt3(JID jid, String password, String boshUrl) {
                 Jaxmpp jaxmpp = factory.jaxmpp();
 //                if (jaxmpp.isConnected()) {
 //                       try {
@@ -133,7 +158,9 @@ public class Xode implements EntryPoint {
 //                                Logger.getLogger(Xode.class.getName()).log(Level.SEVERE, null, ex);
 //                        }
 //                }
-                        
+        
+                jaxmpp.getProperties().setUserProperty(AbstractBoshConnector.SEE_OTHER_HOST_KEY, true);
+                
                 if (jid != null) {
                         String url = boshUrl != null ? boshUrl : getBoshUrl(jid.getDomain());
                         jaxmpp.getProperties().setUserProperty(BoshConnector.BOSH_SERVICE_URL_KEY, url);
@@ -160,8 +187,12 @@ public class Xode implements EntryPoint {
         }
 
         public void authenticateInt(final JID jid, final String password, String boshUrl) {                 
+                // storing jid and password to use it during reconnection for see-other-host
+                this.jid = jid;
+                this.password = password;
+                
                 if (boshUrl != null) {
-                        authenticateInt2(jid, password, boshUrl);
+                        authenticateInt3(jid, password, boshUrl);
                         return;
                 }
                 
@@ -173,7 +204,12 @@ public class Xode implements EntryPoint {
                 else {
                         domain = jid.getDomain();
                 }
-                
+                                
+                authenticateInt2(jid, password, domain);
+        }
+        
+        public void authenticateInt2(final JID jid, final String password, String domain) {                 
+                final Dictionary root = Dictionary.getDictionary("root");
                 String url = root.get("dns-resolver");
                 url += "?domain=" + URL.encodeQueryString(domain);
                 JsonpRequestBuilder builder = new JsonpRequestBuilder();
@@ -181,7 +217,7 @@ public class Xode implements EntryPoint {
                         
                         public void onFailure(Throwable caught) {
                                 String boshUrl = getBoshUrl((jid != null) ? jid.getDomain() : root.get("anon-domain"));
-                                authenticateInt2(jid, password, boshUrl);                                
+                                authenticateInt3(jid, password, boshUrl);                                
                         }
 
                         public void onSuccess(DnsResult result) {
@@ -212,7 +248,7 @@ public class Xode implements EntryPoint {
                                         domain = jid.getDomain();
                                 }                                
                                 String boshUrl = "http://" + domain + (port != 0 ? (":" + port) : "") + "/bosh";                                
-                                authenticateInt2(jid, password, boshUrl);                                
+                                authenticateInt3(jid, password, boshUrl);                                
                         }
                         
                 });                
