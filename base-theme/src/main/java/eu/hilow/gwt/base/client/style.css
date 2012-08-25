@@ -17,8 +17,9 @@
 .navigationBar {
         line-height: 1.7em;  
         background-color: black;
-        padding: 0px 10px;
-        width: 100%;
+/*        padding: 0px 10px;
+        width: 100%;*/
+        padding: 0px 1%;
 }
 
 .navigationBarItem {

@@ -59,7 +59,12 @@ public class RootView extends ResizeComposite {
                                 
                         });
                         
-                        link.addStyleName(style.left());
+                        if (obj.containsKey("position") && "right".equals(((JSONString) obj.get("position")).stringValue())) {
+                                link.addStyleName(style.right());
+                        }
+                        else {
+                                link.addStyleName(style.left());
+                        }
                         
                         if (active) {
                                 link.addStyleName(style.navigationBarItemActive());
@@ -83,7 +88,11 @@ public class RootView extends ResizeComposite {
                 anchor.addStyleName(factory.theme().style().footerBarItem());
                 anchor.setTarget("_blank");
                 footerPanel.add(anchor);
-                anchor = new Anchor(factory.baseI18n().contactForm(), root.get("support-link"));                
+                anchor = new Anchor(factory.baseI18n().contactForm(), root.get("contact-link"));                
+                anchor.addStyleName(factory.theme().style().footerBarItem());
+                anchor.setTarget("_blank");
+                footerPanel.add(anchor);
+                anchor = new Anchor(factory.baseI18n().supportForm(), root.get("support-link"));                
                 anchor.addStyleName(factory.theme().style().footerBarItem());
                 anchor.setTarget("_blank");
                 footerPanel.add(anchor);

@@ -32,6 +32,9 @@ public interface BaseI18n extends Constants {
         
         @DefaultStringValue("Contact")
         String contactForm();
+
+        @DefaultStringValue("Support")
+        String supportForm();
         
         @DefaultStringValue("Accept")
         String accept();
