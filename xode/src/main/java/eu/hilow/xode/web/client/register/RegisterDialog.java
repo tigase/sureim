@@ -4,9 +4,11 @@
  */
 package eu.hilow.xode.web.client.register;
 
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Style;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.*;
 import eu.hilow.xode.web.client.ClientFactory;
 import eu.hilow.xode.web.client.MessageDialog;
@@ -59,25 +61,31 @@ public class RegisterDialog extends DialogBox {
                 label.getElement().getStyle().setFontWeight(Style.FontWeight.BOLD);
                 table.setWidget(0, 0, label);
                 
-                label = new Label(factory.baseI18n().jid());
+                label = new Label(factory.baseI18n().login());
                 table.setWidget(1, 0, label);
-                final TextBox jidTextBox = new TextBox();
-                table.setWidget(1, 1, jidTextBox);
+                final TextBox loginTextBox = new TextBox();
+                table.setWidget(1, 1, loginTextBox);
+                
+                label = new Label(factory.baseI18n().domain());
+                table.setWidget(2, 0, label);
+                final TextBox domainTextBox = new TextBox();                
+                domainTextBox.setText(Window.Location.getHostName());
+                table.setWidget(2, 1, domainTextBox);
                 
                 label = new Label(factory.baseI18n().password());
-                table.setWidget(2, 0, label);
+                table.setWidget(3, 0, label);
                 final TextBox passwordTextBox = new PasswordTextBox();
-                table.setWidget(2, 1, passwordTextBox);
+                table.setWidget(3, 1, passwordTextBox);
                 
                 label = new Label(factory.i18n().email());
-                table.setWidget(3, 0, label);
+                table.setWidget(4, 0, label);
                 final TextBox emailTextBox = new TextBox();
-                table.setWidget(3, 1, emailTextBox);
+                table.setWidget(4, 1, emailTextBox);
 
                 Button cancel = new Button(factory.baseI18n().cancel());
                 cancel.setStyleName(factory.theme().style().button());
                 cancel.addStyleName(factory.theme().style().left());
-                table.setWidget(4, 0, cancel);
+                table.setWidget(5, 0, cancel);
                 cancel.addClickHandler(new ClickHandler() {
 
                         public void onClick(ClickEvent event) {
@@ -89,7 +97,7 @@ public class RegisterDialog extends DialogBox {
                 ok.setStyleName(factory.theme().style().button());
                 ok.addStyleName(factory.theme().style().buttonDefault());
                 ok.addStyleName(factory.theme().style().right());
-                table.setWidget(4, 1, ok);
+                table.setWidget(5, 1, ok);
                 ok.addClickHandler(new ClickHandler() {
 
                         public void onClick(ClickEvent event) {
@@ -97,7 +105,27 @@ public class RegisterDialog extends DialogBox {
                                         disableOkButton();
                                         final Jaxmpp jaxmpp = new Jaxmpp();
                                         
-                                        final BareJID jid = BareJID.bareJIDInstance(jidTextBox.getText());
+                                        String login = loginTextBox.getText();
+                                        String domain = domainTextBox.getText();
+
+                                        String errorMessage = null;
+                                        if (login == null || login.isEmpty()) {
+                                                errorMessage = "Login is required";
+                                        }
+                                        if (domain == null || domain.isEmpty()) {
+                                                errorMessage  = "Domain is required";
+                                        }
+                                        
+                                        if (errorMessage != null) {
+                                                MessageDialog dlg = new MessageDialog(factory, factory.baseI18n().error(), errorMessage);
+                                                dlg.show();
+                                                dlg.center();
+                                                jaxmpp.disconnect();                 
+                                                enableOkButton();
+                                                return;
+                                        }
+                                        
+                                        final BareJID jid = BareJID.bareJIDInstance(login, domain);
                                         final String password = passwordTextBox.getText();
                                         final String email = emailTextBox.getText();
                 
