@@ -12,13 +12,18 @@ import tigase.jaxmpp.core.client.AsyncCallback;
 import tigase.jaxmpp.core.client.JID;
 import tigase.jaxmpp.core.client.PacketWriter;
 import tigase.jaxmpp.core.client.SessionObject;
+import tigase.jaxmpp.core.client.XMPPException;
+import tigase.jaxmpp.core.client.XmppModule;
 import tigase.jaxmpp.core.client.criteria.Criteria;
 import tigase.jaxmpp.core.client.criteria.ElementCriteria;
 import tigase.jaxmpp.core.client.exceptions.JaxmppException;
+import tigase.jaxmpp.core.client.observer.Observable;
 import tigase.jaxmpp.core.client.xml.DefaultElement;
 import tigase.jaxmpp.core.client.xml.Element;
 import tigase.jaxmpp.core.client.xml.XMLException;
 import tigase.jaxmpp.core.client.xmpp.modules.AbstractIQModule;
+import tigase.jaxmpp.core.client.xmpp.modules.ObservableAware;
+import tigase.jaxmpp.core.client.xmpp.modules.PacketWriterAware;
 import tigase.jaxmpp.core.client.xmpp.stanzas.IQ;
 import tigase.jaxmpp.core.client.xmpp.stanzas.Stanza;
 import tigase.jaxmpp.core.client.xmpp.stanzas.StanzaType;
@@ -28,12 +33,22 @@ import tigase.jaxmpp.core.client.xmpp.utils.DateTimeFormat;
  *
  * @author andrzej
  */
-public class MessageArchivingModule extends AbstractIQModule {
+public class MessageArchivingModule implements XmppModule, PacketWriterAware {
 
         private static final String ARCHIVE_XMLNS = "urn:xmpp:archive";                
         
         private static final Criteria CRIT = ElementCriteria.name("iq").add(ElementCriteria.xmlns(ARCHIVE_XMLNS));
         private static final DateTimeFormat format = new DateTimeFormat();
+
+        private PacketWriter writer = null;
+        
+        public void setPacketWriter(PacketWriter packetWriter) {
+                this.writer = packetWriter;
+        }
+
+        public void process(Element element) throws XMPPException, XMLException, JaxmppException {
+                throw new UnsupportedOperationException("Not supported yet.");
+        }
 
         public static abstract class CollectionAsyncCallback implements AsyncCallback {
 
@@ -128,8 +143,7 @@ public class MessageArchivingModule extends AbstractIQModule {
                 protected abstract void onItemsReceived(final ChatResultSet chat) throws XMLException;
         }
 
-        public MessageArchivingModule(SessionObject sessionObject, PacketWriter packetWriter) {
-                super(sessionObject, packetWriter);
+        public MessageArchivingModule() {
         }
 
         public void listCollections(final JID withJid, final Date startTime, final Date endTime, final String afterId, final CollectionAsyncCallback callback) throws XMLException, JaxmppException {
@@ -176,16 +190,6 @@ public class MessageArchivingModule extends AbstractIQModule {
                 writer.write(iq, null, callback);                
 	}
         
-        @Override
-        protected void processGet(IQ element) throws JaxmppException {
-                throw new UnsupportedOperationException("Not supported yet.");
-        }
-
-        @Override
-        protected void processSet(IQ element) throws JaxmppException {
-                throw new UnsupportedOperationException("Not supported yet.");
-        }
-
         @Override
         public Criteria getCriteria() {
                 return CRIT;

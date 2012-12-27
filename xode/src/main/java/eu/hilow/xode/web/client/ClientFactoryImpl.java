@@ -86,8 +86,8 @@ public class ClientFactoryImpl extends eu.hilow.gwt.base.client.ClientFactoryImp
                 pubSubPublishView = new PubSubPublishViewImpl(this);
                 settingsView = new SettingsViewImpl(this);
                 
-                jaxmpp().getModulesManager().register(new MessageArchivingModule(jaxmpp().getSessionObject(), jaxmpp().getWriter()));
-                jaxmpp().getModulesManager().register(new BookmarksModule(jaxmpp().getSessionObject(), jaxmpp().getWriter()));
+                jaxmpp().getModulesManager().register(new MessageArchivingModule());
+                jaxmpp().getModulesManager().register(new BookmarksModule(null, jaxmpp().getSessionObject(), jaxmpp().getWriter()));
                 
                 jaxmppBindListener = new Listener<ResourceBinderModule.ResourceBindEvent>() {
 
