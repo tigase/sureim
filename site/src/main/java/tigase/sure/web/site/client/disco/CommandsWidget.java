@@ -1,0 +1,259 @@
+/*
+ * To change this template, choose Tools | Templates
+ * and open the template in the editor.
+ */
+package tigase.sure.web.site.client.disco;
+
+import com.google.gwt.dom.client.Style;
+import com.google.gwt.dom.client.Style.Unit;
+import com.google.gwt.event.dom.client.ChangeEvent;
+import com.google.gwt.event.dom.client.ChangeHandler;
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.user.client.Window;
+import com.google.gwt.user.client.ui.*;
+import tigase.sure.web.base.client.ResizablePanel;
+import tigase.sure.web.site.client.ClientFactory;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import tigase.jaxmpp.core.client.JID;
+import tigase.jaxmpp.core.client.XMPPException;
+import tigase.jaxmpp.core.client.XMPPException.ErrorCondition;
+import tigase.jaxmpp.core.client.exceptions.JaxmppException;
+import tigase.jaxmpp.core.client.xml.XMLException;
+import tigase.jaxmpp.core.client.xmpp.forms.JabberDataElement;
+import tigase.jaxmpp.core.client.xmpp.modules.adhoc.Action;
+import tigase.jaxmpp.core.client.xmpp.modules.adhoc.AdHocCommansModule;
+import tigase.jaxmpp.core.client.xmpp.modules.adhoc.AdHocCommansModule.AdHocCommansAsyncCallback;
+import tigase.jaxmpp.core.client.xmpp.modules.adhoc.State;
+import tigase.jaxmpp.core.client.xmpp.modules.disco.DiscoItemsModule;
+import tigase.jaxmpp.core.client.xmpp.modules.disco.DiscoItemsModule.Item;
+import tigase.jaxmpp.core.client.xmpp.stanzas.Stanza;
+
+/**
+ *
+ * @author andrzej
+ */
+public class CommandsWidget extends ResizeComposite  {
+        
+        public interface FinishHandler {
+                void finished();
+                void error(String msg);
+        };
+        
+        private final ClientFactory factory;
+        
+        private final DockLayoutPanel layout;//FlowPanel layout;
+        private final ListBox commandsCombo;
+        
+        private final Form form;
+        HorizontalPanel buttons;
+        
+        private final FinishHandler finishHandler;
+        private final CommandsItemsCallback commandsItemsCallback;
+        private final CommandExecCallback commandExecCallback;
+        private JID jid;
+        private final ScrollPanel scroll;
+        
+        public CommandsWidget(ClientFactory factory_, FinishHandler finishHandler) {
+                this.factory = factory_;
+                this.finishHandler = finishHandler;
+        
+                //layout = new eu.hilow.gwt.base.client.widgets.FlowPanel();                
+                layout = new DockLayoutPanel(Unit.EM);
+                layout.setWidth("90%");
+                layout.setHeight("100%");
+                layout.getElement().getStyle().setMargin(0, Unit.PCT);
+                layout.getElement().getStyle().setLeft(10, Unit.PCT);
+                
+                AbsolutePanel panel = new AbsolutePanel();
+                HorizontalPanel comboPanel = new HorizontalPanel();
+                Label commandsLabel = new Label(factory.i18n().availableCommands()+":");
+                comboPanel.add(commandsLabel);                
+                commandsLabel.getElement().getStyle().setFontSize(1.1, Unit.EM);
+                commandsLabel.getElement().getStyle().setFontWeight(Style.FontWeight.BOLD);                
+                commandsLabel.getElement().getStyle().setPaddingTop(8, Unit.PX);
+                commandsCombo = new ListBox();
+                commandsCombo.getElement().getStyle().setPadding(5, Unit.PX);
+                comboPanel.add(commandsCombo);
+                commandsCombo.addChangeHandler(new ChangeHandler() {
+
+                        public void onChange(ChangeEvent event) {
+                                int idx = commandsCombo.getSelectedIndex();
+                                String value = commandsCombo.getValue(idx);
+                                if (value != null) {
+                                        commandSelected(jid, value);       
+                                }
+                        }
+                        
+                });
+                
+                commandsItemsCallback = new CommandsItemsCallback();
+                commandExecCallback = new CommandExecCallback();
+                panel.add(comboPanel);
+                layout.addNorth(panel, 3);
+                
+                buttons = new HorizontalPanel();
+                
+                layout.addSouth(buttons, 3);
+                
+                form = new Form(factory);
+                scroll = new ScrollPanel(form);
+                layout.add(scroll);
+
+                initWidget(layout);
+        }
+        
+        public void updateCommandsList(JID jid) {
+                this.jid = jid;                
+                commandsCombo.clear();
+                commandsCombo.setVisible(true);
+                form.reset();
+                
+                DiscoItemsModule module = factory.jaxmpp().getModulesManager().getModule(DiscoItemsModule.class);
+                try {
+                        module.getItems(jid, DiscoViewImpl.COMMANDS_FEATURE, commandsItemsCallback);
+                } catch (XMLException ex) {
+                        Logger.getLogger(DiscoViewImpl.class.getName()).log(Level.SEVERE, null, ex);
+                } catch (JaxmppException ex) {
+                        Logger.getLogger(DiscoViewImpl.class.getName()).log(Level.SEVERE, null, ex);
+                }                
+        }
+        
+        public void executeCommand(JID jid, String node) {
+                this.jid = jid;                
+                commandsCombo.clear();
+                form.reset();
+
+                commandsCombo.setVisible(false);
+                commandSelected(jid, node);
+        }
+        
+        public void reset() {                
+                setVisible(false);
+                form.reset();
+        }
+        
+        private void commandSelected(JID jid, String node) {
+                AdHocCommansModule adHocCommands = factory.jaxmpp().getModulesManager().getModule(AdHocCommansModule.class);
+                try {
+                        adHocCommands.execute(jid, node, Action.execute, null, commandExecCallback);
+                } catch (JaxmppException ex) {
+                        Logger.getLogger(CommandsWidget.class.getName()).log(Level.SEVERE, null, ex);
+                }
+        }
+        
+        private class CommandsItemsCallback extends DiscoItemsModule.DiscoItemsAsyncCallback {
+
+                private final DiscoItemsComparator discoItemsComparator = new DiscoItemsComparator();
+                
+                @Override
+                public void onInfoReceived(String attribute, ArrayList<DiscoItemsModule.Item> items) throws XMLException {
+                        commandsCombo.addItem("", (String) null);
+                        Collections.sort(items, discoItemsComparator);
+                        for (DiscoItemsModule.Item item : items) {
+                                commandsCombo.addItem(item.getName(), item.getNode());
+                        }
+                }
+
+                public void onError(Stanza responseStanza, XMPPException.ErrorCondition error) throws JaxmppException {
+                        finishHandler.error(error.getElementName());
+                }
+
+                public void onTimeout() throws JaxmppException {
+                        finishHandler.error(factory.i18n().requestTimedOut());
+                }
+
+                private class DiscoItemsComparator implements Comparator<Item> {
+
+                        public DiscoItemsComparator() {
+                        }
+
+                        public int compare(Item t1, Item t2) {
+                                if (t1 == null || t2 == null) {
+                                        return -1;
+                                }
+                                
+                                String name1 = t1.getName();
+                                if (name1 == null) name1 = t1.getNode();
+                                String name2 = t2.getName();
+                                if (name2 == null) name2 = t2.getNode();
+                                
+                                return name1.compareTo(name2);
+                        }
+                }
+                
+        }
+        
+        private class CommandExecCallback extends AdHocCommansAsyncCallback {
+
+                @Override
+                protected void onResponseReceived(String sessionid, final String node, State status, JabberDataElement data) throws JaxmppException {
+                        form.reset();
+                        buttons.clear();
+                        if (data != null) {
+                                form.setData(data);
+                                
+                                if (status == State.executing) {
+                                        Button cancel = new Button(factory.baseI18n().cancel());
+                                        cancel.setStyleName(factory.theme().style().button());
+                                        buttons.add(cancel);
+
+                                        cancel.addClickHandler(new ClickHandler() {
+
+                                                public void onClick(ClickEvent event) {
+                                                        AdHocCommansModule adHocCommands = factory.jaxmpp().getModulesManager().getModule(AdHocCommansModule.class);
+                                                        try {
+                                                                adHocCommands.execute(jid, node, Action.cancel, null, commandExecCallback);
+                                                                finishHandler.finished();
+                                                        } catch (JaxmppException ex) {
+                                                                Logger.getLogger(CommandsWidget.class.getName()).log(Level.SEVERE, null, ex);
+                                                        }
+                                                }
+                                        });
+
+                                        Button submit = new Button(factory.baseI18n().confirm());
+                                        submit.setStyleName(factory.theme().style().button());
+                                        submit.addStyleName(factory.theme().style().buttonDefault());
+                                        buttons.add(submit);
+
+                                        submit.addClickHandler(new ClickHandler() {
+                                                public void onClick(ClickEvent event) {
+                                                        AdHocCommansModule adHocCommands = factory.jaxmpp().getModulesManager().getModule(AdHocCommansModule.class);
+                                                        try {
+                                                                JabberDataElement data = form.getData();
+                                                                adHocCommands.execute(jid, node, Action.execute, data, commandExecCallback);
+                                                        } catch (JaxmppException ex) {
+                                                                Logger.getLogger(CommandsWidget.class.getName()).log(Level.SEVERE, null, ex);
+                                                        }
+                                                }                                        
+                                        });                        
+                                }
+                                else if (status == State.completed) {
+                                        Button close = new Button(factory.baseI18n().close());
+                                        close.setStyleName(factory.theme().style().button());
+                                        close.addStyleName(factory.theme().style().buttonDefault());
+                                        buttons.add(close);
+                                        
+                                        close.addClickHandler(new ClickHandler() {
+                                                public void onClick(ClickEvent event) {
+                                                        finishHandler.finished();
+                                                }                                                
+                                        });
+                                }
+                        }
+                }
+
+                public void onError(Stanza responseStanza, ErrorCondition error) throws JaxmppException {
+                        finishHandler.error(error.getElementName());
+                }
+
+                public void onTimeout() throws JaxmppException {
+                        finishHandler.error(factory.i18n().requestTimedOut());
+                }
+                
+        }
+}

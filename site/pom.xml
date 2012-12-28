@@ -7,10 +7,10 @@
   <!-- POM file generated with GWT webAppCreator -->
         <modelVersion>4.0.0</modelVersion>
         <groupId>tigase.sure.web</groupId>
-        <artifactId>theme</artifactId>
-        <packaging>jar</packaging>
+        <artifactId>site</artifactId>
+        <packaging>war</packaging>
         <version>1.0-SNAPSHOT</version>
-        <name>Sure.IM base theme library</name>
+        <name>Sure.IM site</name>
 
         <properties>
     <!-- Convenience property to set the GWT version -->
@@ -26,26 +26,18 @@
       <artifactId>gwt-servlet</artifactId>
       <version>${gwtVersion}</version>
       <scope>runtime</scope>
-    </dependency> -->
-                <dependency>
-                        <groupId>tigase</groupId>
-                        <artifactId>jaxmpp-gwt</artifactId>
-                        <version>2.0.0-SNAPSHOT</version>
-                        <scope>compile</scope>
-                </dependency>
-
-                <dependency>
-                        <groupId>tigase</groupId>
-                        <artifactId>jaxmpp-core</artifactId>
-                        <version>2.0.0-SNAPSHOT</version>
-                        <scope>compile</scope>
-                </dependency>
-    
+    </dependency>-->
                 <dependency>
                         <groupId>com.google.gwt</groupId>
                         <artifactId>gwt-user</artifactId>
                         <version>${gwtVersion}</version>
                         <scope>provided</scope>
+                </dependency>
+                <dependency>
+                        <groupId>tigase.sure.web</groupId>
+                        <artifactId>theme</artifactId>
+                        <version>1.0-SNAPSHOT</version>
+                        <scope>compile</scope>
                 </dependency>
                 <dependency>
                         <groupId>junit</groupId>
@@ -65,7 +57,7 @@
       <version>1.0.0.GA</version>
       <classifier>sources</classifier>
       <scope>test</scope>
-    </dependency> -->
+    </dependency>-->
         </dependencies>
 
         <build>
@@ -81,18 +73,20 @@
                                 <version>2.4.0</version>
                                 <executions>
                                         <execution>
-                                                <phase>prepare-package</phase>
                                                 <goals>
                                                         <goal>compile</goal>
+                                                        <goal>test</goal>
+                                                        <goal>i18n</goal>
+                                                        <goal>generateAsync</goal>
                                                 </goals>
                                         </execution>
                                 </executions>
         <!-- Plugin configuration. There are many available options, see 
           gwt-maven-plugin documentation at codehaus.org -->
                                 <configuration>
-                                        <runTarget>base.html</runTarget>
+                                        <runTarget>index.html</runTarget>
                                         <hostedWebapp>${webappDirectory}</hostedWebapp>
-                                        <i18nMessagesBundle>eu.hilow.gwt.base.client.Messages</i18nMessagesBundle>
+                                        <i18nMessagesBundle>tigase.sure.web.site.client.Messages</i18nMessagesBundle>
                                 </configuration>
                         </plugin>
 
@@ -123,26 +117,12 @@
                                 </configuration>
                         </plugin>
                 </plugins>
-                <resources>
-                        <resource>
-                                <directory>src/main/java</directory>
-                                <includes>
-                                        <include>**/*.java</include>
-                                        <include>**/*.gwt.xml</include>
-					<include>**/*.png</include>
-                                        <include>**/*.css</include>
-                                </includes>
-                        </resource>
-                        <resource>
-                                <directory>src/main/resources</directory>
-                                <includes>
-                                        <include>**/*.java</include>
-                                        <include>**/*.gwt.xml</include>
-					<include>**/*.png</include>
-                                        <include>**/*.css</include>
-                                </includes>
-                        </resource>
-                </resources>
-                
         </build>
+
+        <repositories>
+                <repository>
+                        <id>gwt-mobile-webkit</id>
+                        <url>http://gwt-mobile-webkit.googlecode.com/svn/repo</url>
+                </repository>
+        </repositories>
 </project>

@@ -1,0 +1,483 @@
+<!doctype html>
+<!-- The DOCTYPE declaration above will set the    -->
+<!-- browser's rendering engine into               -->
+<!-- "Standards Mode". Replacing this declaration  -->
+<!-- with a "Quirks Mode" doctype may lead to some -->
+<!-- differences in layout.                        -->
+
+<html>
+  <head>
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+<!-- not ready for this -->
+<!--    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"> -->
+    <!--                                                               -->
+    <!-- Consider inlining CSS to reduce the number of requested files -->
+    <!--                                                               -->
+    <link type="text/css" rel="stylesheet" href="xode.css">
+    <link href="http://feeds.tigase.im/atom?server=pubsub@sure.im&amp;node=news" rel="alternate" type="application/rss+xml" title="Sure.IM RSS Feed">
+    <!--                                           -->
+    <!-- Any title is fine                         -->
+    <!--                                           -->
+    <title>Web Application Starter Project</title>
+
+    <script type="text/javascript">
+            var root = {
+                    'anon-domain': "sure.im",
+                    
+                    navigation: "[{url:'http://sure.im', label:'Sure.IM', active:true},{url:'http://tigase.im', label:'Tigase.IM', active:false},{url:'http://jabber.me', label:'Jabber.ME', active:false},{url:'http://tigase.com', label:'Tigase.com', active:false},{url:'http://tigase.org', label:'Tigase.org', active:false},{url:'http://www.tigase.org/content/tigase-services', label:'Help', active:false, position:'right'}]",                    
+                    'version-link-free' : "https://play.google.com/store/apps/details?id=org.tigase.messenger.phone.free",
+                    'version-link-ads-free' : "https://play.google.com/store/apps/details?id=org.tigase.messenger.phone.pro",
+                    'contact-link' : 'mailto:help@sure.im',
+                    'support-link' : 'https://projects.tigase.org/projects/tigase-im/issues/new',
+                    
+                    'dns-resolver' : 'http://beta.tigase.im/dns/json'
+            };            
+            
+            var domains = {
+                    'default'  : 'http://blue.tigase.im:5280/bosh'
+                    //'tigase.org' : 'http://tigase.org:5280/bosh'
+                    //'tigase.im' : 'http://blue.tigase.im:5280/bosh'
+                    //'hi-low.eu'  : 'http://xmpp-2.hi-low.eu:5280/bosh'
+            };
+            
+            var admins = { 
+                    'admin@tigase.im' : 'true',
+                    'kobit@tigase.org' : 'true',
+                    'wojtek@tigase.org' : 'true',
+                    'bmalkow@malkowscy.net' : 'true',
+                    'andrzej.wojcik@tigase.org' : 'true',
+                    'kobit@tigase.im' : 'true',
+                    'wojtek@tigase.im' : 'true',
+                    'andrzej.wojcik@tigase.im' : 'true',
+                    'admin@sure.im' : 'true',
+                    'kobit@sure.im' : 'true'
+            };
+    </script>
+    
+    <!--                                           -->
+    <!-- This script loads your compiled module.   -->
+    <!-- If you add any GWT meta tags, they must   -->
+    <!-- be added before this line.                -->
+    <!--                                           -->
+    <script type="text/javascript" language="javascript" src="site/site.nocache.js"></script>
+    <style>
+        input {
+                background-color: white;
+                border: 1px solid gainsboro;
+                padding: 4px;
+        }
+        /* Let's get this party started */
+        ::-webkit-scrollbar {    width: 8px;} 
+        /* Track */
+        ::-webkit-scrollbar-track {
+        /*      -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3);    
+                -webkit-border-radius: 10px;    
+                border-radius: 10px;*/    
+                background-color: transparent;
+        } 
+        /* Handle */
+        ::-webkit-scrollbar-thumb {    
+                -webkit-border-radius: 2px;    
+                border-radius: 2px;    
+                background: rgba(0,0,0,0.2);     
+                -webkit-box-shadow: inset 1px 1px 0 rgba(0,0,0,0.10),inset 0 -1px 0 rgba(0,0,0,0.07);
+        }        
+        
+        .tabLayoutPanel {
+                border: 0px;
+        }
+        
+        .gwt-TabLayoutPanel div.gwt-TabLayoutPanelTabs {
+                padding: 0.22em 1em;
+        }
+        
+        .gwt-TabLayoutPanel div.gwt-TabLayoutPanelTab {
+                background: whitesmoke;
+                background-image: -webkit-linear-gradient(top,whiteSmoke,#F1F1F1);
+                background-image: -moz-linear-gradient(top,whiteSmoke,#F1F1F1);
+                background-image: -ms-linear-gradient(top,whiteSmoke,#F1F1F1);
+                background-image: -o-linear-gradient(top,whiteSmoke,#F1F1F1);
+                background-image: linear-gradient(top,whiteSmoke,#F1F1F1);
+                
+                padding: 6px 12px;
+                margin-left: 0px;
+/*                border: 1px solid #ddd;*/
+                border: 1px solid gainsboro;
+                border: 1px solid rgba(0, 0, 0, 0.1);                
+        }
+        
+        .gwt-TabLayoutPanel div.gwt-TabLayoutPanelTab:first-child {
+                border-top-left-radius: 2px;
+                border-bottom-left-radius: 2px;
+        }
+
+        .gwt-TabLayoutPanel div.gwt-TabLayoutPanelTab:last-child {
+                border-top-right-radius: 2px;
+                border-bottom-right-radius: 2px;
+        }
+        
+        .gwt-TabLayoutPanel div.gwt-TabLayoutPanelTab-selected {
+                background-image: -webkit-linear-gradient(top,#EEE,#E0E0E0);
+                background-image: -moz-linear-gradient(top,#EEE,#E0E0E0);
+                background-image: -ms-linear-gradient(top,#EEE,#E0E0E0);
+                background-image: -o-linear-gradient(top,#EEE,#E0E0E0);
+                background-image: linear-gradient(top,#EEE,#E0E0E0);
+        }
+
+        .gwt-TabLayoutPanel div.gwt-TabLayoutPanelContentContainer {
+                border: 0.7em solid transparent;
+        }
+        
+        .gwt-TabLayoutPanel div.gwt-TabLayoutPanelContent {
+                border: 0px;                
+        }
+        
+        textarea.gwt-TextArea {
+                border: 1px solid lightgray;
+        }
+        
+        .calendar-widget-header {
+                font-weight: bold;
+                width: 100%;
+                text-align: center;
+        }
+        
+        .calendar-widget-header td:first-child {
+                font-weight: bold;                
+                width: 32px;
+        }
+
+        .calendar-widget-header td:last-child {
+                font-weight: bold;            
+                width: 32px;
+        }
+
+        .calendar-widget-day {
+                text-align: center;
+                padding: 4px;
+        }
+        
+        .settingsView {
+                margin: 1% 25%;
+                width: 50%;
+                font-size: 1.1em;
+        }
+        
+        .settingsPanel {
+                width: 100%;
+                border-bottom: 1px solid lightgrey;
+        }
+
+        .settingsView img {
+/*                float: right;*/
+                border-radius: 4px;
+        }
+        
+        .settingsView td:first-child {
+                width: 60%;
+        }
+        
+        .settingsView td:last-child {
+                width: 40%;
+        }
+        
+        .settingsView div.gwt-Label {
+                font-weight: bold;
+        }
+        
+        .settingsView input.gwt-TextBox {
+                width: 100%;
+                font-size: 1.1em;
+                padding: 4px;
+        }
+        
+        table.settingsPanel > tbody > tr:first-child > td {
+                font-size: 1.2em;                
+        }
+        
+        table.settingsPanel tr {
+                line-height: 1.5em;                
+        }
+
+        .settingsPanel td:first-child {
+                font-weight: bold;
+        }
+        
+        .dialogBox {
+                padding: 1em;
+                border: 3px solid lightgray;
+                border-radius: 5px;
+                background-color: white;
+        }
+        
+        .dialogBox input {
+                border: 1px solid lightgray;
+        }
+                
+        .authViewStyle {
+                background-image: url(background.png);
+                background-repeat: no-repeat;
+                background-position: center;
+                background-size: 350px;
+                overflow-y: auto !important;
+/*                -webkit-overflow-scrolling: touch;*/
+                background-color: white;
+        }
+        
+        .authViewStyle h2 {
+                color: #357AE8;
+        }
+        
+        .authViewHeaderTitle {
+                margin: 1%;
+                color: #357AE8;
+                text-shadow: 2px 2px 5px lightBlue;
+                float: left;
+        }
+        
+        .navigationBar a:hover {
+                color: white;
+        }
+        
+        .jabberDataForm {
+                width: 100%;
+        }
+        
+        .jabberDataForm div.gwt-Label {
+                font-weight: bold;
+        }
+        
+        .jabberDataForm td:first-child {
+                width: 30%;
+        }
+        
+        .jabberDataForm td:nth-child {
+                width: 40%;
+        }        
+        
+        .jabberDataForm td:last-child {
+                width: 30%;
+        }
+        
+        .jabberDataForm td > * {
+                width: 100%;
+        }
+
+        .jabberDataForm td > textarea {
+                height: 100px;                
+        }
+        
+        .mucEntry {
+                width: 100%;
+        }
+        
+        .mucEntryNick {
+                padding-right: 1em;
+                float: left;
+        }
+        
+        .mucMineEntryNick {
+                color: darkred;
+        }
+        
+        .mucHisEntryNick {
+                color: royalblue;
+        }
+        
+        .mucEntryMarkText {
+                color: red;
+                font-weight: bold;
+        }
+        
+        .mucOccupants {
+                padding: 0px;
+                margin: 0px;                
+                height: 16px;
+        }
+        table.mucOccupants {
+                width: 100%;
+                border-spacing: 0px;
+        }
+        .mucOccupants td {
+                height: 16px;
+                width: 100%;
+                padding: 0px;
+        }
+        .mucOccupants td:first-child {
+                width: 16px;
+        }
+        td.mucOccupants-moderator {
+                color: darkred;
+        }
+        td.mucOccupants-participant {
+                color: darkblue;                
+        }
+        td.mucOccupants-visitor {
+                color: darkgreen;
+        }
+        
+        .pubSubPublishForm td {
+                width: 63%;                
+        }
+
+        .pubSubPublishForm td:first-child {
+                width: 10%;
+                text-align: right;
+                font-weight: bold;
+        }
+        
+        .pubSubPublishForm td:last-child {
+                width: 25%;                
+        }
+
+        .pubSubPublishForm td > input {
+                width: 99%;                
+        }
+
+    </style>
+    <style>
+.incoming { color: #a6002c; }
+.context .incoming { color:#A65369; }
+
+.outgoing { color: #001190; }
+.context .outgoing { color: #47508F; }
+
+.container {
+    position: relative;
+	margin: 5px 5px;
+	-webkit-border-radius: 10px;
+        border: 1px solid lightgray;
+                
+        background-color: rgba(0,0,0,0.02);
+}
+                
+.sender {
+	top: 6px;
+	left: 56px;
+    position: absolute;
+    font-size: 11px;
+    font-weight: bold;
+    text-transform: lowercase;
+}
+    
+.time_initial {
+    position: absolute;
+    right: 10px;
+    top: 6px;
+    font-size: 9px;
+    font-weight: bold;
+    text-transform: uppercase;
+    margin-bottom: 0;
+}
+     
+.time_consecutive {
+    float: left;
+    margin-left: -40px;
+    margin-top: 5px;
+    font-size: 9px;
+    padding-right: 30px;
+}
+    
+.buddyicon {
+    position: absolute;
+    z-index: 4;
+    height: 40px;
+    width: 40px;
+    top: 3px;
+    left: 6px;
+}
+	
+.buddyicon img {
+    position: absolute;
+    top: 3px;
+    left: 3px;
+    z-index: 3;
+}
+ 
+.message {
+    position: relative;
+    top: 0;
+    left: 0;
+    padding: 10px 4px 0px 50px;
+}
+ 
+.context .message {
+    color: #404040;
+}    
+   
+ p {
+    padding: 0;
+    margin-bottom: 6px;
+    overflow: auto;
+    -webkit-overflow-scrolling: touch;
+}
+    
+.status_container {
+    position: relative;
+    margin: 10px 5px;
+    padding: 0 20px;
+    color: #111111;
+    text-shadow: 1px 1px 3px #aaa;
+    font-size: 9px;
+    text-transform: lowercase;
+    min-height: 15px;
+    background: rgba(225,225,225,0.9);
+    border: 2px solid #949494;
+    -webkit-border-radius: 10px;
+}
+
+.status_message {
+	position: absolute;
+	top: 2px;
+}
+
+.status_time {
+    position: absolute;
+    top: 2px;
+    right: 10px;
+    text-transform: uppercase;
+    font-size: 8px;
+}
+
+#Chat {
+    overflow: hidden;
+    margin-bottom: -8px;
+}            
+    </style>
+    
+<script type="text/javascript">
+
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-662623-5']);
+  _gaq.push(['_trackPageview']);
+
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+
+</script>    
+  </head>
+
+  <!--                                           -->
+  <!-- The body can have arbitrary html, or      -->
+  <!-- you can leave the body empty if you want  -->
+  <!-- to create a completely dynamic UI.        -->
+  <!--                                           -->
+  <body>
+
+    <!-- OPTIONAL: include this if you want history support -->
+    <iframe src="javascript:''" id="__gwt_historyFrame" tabIndex='-1' style="position:absolute;width:0;height:0;border:0"></iframe>
+
+    <!-- RECOMMENDED if your web app will not function without JavaScript enabled -->
+    <noscript>
+      <div style="width: 22em; position: absolute; left: 50%; margin-left: -11em; color: red; background-color: white; border: 1px solid red; padding: 4px; font-family: sans-serif">
+        Your web browser must have JavaScript enabled
+        in order for this application to display correctly.
+      </div>
+    </noscript>
+
+    <div style="top: auto; left: auto; width: 300px; height:300px;background-image: url(logo.png);position: absolute;right: 0px;bottom: 0px;opacity: 0.07;background-size: contain;"></div>    
+  </body>
+</html>
