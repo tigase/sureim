@@ -31,7 +31,7 @@ public interface I18n extends Constants {
         String message();
         
         // Months
-        	@DefaultStringValue("January")
+        @DefaultStringValue("January")
 	String january();
 	
 	@DefaultStringValue("February")
