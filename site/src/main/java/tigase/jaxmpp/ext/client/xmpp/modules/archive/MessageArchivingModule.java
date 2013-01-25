@@ -13,6 +13,7 @@ import tigase.jaxmpp.core.client.JID;
 import tigase.jaxmpp.core.client.PacketWriter;
 import tigase.jaxmpp.core.client.SessionObject;
 import tigase.jaxmpp.core.client.XMPPException;
+import tigase.jaxmpp.core.client.XMPPException.ErrorCondition;
 import tigase.jaxmpp.core.client.XmppModule;
 import tigase.jaxmpp.core.client.criteria.Criteria;
 import tigase.jaxmpp.core.client.criteria.ElementCriteria;
@@ -143,9 +144,46 @@ public class MessageArchivingModule implements XmppModule, PacketWriterAware {
                 protected abstract void onItemsReceived(final ChatResultSet chat) throws XMLException;
         }
 
+        public static abstract class SettingsAsyncCallback implements AsyncCallback {
+
+                public void onSuccess(Stanza stanza) throws JaxmppException {
+                        Element pref = stanza.getChildrenNS("pref", ARCHIVE_XMLNS);
+                        List<Element> children = pref.getChildren("auto");
+                        boolean auto = false;
+                        if (children != null && !children.isEmpty()) {
+                                auto = Boolean.parseBoolean(children.get(0).getAttribute("save"));
+                        }
+                        onSuccess(auto);
+                }
+                
+                public abstract void onSuccess(boolean autoArchive);
+        }
+        
         public MessageArchivingModule() {
         }
 
+        public void setAutoArchive(boolean enable) throws JaxmppException {
+                IQ iq = IQ.create();
+                iq.setType(StanzaType.get);
+                
+                Element autoEl = new DefaultElement("auto", null, ARCHIVE_XMLNS);
+                autoEl.setAttribute("save", String.valueOf(enable));
+                iq.addChild(autoEl);
+                
+                writer.write(iq);
+                
+        }
+        
+        public void getSettings(final SettingsAsyncCallback callback) throws XMLException, JaxmppException {
+                IQ iq = IQ.create();
+                iq.setType(StanzaType.get);
+                
+                Element prefEl = new DefaultElement("pref", null, ARCHIVE_XMLNS);
+                iq.addChild(prefEl);
+                
+                writer.write(iq, null, callback);
+        }
+        
         public void listCollections(final JID withJid, final Date startTime, final Date endTime, final String afterId, final CollectionAsyncCallback callback) throws XMLException, JaxmppException {
  		IQ iq = IQ.create();
                 iq.setType(StanzaType.get);

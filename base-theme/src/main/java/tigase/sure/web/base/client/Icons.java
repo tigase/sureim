@@ -66,4 +66,11 @@ public interface Icons extends ClientBundle {
         
         @Source("icons/4-collections-labels.png")
         ImageResource bookmarks();
+        
+        @Source("icons/10-device-access-mic.png")
+        ImageResource microfoneOn();
+                
+        @Source("icons/10-device-access-mic-muted.png")
+        ImageResource microfoneOff();
+        
 }

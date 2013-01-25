@@ -7,8 +7,10 @@ package tigase.sure.web.site.client.archive;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.place.shared.Place;
+import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.ResizeComposite;
+import com.google.gwt.user.client.ui.Widget;
 import tigase.sure.web.base.client.AppView;
 import tigase.jaxmpp.ext.client.xmpp.modules.archive.Chat;
 import tigase.jaxmpp.ext.client.xmpp.modules.archive.MessageArchivingModule;
@@ -28,6 +30,7 @@ import tigase.jaxmpp.core.client.exceptions.JaxmppException;
 import tigase.jaxmpp.core.client.xml.XMLException;
 import tigase.jaxmpp.core.client.xmpp.modules.disco.DiscoInfoModule.Identity;
 import tigase.jaxmpp.core.client.xmpp.stanzas.Stanza;
+import tigase.jaxmpp.ext.client.xmpp.modules.archive.MessageArchivingModule.SettingsAsyncCallback;
 
 /**
  *
@@ -43,11 +46,46 @@ public class ArchiveViewImpl extends ResizeComposite implements ArchiveView {
         
         private final Controller controller;
         
+        private final Widget archiveEnabled;
+        private final Widget archiveDisabled;
+        
+        private final SettingsAsyncCallback settingsAsyncCallback = new SettingsAsyncCallback() {
+
+                @Override
+                public void onSuccess(boolean autoArchive) {
+                        archiveEnabled.setVisible(autoArchive);
+                        archiveDisabled.setVisible(!autoArchive);
+                }
+
+                public void onError(Stanza responseStanza, ErrorCondition error) throws JaxmppException {
+                        archiveEnabled.setVisible(false);
+                        archiveDisabled.setVisible(false);
+                }
+
+                public void onTimeout() throws JaxmppException {
+                        archiveEnabled.setVisible(false);
+                        archiveDisabled.setVisible(false);
+                }
+                
+        };
+        
         private final ServerFeaturesChangedHandler serverFeaturesChangedHandler = new ServerFeaturesChangedHandler() {
 
                 public void serverFeaturesChanged(Collection<Identity> identities, Collection<String> features) {
                         boolean ok =  (features != null && features.contains("urn:xmpp:archive:auto"));
                         factory.actionBarFactory().setVisible("archive", ok);
+                        MessageArchivingModule module = factory.jaxmpp().getModulesManager().getModule(MessageArchivingModule.class);
+                        if (ok) {
+                                try {
+                                        module.getSettings(settingsAsyncCallback);
+                                } catch (JaxmppException ex) {
+                                        log.log(Level.SEVERE, null, ex);
+                                }
+                        }
+                        else {
+                                archiveEnabled.setVisible(false);
+                                archiveDisabled.setVisible(false);
+                        }
                 }
                 
         };
@@ -83,6 +121,43 @@ public class ArchiveViewImpl extends ResizeComposite implements ArchiveView {
                 appView.setRightSidebar(calendar, 15);
                 Messages messages = new Messages(factory, controller);
                 appView.setCenter(messages);
+                
+                archiveEnabled = appView.getActionBar().addAction(factory.theme().microfoneOn(), new ClickHandler() {
+                        @Override
+                        public void onClick(ClickEvent event) {
+                                MessageArchivingModule module = factory.jaxmpp().getModulesManager().getModule(MessageArchivingModule.class);
+                                try {
+                                        module.setAutoArchive(false);
+                                }
+                                catch (JaxmppException ex) {
+                                        log.log(Level.SEVERE, null, ex);
+                                }
+                                archiveEnabled.setVisible(false);
+                                archiveDisabled.setVisible(true);
+                        }
+                        
+                });
+                ((Image) archiveEnabled).setTitle("Disable auto archiving");
+                
+                archiveDisabled = appView.getActionBar().addAction(factory.theme().microfoneOff(), new ClickHandler() {
+                        @Override
+                        public void onClick(ClickEvent event) {
+                                MessageArchivingModule module = factory.jaxmpp().getModulesManager().getModule(MessageArchivingModule.class);
+                                try {
+                                        module.setAutoArchive(true);
+                                }
+                                catch (JaxmppException ex) {
+                                        log.log(Level.SEVERE, null, ex);
+                                }
+                                archiveEnabled.setVisible(true);
+                                archiveDisabled.setVisible(false);
+                        }
+                        
+                });
+                ((Image) archiveDisabled).setTitle("Enable auto archiving");
+                
+                archiveEnabled.setVisible(false);
+                archiveDisabled.setVisible(false);
                 
                 initWidget(appView);
         }
