@@ -88,10 +88,10 @@ public class RootView extends ResizeComposite {
                 anchor.addStyleName(factory.theme().style().footerBarItem());
                 anchor.setTarget("_blank");
                 footerPanel.add(anchor);
-                anchor = new Anchor(factory.baseI18n().contactForm(), root.get("contact-link"));                
-                anchor.addStyleName(factory.theme().style().footerBarItem());
-                anchor.setTarget("_blank");
-                footerPanel.add(anchor);
+//                anchor = new Anchor(factory.baseI18n().contactForm(), root.get("contact-link"));                
+//                anchor.addStyleName(factory.theme().style().footerBarItem());
+//                anchor.setTarget("_blank");
+//                footerPanel.add(anchor);
                 anchor = new Anchor(factory.baseI18n().supportForm(), root.get("support-link"));                
                 anchor.addStyleName(factory.theme().style().footerBarItem());
                 anchor.setTarget("_blank");

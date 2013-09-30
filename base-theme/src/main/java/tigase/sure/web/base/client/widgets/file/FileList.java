@@ -11,7 +11,9 @@ import com.google.gwt.core.client.JavaScriptObject;
  * @author andrzej
  */
 public class FileList extends JavaScriptObject {
-        
+
+		protected FileList() {}
+	
         public final native int getLength() /*-{
                 return this.length;
         }-*/;

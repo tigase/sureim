@@ -87,7 +87,7 @@ public class ClientFactoryImpl extends tigase.sure.web.base.client.ClientFactory
                 settingsView = new SettingsViewImpl(this);
                 
                 jaxmpp().getModulesManager().register(new MessageArchivingModule());
-                jaxmpp().getModulesManager().register(new BookmarksModule(null, jaxmpp().getSessionObject(), jaxmpp().getWriter()));
+                jaxmpp().getModulesManager().register(new BookmarksModule(jaxmpp().getSessionObject(), jaxmpp().getWriter()));
                 
                 jaxmppBindListener = new Listener<ResourceBinderModule.ResourceBindEvent>() {
 
