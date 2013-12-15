@@ -18,6 +18,7 @@ import com.google.gwt.place.shared.PlaceController;
 import com.google.gwt.place.shared.PlaceHistoryHandler;
 import com.google.gwt.user.client.Cookies;
 import com.google.gwt.user.client.Random;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.*;
 import com.google.web.bindery.event.shared.EventBus;
 import tigase.sure.web.base.client.ActionBar;
@@ -48,6 +49,7 @@ import tigase.jaxmpp.core.client.xmpp.modules.disco.DiscoInfoModule;
 import tigase.jaxmpp.core.client.xmpp.stanzas.ErrorElement;
 import tigase.jaxmpp.gwt.client.Jaxmpp;
 import tigase.jaxmpp.gwt.client.connectors.BoshConnector;
+import tigase.jaxmpp.gwt.client.connectors.WebSocket;
 
 /**
  * Entry point classes define
@@ -62,7 +64,10 @@ public class Xode implements EntryPoint {
         private String password = null;
         
         private ClientFactory factory;
-        /**
+        
+		private DnsResult dnsResult = null;
+		
+		/**
          * This is the entry point method.
          */
         public void onModuleLoad() {
@@ -207,52 +212,132 @@ public class Xode implements EntryPoint {
                                 
                 authenticateInt2(jid, password, domain);
         }
-        
-        public void authenticateInt2(final JID jid, final String password, String domain) {                 
+
+		private void resolveDomain(final String domain, final com.google.gwt.user.client.rpc.AsyncCallback<DnsResult> callback) {
                 final Dictionary root = Dictionary.getDictionary("root");
                 String url = root.get("dns-resolver");
-                url += "?domain=" + URL.encodeQueryString(domain);
-                JsonpRequestBuilder builder = new JsonpRequestBuilder();
-                builder.requestObject(url, new com.google.gwt.user.client.rpc.AsyncCallback<DnsResult>() {
+				url += "?version=2";
+				url += "&domain=" + URL.encodeQueryString(domain);
+				JsonpRequestBuilder builder = new JsonpRequestBuilder();
+				builder.requestObject(url, callback);					
+		}
+		
+        public void authenticateInt2(final JID jid, final String password, String domain) {                 
+                final Dictionary root = Dictionary.getDictionary("root");
+
+				if (dnsResult != null && domain.equals(dnsResult.getDomain()) && dnsResult.hasMore()) {
+						selectNodeToConnect(jid, password, null);
+						return;
+				}						
+                
+				resolveDomain(domain, new com.google.gwt.user.client.rpc.AsyncCallback<DnsResult>() {
                         
                         public void onFailure(Throwable caught) {
+								dnsResult = null;
                                 String boshUrl = getBoshUrl((jid != null) ? jid.getDomain() : root.get("anon-domain"));
                                 authenticateInt3(jid, password, boshUrl);                                
                         }
 
                         public void onSuccess(DnsResult result) {
-                                JsArray<DnsEntry> entriesJs = result.getEntries();
-                                String domain = null;
-                                int port = 0;
-                                // filter only IPv4
-                                List<DnsEntry> entries = new ArrayList<DnsEntry>();
-                                for (int i=0; i<entriesJs.length(); i++) {
-                                        DnsEntry entry = entriesJs.get(i);
-                                        if (entry.getIp().contains(":"))
-                                                continue;
-                                        
-                                        entries.add(entry);
-                                }
-                                if (entries.size() > 1) {
-                                        while (domain == null || domain.contains(":")) {
-                                                int rand = Random.nextInt(entries.size());
-                                                domain = entries.get(rand).getIp();
-                                                port = entries.get(rand).getPort();
-                                        }                                        
-                                }
-                                else if (entries.size() > 0) {
-                                        domain = entries.get(0).getResultHost();
-                                        port = entries.get(0).getPort();
-                                }
-                                else {
-                                        domain = jid.getDomain();
-                                }                                
-                                String boshUrl = "http://" + domain + (port != 0 ? (":" + port) : "") + "/bosh";                                
-                                authenticateInt3(jid, password, boshUrl);                                
+								dnsResult = result;
+				
+								selectNodeToConnect(jid, password, null);							
+//                                JsArray<DnsEntry> entriesJs = result.getEntries();
+//                                String domain = null;
+//                                int port = 0;
+//                                // filter only IPv4
+//                                List<DnsEntry> entries = new ArrayList<DnsEntry>();
+//                                for (int i=0; i<entriesJs.length(); i++) {
+//                                        DnsEntry entry = entriesJs.get(i);
+//                                        if (entry.getIp().contains(":"))
+//                                                continue;
+//                                        
+//                                        entries.add(entry);
+//                                }
+//                                if (entries.size() > 1) {
+//                                        while (domain == null || domain.contains(":")) {
+//                                                int rand = Random.nextInt(entries.size());
+//                                                domain = entries.get(rand).getIp();
+//                                                port = entries.get(rand).getPort();
+//                                        }                                        
+//                                }
+//                                else if (entries.size() > 0) {
+//                                        domain = entries.get(0).getResultHost();
+//                                        port = entries.get(0).getPort();
+//                                }
+//                                else {
+//                                        domain = jid.getDomain();
+//                                }                                
+//                                String boshUrl = "http://" + domain + (port != 0 ? (":" + port) : "") + "/bosh";                                
+//                                authenticateInt3(jid, password, boshUrl);                                
                         }
                         
                 });                
         }
+		
+		private void selectNodeToConnect(final JID jid, final String password, final String host) {		
+				String boshUrl = null;
+				if (host != null) {
+						boshUrl = dnsResult.getUrlForHost(host);
+						if (boshUrl == null) {
+								resolveDomain(host, new com.google.gwt.user.client.rpc.AsyncCallback<DnsResult>() {
+
+										@Override
+										public void onFailure(Throwable caught) {
+												factory.eventBus().fireEvent(new AuthEvent(null));
+										}
+
+										@Override
+										public void onSuccess(DnsResult result) {
+												String url = null;
+												if (WebSocket.isSupported()) {
+														int wsCount = result.getWebSocket().length();
+														if (wsCount > 0) {
+																url = result.getWebSocket().get(0).getUrl();
+														}
+												}
+												if (url == null) {
+														int boshCount = result.getBosh().length();
+														if (boshCount > 0) {
+																url = result.getBosh().get(0).getUrl();
+														}
+												}
+												if (url != null) {
+														authenticateInt3(jid, password, url);
+												}
+												else {
+														factory.eventBus().fireEvent(new AuthEvent(null));
+												}
+										}
+					
+								});
+								return;
+						}
+				}
+				boolean secure = "https:".equals(Window.Location.getProtocol());
+				while (boshUrl == null && dnsResult.hasMore()) {
+						boshUrl = dnsResult.next();
+			
+//			boolean secureUrl = boshUrl.startsWith("https://") || boshUrl.startsWith("wss://");
+//			if (secure != secureUrl) {
+//				dnsResult.connectionFailed(boshUrl);
+//				boshUrl = null;
+//				continue;
+//			}
+			
+						if (!WebSocket.isSupported() && (boshUrl.startsWith("ws://") || boshUrl.startsWith("wss://"))) {
+								dnsResult.connectionFailed(boshUrl);
+								boshUrl = null;
+						}
+				}
+
+				if (boshUrl != null) {
+						authenticateInt3(jid, password, boshUrl);
+				}
+				else {
+						factory.eventBus().fireEvent(new AuthEvent(null));
+				}
+		}		
         
         public static String getBoshUrl(String domain) {
                 Dictionary domains = Dictionary.getDictionary("domains");

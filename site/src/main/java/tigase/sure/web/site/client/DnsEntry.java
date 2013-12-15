@@ -5,6 +5,7 @@
 package tigase.sure.web.site.client;
 
 import com.google.gwt.core.client.JavaScriptObject;
+import com.google.gwt.core.client.JsArrayString;
 
 /**
  *
@@ -17,13 +18,16 @@ public class DnsEntry extends JavaScriptObject {
    public final native int getPort() /*-{
            return this.port;
    }-*/;
-     
-   public final native String getIp() /*-{
+
+   public final native JsArrayString getIps() /*-{
            return this.ip;
    }-*/;
 
-   public final native String getResultHost() /*-{
-           return this.resultHost;
+   public final native String getHost() /*-{
+           return this.host;
    }-*/;
    
+   public final native String getUrl() /*-{
+	       return this.url;
+   }-*/;
 }
