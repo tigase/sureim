@@ -85,13 +85,30 @@ public class Xode implements EntryPoint {
                                 if (error != null) {
                                         Element seeOtherHost = error.getChildrenNS("see-other-host", "urn:ietf:params:xml:ns:xmpp-streams");
                                         if (seeOtherHost != null) {
-                                                authenticateInt2(jid, password, seeOtherHost.getValue());
+                                                //authenticateInt2(jid, password, seeOtherHost.getValue());
+												selectNodeToConnect(jid, password, seeOtherHost.getValue());
                                         }
                                 }
                         }
                         
                 });
-                
+                factory.jaxmpp().addListener(Connector.StreamTerminated, new Listener<BoshConnectorEvent>() {
+
+                        public void handleEvent(BoshConnectorEvent be) throws JaxmppException {
+                                // needed to handle see-other-host
+                                Element error = be.getStreamErrorElement();
+                                if (error != null) {
+                                        Element seeOtherHost = error.getChildrenNS("see-other-host", "urn:ietf:params:xml:ns:xmpp-streams");
+                                        if (seeOtherHost != null) {
+                                                //authenticateInt2(jid, password, seeOtherHost.getValue());
+												selectNodeToConnect(jid, password, seeOtherHost.getValue());
+                                        }
+                                }
+                        }
+                        
+                });
+
+				
 //                AbsolutePanel center = new AbsolutePanel();
 //                center.add(new Label("Center panel"));
 

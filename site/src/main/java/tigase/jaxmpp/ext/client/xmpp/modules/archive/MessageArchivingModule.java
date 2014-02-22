@@ -208,7 +208,7 @@ public class MessageArchivingModule implements XmppModule, PacketWriterAware {
                 writer.write(iq, null, callback);
         }
 
-	public void retriveCollection(final JID withJid, final Date startTime, final Date endTime, String afterId, Integer maxCount, final ItemsAsyncCallback callback) throws XMLException, JaxmppException {
+	public void retriveCollection(final JID withJid, final Date startTime, final Date endTime, String afterId, Integer index, Integer maxCount, final ItemsAsyncCallback callback) throws XMLException, JaxmppException {
 		IQ iq = IQ.create();
                 iq.setType(StanzaType.get);
 
@@ -216,6 +216,9 @@ public class MessageArchivingModule implements XmppModule, PacketWriterAware {
                 iq.addChild(retrieve);
 		retrieve.setAttribute("with", withJid.toString());
                 retrieve.setAttribute("start", format.format(startTime));
+		if (endTime != null) {
+			retrieve.setAttribute("end", format.format(endTime));
+		}
 
 		Element set = new DefaultElement("set", null, "http://jabber.org/protocol/rsm");
 
@@ -224,6 +227,10 @@ public class MessageArchivingModule implements XmppModule, PacketWriterAware {
                 if (afterId != null) {
                     set.addChild(new DefaultElement("after", afterId, null));
                 }
+				
+				if (index != null) {
+					set.addChild(new DefaultElement("index", String.valueOf(index), null));
+				}
 
                 writer.write(iq, null, callback);                
 	}

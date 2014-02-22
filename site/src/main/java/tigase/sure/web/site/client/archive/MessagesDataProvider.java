@@ -36,7 +36,7 @@ public class MessagesDataProvider extends AsyncDataProvider implements MessageAr
                         start--;
                 }
 
-                controller.getMessages(null, start != null ? Integer.toString(start) : null);
+                controller.getMessages(null, start);
         }
 
         @Override
@@ -47,8 +47,8 @@ public class MessagesDataProvider extends AsyncDataProvider implements MessageAr
                 }
 
                 Integer first = 0;
-                if (rs.getFirst() != null) {
-                        first = Integer.valueOf(rs.getFirst());
+                if (rs.getIndex() != null) {
+                        first = rs.getIndex();
                 }
                 updateRowData(first - 1, rs.getItems());
                 updateRowCount(rs.getCount(), false);

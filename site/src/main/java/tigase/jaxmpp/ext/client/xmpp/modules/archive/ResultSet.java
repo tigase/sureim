@@ -19,6 +19,9 @@ public class ResultSet<T> {
         private String first;
         private String last;
         private int count = 0;
+		
+		private Integer index = null;
+		
 	private List<T> items = new ArrayList<T>();
 
         public int getCount() {
@@ -28,6 +31,10 @@ public class ResultSet<T> {
         public String getFirst() {
             return first;
         }
+		
+		public Integer getIndex() {
+			return index;
+		}
 
 	public List<T> getItems() {
 		return items;
@@ -43,8 +50,14 @@ public class ResultSet<T> {
                 setCount(Integer.valueOf(e.getValue()));
 
             e = getFirstChild(rsm, "first");
-            if (e != null)
+            if (e != null) {
                 setFirst(e.getValue());
+				
+				String indexStr = e.getAttribute("index");
+				if (indexStr != null) {
+					index = Integer.parseInt(indexStr);
+				}
+			}
             
             e = getFirstChild(rsm, "last");
             if (e != null)
@@ -63,6 +76,10 @@ public class ResultSet<T> {
 		this.items = items;
 	}
 
+		void setIndex(Integer index) {
+			this.index = index;
+		}
+	
         void setLast(String last) {
             this.last = last;
         }

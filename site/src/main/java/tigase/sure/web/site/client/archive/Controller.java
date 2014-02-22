@@ -103,7 +103,7 @@ public class Controller {
                 this.pageSize = size;
         }
 
-        void getMessages(Date date, String after) {
+        void getMessages(Date date, Integer index) {
                 if (date != null) {
                         this.date = date;
                 }
@@ -113,11 +113,10 @@ public class Controller {
                 }
 
                 Date end = CalendarUtil.copyDate(this.date);
-                CalendarUtil.addMonthsToDate(end, 1);
-                CalendarUtil.addDaysToDate(end, -1);
+                CalendarUtil.addDaysToDate(end, 1);
 
                 try {
-                        factory.jaxmpp().getModulesManager().getModule(MessageArchivingModule.class).retriveCollection(this.jid, this.date, end, after, pageSize, itemsCallback);
+                        factory.jaxmpp().getModulesManager().getModule(MessageArchivingModule.class).retriveCollection(this.jid, this.date, end, null, index, pageSize, itemsCallback);
                 } catch (Exception ex) {
                         Logger.getLogger("MessageArchivingController").log(Level.WARNING, "exception requesting messages", ex);
                 }

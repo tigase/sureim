@@ -271,6 +271,7 @@ public class CalendarWidget extends Composite implements ClickHandler, /*
 //                            html.addStyleName(css.hasMessagesClass());
 //                            html.addStyleName(css.dayClass());
                                                 html.addStyleName("calendar-widget-day");
+												html.addStyleName("calendar-widget-day-messages-available");
                                                 html.addClickHandler(cal);
                                                 grid.setWidget(i, k, html);
                                         } else {
