@@ -45,11 +45,14 @@ import tigase.jaxmpp.core.client.xml.XMLException;
 import tigase.jaxmpp.core.client.xmpp.modules.BookmarksModule;
 import tigase.jaxmpp.core.client.xmpp.modules.ResourceBinderModule;
 import tigase.jaxmpp.core.client.xmpp.modules.ResourceBinderModule.ResourceBindEvent;
+import tigase.jaxmpp.core.client.xmpp.modules.auth.AuthModule;
+import tigase.jaxmpp.core.client.xmpp.modules.auth.SaslModule.SaslEvent;
 import tigase.jaxmpp.core.client.xmpp.modules.disco.DiscoInfoModule;
 import tigase.jaxmpp.core.client.xmpp.modules.disco.DiscoInfoModule.DiscoInfoAsyncCallback;
 import tigase.jaxmpp.core.client.xmpp.modules.disco.DiscoInfoModule.Identity;
 import tigase.jaxmpp.core.client.xmpp.stanzas.Stanza;
 import tigase.jaxmpp.gwt.client.Jaxmpp;
+import tigase.sure.web.base.client.auth.AuthFailureEvent;
 
 /**
  *
@@ -144,6 +147,13 @@ public class ClientFactoryImpl extends tigase.sure.web.base.client.ClientFactory
                         }
                 
                 });
+				jaxmpp().addListener(AuthModule.AuthFailed, new Listener<AuthModule.AuthEvent>() {
+					public void handleEvent(AuthModule.AuthEvent be) throws JaxmppException {
+						if (be instanceof SaslEvent) {
+							eventBus().fireEvent(new AuthFailureEvent(((SaslEvent) be).getError()));
+						}
+					}				
+				});
         }
 
         @Override

@@ -41,5 +41,7 @@ public interface Style extends CssResource {
         String buttonDefault();
         String buttonDisabled();
         
-        String popupPanel();        
+        String popupPanel();   
+		
+		String errorPanelStyle();
 }

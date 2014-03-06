@@ -19,6 +19,7 @@ import tigase.sure.web.site.client.pubsub.PubSubPanel;
 import tigase.sure.web.site.client.register.RegisterDialog;
 import tigase.jaxmpp.core.client.BareJID;
 import tigase.jaxmpp.core.client.JID;
+import tigase.jaxmpp.core.client.xmpp.modules.auth.SaslModule;
 
 /**
  *
@@ -85,7 +86,7 @@ public class AuthView extends AbstractAuthView {
                                 panel.requestEntries(BareJID.bareJIDInstance("pubsub",domain), "news");
                         }
 
-                        public void deauthenticated() {
+                        public void deauthenticated(String msg, SaslModule.SaslError saslError) {
                         }
                 
                 });

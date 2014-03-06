@@ -45,11 +45,13 @@ import tigase.jaxmpp.core.client.connector.AbstractBoshConnector.BoshConnectorEv
 import tigase.jaxmpp.core.client.exceptions.JaxmppException;
 import tigase.jaxmpp.core.client.observer.Listener;
 import tigase.jaxmpp.core.client.xml.Element;
+import tigase.jaxmpp.core.client.xmpp.modules.auth.SaslModule;
 import tigase.jaxmpp.core.client.xmpp.modules.disco.DiscoInfoModule;
 import tigase.jaxmpp.core.client.xmpp.stanzas.ErrorElement;
 import tigase.jaxmpp.gwt.client.Jaxmpp;
 import tigase.jaxmpp.gwt.client.connectors.BoshConnector;
 import tigase.jaxmpp.gwt.client.connectors.WebSocket;
+import tigase.sure.web.base.client.auth.AuthFailureEvent;
 
 /**
  * Entry point classes define
@@ -107,7 +109,22 @@ public class Xode implements EntryPoint {
                         }
                         
                 });
+				factory.jaxmpp().addListener(Connector.StreamTerminated, new Listener<BoshConnectorEvent>() {
 
+					public void handleEvent(BoshConnectorEvent be) throws JaxmppException {
+						Element stream = be.getBody();
+						if (stream == null)
+							return;
+						List<Element> streamError = stream.getChildren("stream:error");
+						if (streamError != null && !streamError.isEmpty()) {
+							Element seeOtherHost = streamError.get(0).getChildrenNS("see-other-host", "urn:ietf:params:xml:ns:xmpp-streams");
+							if (seeOtherHost != null) {
+								selectNodeToConnect(jid, password, seeOtherHost.getValue());
+							}
+						}						
+					}
+					
+				});
 				
 //                AbsolutePanel center = new AbsolutePanel();
 //                center.add(new Label("Center panel"));
@@ -150,7 +167,7 @@ public class Xode implements EntryPoint {
                                 }
                         }
 
-                        public void deauthenticated() {
+                        public void deauthenticated(String msg, SaslModule.SaslError saslError) {
                                 placeController.goTo(new AuthPlace());
                         }
                 });
@@ -301,7 +318,7 @@ public class Xode implements EntryPoint {
 
 										@Override
 										public void onFailure(Throwable caught) {
-												factory.eventBus().fireEvent(new AuthEvent(null));
+												factory.eventBus().fireEvent(new AuthFailureEvent("Could not resolve host IP address"));
 										}
 
 										@Override
@@ -323,7 +340,7 @@ public class Xode implements EntryPoint {
 														authenticateInt3(jid, password, url);
 												}
 												else {
-														factory.eventBus().fireEvent(new AuthEvent(null));
+														factory.eventBus().fireEvent(new AuthFailureEvent("Could not connect to any IP address"));
 												}
 										}
 					
@@ -352,7 +369,7 @@ public class Xode implements EntryPoint {
 						authenticateInt3(jid, password, boshUrl);
 				}
 				else {
-						factory.eventBus().fireEvent(new AuthEvent(null));
+						factory.eventBus().fireEvent(new AuthFailureEvent("Could not connect to any IP address"));
 				}
 		}		
         

@@ -10,6 +10,7 @@ import com.google.gwt.user.client.ui.*;
 import tigase.sure.web.base.client.ClientFactory;
 import tigase.sure.web.base.client.ResizablePanel;
 import tigase.jaxmpp.core.client.JID;
+import tigase.jaxmpp.core.client.xmpp.modules.auth.SaslModule;
 
 /**
  *
@@ -24,6 +25,7 @@ public class AbstractAuthView extends ResizeComposite {
         private Button authButton;
         private DisclosurePanel disclosure;
         private TextBox boshUrl;
+		private AbsolutePanel errorPanel;
         
         public AbstractAuthView(ClientFactory factory_) {
                 this.factory = factory_;
@@ -34,7 +36,7 @@ public class AbstractAuthView extends ResizeComposite {
                                 authFinished();
                         }
 
-                        public void deauthenticated() {
+                        public void deauthenticated(String msg, SaslModule.SaslError saslError) {
                                 authFinished();
                         }
                         
@@ -48,6 +50,7 @@ public class AbstractAuthView extends ResizeComposite {
         }
         
         private void handle() {
+				errorPanel.setVisible(false);
                 authButton.setEnabled(false);
                 authButton.removeStyleName(factory.theme().style().buttonDefault());
                 authButton.addStyleName(factory.theme().style().buttonDisabled());                
@@ -101,6 +104,29 @@ public class AbstractAuthView extends ResizeComposite {
                         panel.add(disclosure);
                 }
                 
+				errorPanel = new AbsolutePanel();
+				errorPanel.setStyleName(factory.theme().style().errorPanelStyle());
+				errorPanel.setVisible(false);
+				panel.add(errorPanel);
+				
+				factory.eventBus().addHandler(AuthEvent.TYPE, new AuthHandler() {
+					public void authenticated(JID jid) {
+						errorPanel.setVisible(false);
+					}
+
+					public void deauthenticated(String msg, SaslModule.SaslError saslError) {
+						if (msg != null) {
+							errorPanel.getElement().setInnerText(msg);
+						}
+						if (saslError != null) {
+							errorPanel.getElement().setInnerText("Authentication error: " + saslError.name());
+						}
+						if (msg != null || saslError != null) {
+							errorPanel.setVisible(true);
+						}
+					}
+				});
+				
                 authButton = new Button(factory.baseI18n().authenticate());
                 authButton.addClickHandler(new ClickHandler() {
                         public void onClick(ClickEvent event) {

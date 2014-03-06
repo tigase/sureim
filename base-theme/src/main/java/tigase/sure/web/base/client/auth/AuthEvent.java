@@ -29,7 +29,13 @@ public class AuthEvent extends Event<AuthHandler> {
         @Override
         protected void dispatch(AuthHandler handler) {
                 if (jid == null) {
-                        handler.deauthenticated();
+					if (this instanceof AuthFailureEvent) {
+						AuthFailureEvent e = (AuthFailureEvent) this;
+						handler.deauthenticated(e.getMessage(), e.getSaslError());
+					}
+					else {
+						handler.deauthenticated(null, null);
+					}
                 }
                 else {
                         handler.authenticated(jid);

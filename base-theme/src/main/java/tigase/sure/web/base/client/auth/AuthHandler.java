@@ -5,6 +5,7 @@
 package tigase.sure.web.base.client.auth;
 
 import tigase.jaxmpp.core.client.JID;
+import tigase.jaxmpp.core.client.xmpp.modules.auth.SaslModule.SaslError;
 
 /**
  *
@@ -14,6 +15,6 @@ public interface AuthHandler {
         
         void authenticated(JID jid);
         
-        void deauthenticated();
+        void deauthenticated(String msg, SaslError saslError);
         
 }
