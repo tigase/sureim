@@ -42,7 +42,7 @@ import tigase.jaxmpp.core.client.xmpp.stanzas.StanzaType;
  *
  * @author andrzej
  */
-public class PersonalInformationView extends ResizeComposite implements View {
+public class PersonalInformationView extends Composite implements View {
         
         private static final Logger log = Logger.getLogger("PersonalInformationView");
         

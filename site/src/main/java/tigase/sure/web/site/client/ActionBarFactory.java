@@ -10,6 +10,7 @@ import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Label;
 import tigase.sure.web.base.client.ActionBar;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -22,7 +23,7 @@ public class ActionBarFactory {
         
         private final ClientFactory factory;
         private final List<ActionBar> all = new ArrayList<ActionBar>();        
-        private final Map<String,Link> links = new HashMap<String,Link>();        
+        private final Map<String,Link> links = new HashMap<String,Link>();   
         
         ActionBarFactory(ClientFactory factory_) {
                 this.factory = factory_;
@@ -32,7 +33,9 @@ public class ActionBarFactory {
                 ActionBar bar = new ActionBar(factory);
                 all.add(bar);
                 
-                for (Link link : links.values()) {
+				List<Link> tmp = new ArrayList<Link>(links.values());
+				Collections.sort(tmp);
+                for (Link link : tmp) {
                         IsWidget w = bar.addLink(link.name, link.handler);
                         link.widgets.add(w);
                 }
@@ -45,6 +48,7 @@ public class ActionBarFactory {
                 link.id = id;
                 link.name = name;
                 link.handler = handler;
+				link.order = links.size();
                 
                 links.put(id, link);
                 
@@ -77,12 +81,18 @@ public class ActionBarFactory {
                 }                
         }
         
-        private class Link {
+        private class Link implements Comparable<Link> {
                 
                 public String id;
                 public String name;
                 public ClickHandler handler;
                 public List<IsWidget> widgets = new ArrayList<IsWidget>();
+				public int order;
+
+				@Override
+				public int compareTo(Link o) {
+					return order - o.order;
+				}
                 
         }
 }

@@ -19,7 +19,7 @@ import tigase.jaxmpp.core.client.xmpp.modules.registration.InBandRegistrationMod
  *
  * @author andrzej
  */
-public class GeneralSettingsView extends ResizeComposite implements View {
+public class GeneralSettingsView extends Composite implements View {
 
         private final ClientFactory factory;
         private final VerticalPanel layout;

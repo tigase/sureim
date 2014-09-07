@@ -24,15 +24,13 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import tigase.jaxmpp.core.client.BareJID;
 import tigase.jaxmpp.core.client.JID;
+import tigase.jaxmpp.core.client.SessionObject;
 import tigase.jaxmpp.core.client.exceptions.JaxmppException;
-import tigase.jaxmpp.core.client.observer.Listener;
 import tigase.jaxmpp.core.client.xml.XMLException;
 import tigase.jaxmpp.core.client.xmpp.modules.presence.PresenceModule;
-import tigase.jaxmpp.core.client.xmpp.modules.presence.PresenceModule.PresenceEvent;
 import tigase.jaxmpp.core.client.xmpp.modules.roster.RosterItem;
 import tigase.jaxmpp.core.client.xmpp.modules.roster.RosterItem.Subscription;
 import tigase.jaxmpp.core.client.xmpp.modules.roster.RosterModule;
-import tigase.jaxmpp.core.client.xmpp.modules.roster.RosterModule.RosterEvent;
 import tigase.jaxmpp.core.client.xmpp.stanzas.Presence;
 import tigase.jaxmpp.gwt.client.Jaxmpp;
 
@@ -48,6 +46,46 @@ public class FlatRoster extends ResizeComposite implements AvatarChangedHandler 
                 
         }
         
+		private class PresenceHandler implements PresenceModule.ContactChangedPresenceHandler, 
+				PresenceModule.ContactAvailableHandler, PresenceModule.ContactUnavailableHandler {
+
+		@Override
+		public void onContactChangedPresence(SessionObject sessionObject, Presence stanza, JID jid, Presence.Show show, String status, Integer priority) throws JaxmppException {
+			updateItem(jid.getBareJid());
+		}
+
+		@Override
+		public void onContactAvailable(SessionObject sessionObject, Presence stanza, JID jid, Presence.Show show, String status, Integer priority) throws JaxmppException {
+			updateItem(jid.getBareJid());
+		}
+
+		@Override
+		public void onContactUnavailable(SessionObject sessionObject, Presence stanza, JID jid, String status) {
+			updateItem(jid.getBareJid());
+		}
+			
+		}
+
+		private class RosterHandler implements RosterModule.ItemAddedHandler, RosterModule.ItemRemovedHandler, 
+				RosterModule.ItemUpdatedHandler {
+
+		@Override
+		public void onItemAdded(SessionObject sessionObject, RosterItem item, Set<String> modifiedGroups) {
+			updateItem(item);
+		}
+
+		@Override
+		public void onItemRemoved(SessionObject sessionObject, RosterItem item, Set<String> modifiedGroups) {
+			updateItem(item);
+		}
+
+		@Override
+		public void onItemUpdated(SessionObject sessionObject, RosterItem item, RosterModule.Action action, Set<String> modifiedGroups) {
+			updateItem(item);
+		}
+			
+		}
+		
         private final ClientFactory factory;
         
         private final ScrollPanel scroll;
@@ -57,8 +95,8 @@ public class FlatRoster extends ResizeComposite implements AvatarChangedHandler 
         private final HashMap<String,RosterItemClickHandler> handlers;
         private final HashSet<String> itemEvents;
         
-        private final PresenceListener presenceListener;
-        private final RosterListener rosterListener;
+        private final PresenceHandler presenceListener = new PresenceHandler();
+        private final RosterHandler rosterListener = new RosterHandler();
         
         public FlatRoster(ClientFactory factory) {
                 this.factory = factory;
@@ -79,15 +117,13 @@ public class FlatRoster extends ResizeComposite implements AvatarChangedHandler 
                 
                 roster.addDataDisplay(widget);
                 
-                presenceListener = new PresenceListener();
-                jaxmpp.getModulesManager().getModule(PresenceModule.class).addListener(PresenceModule.ContactChangedPresence, presenceListener);
-                jaxmpp.getModulesManager().getModule(PresenceModule.class).addListener(PresenceModule.ContactAvailable, presenceListener);
-                jaxmpp.getModulesManager().getModule(PresenceModule.class).addListener(PresenceModule.ContactUnavailable, presenceListener);
+                jaxmpp.getModulesManager().getModule(PresenceModule.class).addContactAvailableHandler(presenceListener);
+                jaxmpp.getModulesManager().getModule(PresenceModule.class).addContactUnavailableHandler(presenceListener);
+                jaxmpp.getModulesManager().getModule(PresenceModule.class).addContactChangedPresenceHandler(presenceListener);
                
-                rosterListener = new RosterListener();
-                jaxmpp.getModulesManager().getModule(RosterModule.class).addListener(RosterModule.ItemAdded, rosterListener);
-                jaxmpp.getModulesManager().getModule(RosterModule.class).addListener(RosterModule.ItemRemoved, rosterListener);
-                jaxmpp.getModulesManager().getModule(RosterModule.class).addListener(RosterModule.ItemUpdated, rosterListener);
+                jaxmpp.getEventBus().addHandler(RosterModule.ItemAddedHandler.ItemAddedEvent.class, rosterListener);
+				jaxmpp.getEventBus().addHandler(RosterModule.ItemRemovedHandler.ItemRemovedEvent.class, rosterListener);
+				jaxmpp.getEventBus().addHandler(RosterModule.ItemUpdatedHandler.ItemUpdatedEvent.class, rosterListener);
                 
                 scroll = new ScrollPanel(widget);
                 
@@ -95,7 +131,7 @@ public class FlatRoster extends ResizeComposite implements AvatarChangedHandler 
         }
         
         public void updateItem(BareJID jid) {
-                RosterItem ri = factory.jaxmpp().getRoster().get(jid);
+                RosterItem ri = RosterModule.getRosterStore(factory.sessionObject()).get(jid);
                               
                 if (ri == null)
                         return;
@@ -112,7 +148,7 @@ public class FlatRoster extends ResizeComposite implements AvatarChangedHandler 
                 }
                 
                 try {
-                        if (!factory.jaxmpp().getPresence().isAvailable(ri.getJid()))
+                        if (!PresenceModule.getPresenceStore(factory.sessionObject()).isAvailable(ri.getJid()))
                                 return;
                 } catch (XMLException ex) {
                         Logger.getLogger(FlatRoster.class.getName()).log(Level.SEVERE, null, ex);
@@ -160,22 +196,6 @@ public class FlatRoster extends ResizeComposite implements AvatarChangedHandler 
                 handlers.remove(action);
         }
         
-        private class PresenceListener implements Listener<PresenceEvent> {
-
-                public void handleEvent(PresenceEvent be) throws JaxmppException {
-                        updateItem(be.getJid().getBareJid());
-                }
-                
-        }
-        
-        private class RosterListener implements Listener<RosterEvent> {
-
-                public void handleEvent(RosterEvent be) throws JaxmppException {
-                        updateItem(be.getItem());
-                }
-                
-        }
-        
         private class RosterItemCell extends AbstractCell<RosterItem> {
 
                 @Override
@@ -191,7 +211,7 @@ public class FlatRoster extends ResizeComposite implements AvatarChangedHandler 
                                         sb.appendHtmlConstant(avatar.toString());
                                         sb.appendHtmlConstant("</td></tr><tr><td width='16px'>");
 
-                                        Presence p = factory.jaxmpp().getPresence().getBestPresence(value.getJid());
+                                        Presence p = PresenceModule.getPresenceStore(factory.sessionObject()).getBestPresence(value.getJid());
                                         if (p != null && p.getShow() != null) {
                                                 ImageResource res = null;
                                                 switch (p.getShow()) {

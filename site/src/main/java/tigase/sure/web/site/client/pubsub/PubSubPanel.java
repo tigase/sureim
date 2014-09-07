@@ -5,15 +5,12 @@
 package tigase.sure.web.site.client.pubsub;
 
 import com.google.gwt.i18n.shared.DateTimeFormat;
-import com.google.gwt.i18n.shared.DateTimeFormat;
 import com.google.gwt.i18n.shared.DateTimeFormat.PredefinedFormat;
 import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
+import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.ResizeComposite;
 import com.google.gwt.user.client.ui.VerticalPanel;
-import tigase.sure.web.base.client.ResizablePanel;
-import tigase.sure.web.base.client.widgets.Markdown;
-import tigase.sure.web.site.client.ClientFactory;
 import java.util.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -27,13 +24,15 @@ import tigase.jaxmpp.core.client.xmpp.modules.pubsub.PubSubModule;
 import tigase.jaxmpp.core.client.xmpp.modules.pubsub.PubSubModule.RetrieveItemsAsyncCallback;
 import tigase.jaxmpp.core.client.xmpp.modules.pubsub.PubSubModule.RetrieveItemsAsyncCallback.Item;
 import tigase.jaxmpp.core.client.xmpp.stanzas.IQ;
-import tigase.jaxmpp.core.client.xmpp.stanzas.Stanza;
+import tigase.sure.web.base.client.ResizablePanel;
+import tigase.sure.web.base.client.widgets.Markdown;
+import tigase.sure.web.site.client.ClientFactory;
 
 /**
  *
  * @author andrzej
  */
-public class PubSubPanel extends ResizeComposite {
+public class PubSubPanel extends Composite {
         
         private static final Logger log = Logger.getLogger("PubSubPanel");
         

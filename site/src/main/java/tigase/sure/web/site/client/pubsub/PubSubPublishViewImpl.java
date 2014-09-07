@@ -27,7 +27,7 @@ import tigase.jaxmpp.core.client.XMPPException.ErrorCondition;
 import tigase.jaxmpp.core.client.exceptions.JaxmppException;
 import tigase.jaxmpp.core.client.xml.DefaultElement;
 import tigase.jaxmpp.core.client.xml.Element;
-import tigase.jaxmpp.core.client.xmpp.modules.disco.DiscoInfoModule;
+import tigase.jaxmpp.core.client.xmpp.modules.disco.DiscoveryModule;
 import tigase.jaxmpp.core.client.xmpp.modules.pubsub.PubSubAsyncCallback;
 import tigase.jaxmpp.core.client.xmpp.modules.pubsub.PubSubErrorCondition;
 import tigase.jaxmpp.core.client.xmpp.modules.pubsub.PubSubModule;
@@ -54,7 +54,7 @@ public class PubSubPublishViewImpl extends ResizeComposite implements PubSubPubl
         
         private final ServerFeaturesChangedHandler serverFeaturesChangedHandler = new ServerFeaturesChangedHandler() {
 
-                public void serverFeaturesChanged(Collection<DiscoInfoModule.Identity> identities, Collection<String> features) {
+                public void serverFeaturesChanged(Collection<DiscoveryModule.Identity> identities, Collection<String> features) {
                         BareJID jid = factory.jaxmpp().getSessionObject().getUserBareJid();
                         boolean hide = true;
                         if (jid != null) {
@@ -122,7 +122,7 @@ public class PubSubPublishViewImpl extends ResizeComposite implements PubSubPubl
 //                previewStyle.setFontSize(0.7, Style.Unit.EM);
                 previewStyle.setColor("#555");
                 previewStyle.setWidth(100, Style.Unit.PCT);
-                previewStyle.setProperty("min-height", "250px");
+                previewStyle.setProperty("minHeight", "250px");
                 previewStyle.setDisplay(Style.Display.BLOCK);
                 //previewStyle.setOverflow(Style.Overflow.AUTO);
                 

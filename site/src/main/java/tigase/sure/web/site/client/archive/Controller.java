@@ -6,12 +6,12 @@ package tigase.sure.web.site.client.archive;
 
 import com.google.gwt.user.datepicker.client.CalendarUtil;
 import tigase.sure.web.site.client.ClientFactory;
-import tigase.jaxmpp.ext.client.xmpp.modules.archive.Chat;
-import tigase.jaxmpp.ext.client.xmpp.modules.archive.ChatResultSet;
-import tigase.jaxmpp.ext.client.xmpp.modules.archive.MessageArchivingModule;
-import tigase.jaxmpp.ext.client.xmpp.modules.archive.MessageArchivingModule.CollectionAsyncCallback;
-import tigase.jaxmpp.ext.client.xmpp.modules.archive.MessageArchivingModule.ItemsAsyncCallback;
-import tigase.jaxmpp.ext.client.xmpp.modules.archive.ResultSet;
+import tigase.jaxmpp.core.client.xmpp.modules.xep0136.Chat;
+import tigase.jaxmpp.core.client.xmpp.modules.xep0136.ChatResultSet;
+import tigase.jaxmpp.core.client.xmpp.modules.xep0136.MessageArchivingModule;
+import tigase.jaxmpp.core.client.xmpp.modules.xep0136.MessageArchivingModule.CollectionAsyncCallback;
+import tigase.jaxmpp.core.client.xmpp.modules.xep0136.MessageArchivingModule.ItemsAsyncCallback;
+import tigase.jaxmpp.core.client.xmpp.modules.xep0136.ResultSet;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
@@ -20,7 +20,6 @@ import java.util.logging.Logger;
 import tigase.jaxmpp.core.client.JID;
 import tigase.jaxmpp.core.client.XMPPException.ErrorCondition;
 import tigase.jaxmpp.core.client.exceptions.JaxmppException;
-import tigase.jaxmpp.core.client.observer.Listener;
 import tigase.jaxmpp.core.client.xml.XMLException;
 import tigase.jaxmpp.core.client.xmpp.stanzas.Stanza;
 

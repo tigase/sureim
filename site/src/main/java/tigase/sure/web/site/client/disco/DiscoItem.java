@@ -6,7 +6,7 @@ package tigase.sure.web.site.client.disco;
 
 import java.util.Collection;
 import tigase.jaxmpp.core.client.JID;
-import tigase.jaxmpp.core.client.xmpp.modules.disco.DiscoInfoModule.Identity;
+import tigase.jaxmpp.core.client.xmpp.modules.disco.DiscoveryModule.Identity;
 
 /**
  *

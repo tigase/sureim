@@ -6,7 +6,6 @@ package tigase.sure.web.site.client.chat;
 
 import com.google.gwt.cell.client.AbstractCell;
 import com.google.gwt.cell.client.Cell;
-import com.google.gwt.dom.client.Style;
 import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.event.dom.client.*;
 import com.google.gwt.resources.client.ImageResource;
@@ -20,8 +19,6 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import tigase.jaxmpp.core.client.xml.Element;
 import tigase.jaxmpp.core.client.xml.XMLException;
-import tigase.jaxmpp.core.client.xmpp.modules.muc.MucModule;
-import tigase.jaxmpp.core.client.xmpp.modules.muc.MucModule.MucEvent;
 import tigase.jaxmpp.core.client.xmpp.modules.muc.Occupant;
 import tigase.jaxmpp.core.client.xmpp.modules.muc.Room;
 import tigase.jaxmpp.core.client.xmpp.stanzas.Message;
@@ -110,18 +107,6 @@ public class MucRoomWidget extends ResizeComposite {
                 return isVisible(this);
         }
 
-        public boolean handleMucEvent(MucEvent be) {
-                if (be.getType() == MucModule.OccupantChangedNick
-                        || be.getType() == MucModule.OccupantChangedPresence
-                        || be.getType() == MucModule.OccupantComes
-                        || be.getType() == MucModule.OccupantLeaved
-                        || be.getType() == MucModule.YouJoined) {
-
-                        refreshOccupantsList();
-                }
-                return false;
-        }
-
         public static boolean isVisible(Widget w) {
                 if (w.isAttached() && w.isVisible()) {
                         if (w.getParent() != null) {
@@ -134,7 +119,7 @@ public class MucRoomWidget extends ResizeComposite {
                 }
         }
 
-        private void refreshOccupantsList() {
+        public void refreshOccupantsList() {
                 Map<String, Occupant> occupants = room.getPresences();
                 List<Occupant> sortedOccupants = new ArrayList<Occupant>(occupants.values());
                 Collections.sort(sortedOccupants, occupantsComparator);

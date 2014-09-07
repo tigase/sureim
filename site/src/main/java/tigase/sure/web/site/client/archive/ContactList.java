@@ -11,20 +11,17 @@ import com.google.gwt.user.client.ui.ResizeComposite;
 import com.google.gwt.user.client.ui.ScrollPanel;
 import com.google.gwt.view.client.ListDataProvider;
 import com.google.gwt.view.client.SelectionChangeEvent;
-import com.google.gwt.view.client.SelectionModel;
 import com.google.gwt.view.client.SingleSelectionModel;
 import tigase.sure.web.site.client.ClientFactory;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Set;
 import tigase.jaxmpp.core.client.BareJID;
-import tigase.jaxmpp.core.client.JID;
-import tigase.jaxmpp.core.client.exceptions.JaxmppException;
-import tigase.jaxmpp.core.client.observer.Listener;
+import tigase.jaxmpp.core.client.SessionObject;
 import tigase.jaxmpp.core.client.xmpp.modules.roster.RosterItem;
 import tigase.jaxmpp.core.client.xmpp.modules.roster.RosterModule;
-import tigase.jaxmpp.core.client.xmpp.modules.roster.RosterModule.RosterEvent;
 
 /**
  *
@@ -37,6 +34,7 @@ public class ContactList extends ResizeComposite {
         private final ScrollPanel scroll;
         private final ListDataProvider<RosterItem> roster;
         private final CellList<RosterItem> widget;
+		private final RosterHandler rosterHandler;
         
         public ContactList(ClientFactory factory_) {
                 factory = factory_;
@@ -51,29 +49,10 @@ public class ContactList extends ResizeComposite {
         
                 scroll = new ScrollPanel(widget);
                 
-                RosterModule rosterModule = factory.jaxmpp().getModulesManager().getModule(RosterModule.class);
-                rosterModule.addListener(RosterModule.ItemAdded, new Listener<RosterEvent>() {
-                        public void handleEvent(RosterEvent be) throws JaxmppException {
-                                if (be.getItem() != null) {
-                                        addRosterItem(be.getItem());
-                                }
-                        }                        
-                });
-                rosterModule.addListener(RosterModule.ItemRemoved, new Listener<RosterEvent>() {
-                        public void handleEvent(RosterEvent be) throws JaxmppException {
-                                if (be.getItem() != null) {
-                                        removeRosterItem(be.getItem());
-                                }
-                        }                        
-                });
-                rosterModule.addListener(RosterModule.ItemUpdated, new Listener<RosterEvent>() {
-                        public void handleEvent(RosterEvent be) throws JaxmppException {
-                                if (be.getItem() != null) {
-                                        removeRosterItem(be.getItem());
-                                        addRosterItem(be.getItem());
-                                }
-                        }                        
-                });
+				rosterHandler = new RosterHandler();
+				factory.jaxmpp().getEventBus().addHandler(RosterModule.ItemAddedHandler.ItemAddedEvent.class, rosterHandler);
+				factory.jaxmpp().getEventBus().addHandler(RosterModule.ItemRemovedHandler.ItemRemovedEvent.class, rosterHandler);
+				factory.jaxmpp().getEventBus().addHandler(RosterModule.ItemUpdatedHandler.ItemUpdatedEvent.class, rosterHandler);
                 
                 initWidget(scroll);
         }
@@ -140,4 +119,24 @@ public class ContactList extends ResizeComposite {
                 }
                 
         }
+		
+		private class RosterHandler implements RosterModule.ItemAddedHandler, RosterModule.ItemRemovedHandler, RosterModule.ItemUpdatedHandler {
+
+		@Override
+		public void onItemAdded(SessionObject sessionObject, RosterItem item, Set<String> modifiedGroups) {
+			addRosterItem(item);
+		}
+
+		@Override
+		public void onItemRemoved(SessionObject sessionObject, RosterItem item, Set<String> modifiedGroups) {
+			removeRosterItem(item);
+		}
+
+		@Override
+		public void onItemUpdated(SessionObject sessionObject, RosterItem item, RosterModule.Action action, Set<String> modifiedGroups) {
+			removeRosterItem(item);
+			addRosterItem(item);
+		}
+			
+		}
 }

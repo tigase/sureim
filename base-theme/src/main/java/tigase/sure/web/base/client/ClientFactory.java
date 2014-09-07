@@ -5,6 +5,7 @@
 package tigase.sure.web.base.client;
 
 import com.google.web.bindery.event.shared.EventBus;
+import tigase.jaxmpp.core.client.SessionObject;
 import tigase.jaxmpp.gwt.client.Jaxmpp;
 
 /**
@@ -18,6 +19,8 @@ public interface ClientFactory {
         Theme theme();
         
         Jaxmpp jaxmpp();
+		
+		SessionObject sessionObject();
         
         AbstractAvatarFactory avatarFactory();
 

@@ -61,7 +61,7 @@ public class TigaseMessengerPromoPanel extends Composite {
                 Grid grid = new Grid(2,3);
                 Label free = new Label("Free");
                 style = free.getElement().getStyle();                
-                style.setProperty("white-space", "nowrap");
+                style.setProperty("whiteSpace", "nowrap");
                 free.addClickHandler(new ClickHandler() {
 
                         public void onClick(ClickEvent event) {
@@ -73,7 +73,7 @@ public class TigaseMessengerPromoPanel extends Composite {
                 grid.setWidget(0, 0, free);
                 Label adsFree = new Label("Ads-Free");
                 style = adsFree.getElement().getStyle();                
-                style.setProperty("white-space", "nowrap");
+                style.setProperty("whiteSpace", "nowrap");
                 adsFree.addClickHandler(new ClickHandler() {
 
                         public void onClick(ClickEvent event) {
@@ -114,7 +114,7 @@ public class TigaseMessengerPromoPanel extends Composite {
 
                 grid.getElement().getStyle().setProperty("padding", "0% 14%");
                 grid.getElement().getStyle().setColor("#357AE8");
-                grid.getElement().getStyle().setProperty("text-align", "center");
+                grid.getElement().getStyle().setProperty("textAlign", "center");
                 grid.getElement().getStyle().setFontWeight(Style.FontWeight.BOLD);
                 
                 layout.add(grid);

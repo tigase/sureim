@@ -5,7 +5,7 @@
 package tigase.sure.web.site.client.events;
 
 import java.util.Collection;
-import tigase.jaxmpp.core.client.xmpp.modules.disco.DiscoInfoModule.Identity;
+import tigase.jaxmpp.core.client.xmpp.modules.disco.DiscoveryModule.Identity;
 
 /**
  *

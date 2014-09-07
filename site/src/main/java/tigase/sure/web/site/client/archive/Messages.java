@@ -7,18 +7,17 @@ import com.google.gwt.user.cellview.client.CellTable;
 import com.google.gwt.user.cellview.client.RowStyles;
 import com.google.gwt.user.cellview.client.SimplePager;
 import com.google.gwt.user.cellview.client.TextColumn;
-import java.util.Date;
-
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.ui.AbsolutePanel;
+import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.ResizeComposite;
 import com.google.gwt.user.client.ui.VerticalPanel;
-
-import tigase.jaxmpp.ext.client.xmpp.modules.archive.Item;
+import java.util.Date;
+import tigase.jaxmpp.core.client.xmpp.modules.xep0136.ChatItem;
 import tigase.sure.web.site.client.ClientFactory;
 import tigase.sure.web.site.client.I18n;
 
-public class Messages extends ResizeComposite {
+public class Messages extends Composite {
 
 //    interface TableResources extends CellTable.Resources {
 //        @Source({CellTable.Style.DEFAULT_CSS,"Messages.css"})
@@ -37,7 +36,7 @@ public class Messages extends ResizeComposite {
     private final DateTimeFormat tf1;
 
     @UiField(provided=true)
-    private final CellTable<Item> table;
+    private final CellTable<ChatItem> table;
     private final SimplePager pager;
     //private MessagesDataProvider provider;
 
@@ -56,7 +55,7 @@ public class Messages extends ResizeComposite {
         this.controller = controller;
 //	glass = new GlassPanelProgressBar();
 
-        table = new CellTable<Item>(50);//new CellTable<Item>(50, resources);
+        table = new CellTable<ChatItem>(50);//new CellTable<Item>(50, resources);
         table.setLoadingIndicator(null);
 //        table.setRowStyles(new RowStyles<Item>() {
 //            @Override
@@ -65,27 +64,27 @@ public class Messages extends ResizeComposite {
 //            }
 //        });
 
-        TextColumn<Item> dateColumn = new TextColumn<Item>() {
+        TextColumn<ChatItem> dateColumn = new TextColumn<ChatItem>() {
             @Override
-            public String getValue(Item object) {
+            public String getValue(ChatItem object) {
                 return tf1.format(object.getDate());
             }
         };
         table.addColumn(dateColumn, i18n.time());
 //        table.addColumnStyleName(0, resources.cellTableStyle().time());
 
-        TextColumn<Item> directionColumn = new TextColumn<Item>() {
+        TextColumn<ChatItem> directionColumn = new TextColumn<ChatItem>() {
             @Override
-            public String getValue(Item object) {
-                return (object.getType() == Item.Type.FROM) ? i18n.from() : i18n.to();
+            public String getValue(ChatItem object) {
+                return (object.getType() == ChatItem.Type.FROM) ? i18n.from() : i18n.to();
             }
         };
         table.addColumn(directionColumn, i18n.from());
 //        table.addColumnStyleName(1, resources.cellTableStyle().direction());
 
-        TextColumn<Item> bodyColumn = new TextColumn<Item>() {
+        TextColumn<ChatItem> bodyColumn = new TextColumn<ChatItem>() {
             @Override
-            public String getValue(Item object) {
+            public String getValue(ChatItem object) {
                 return object.getBody();
             }
         };
@@ -116,7 +115,7 @@ public class Messages extends ResizeComposite {
     }
 	
 
-    @Override
+    //@Override
     public void onResize() {
         int height = this.getParent().getOffsetHeight();
         int rows = ((height - 60) / 20);

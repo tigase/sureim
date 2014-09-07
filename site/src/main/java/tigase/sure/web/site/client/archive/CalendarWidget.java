@@ -4,31 +4,24 @@ import java.util.Date;
 
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.event.dom.client.MouseOverEvent;
-import com.google.gwt.event.dom.client.MouseOverHandler;
 import com.google.gwt.event.shared.UmbrellaException;
-import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.AbsolutePanel;
 import com.google.gwt.user.client.ui.Composite;
-import com.google.gwt.user.client.ui.DialogBox;
 import com.google.gwt.user.client.ui.Grid;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.Label;
-import com.google.gwt.user.datepicker.client.CalendarUtil;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import tigase.jaxmpp.core.client.JID;
-import tigase.jaxmpp.core.client.xmpp.stanzas.Stanza;
 
 //import eu.hilow.xode.client.ui.Icon;
 //import eu.hilow.xode.client.ui.PanelHeader;
 //import eu.hilow.xode.client.ui.Panel;
-import tigase.jaxmpp.ext.client.xmpp.modules.archive.Chat;
-import tigase.jaxmpp.ext.client.xmpp.modules.archive.ChatResultSet;
-import tigase.jaxmpp.ext.client.xmpp.modules.archive.ResultSet;
+import tigase.jaxmpp.core.client.xmpp.modules.xep0136.Chat;
+import tigase.jaxmpp.core.client.xmpp.modules.xep0136.ChatResultSet;
+import tigase.jaxmpp.core.client.xmpp.modules.xep0136.ResultSet;
 import tigase.sure.web.site.client.ClientFactory;
 import tigase.sure.web.site.client.I18n;
 
@@ -292,4 +285,5 @@ public class CalendarWidget extends Composite implements ClickHandler, /*
                 // Not needed
                 //throw new UnsupportedOperationException("Not supported yet.");
         }
+
 }

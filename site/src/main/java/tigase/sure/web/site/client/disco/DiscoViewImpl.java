@@ -12,11 +12,6 @@ import com.google.gwt.view.client.ListDataProvider;
 import com.google.gwt.view.client.SelectionChangeEvent;
 import com.google.gwt.view.client.SelectionChangeEvent.Handler;
 import com.google.gwt.view.client.SingleSelectionModel;
-import tigase.sure.web.base.client.AppView;
-import tigase.sure.web.base.client.ResizablePanel;
-import tigase.sure.web.site.client.ClientFactory;
-import tigase.sure.web.site.client.MessageDialog;
-import tigase.sure.web.site.client.chat.JoinRoomDialog;
 import java.util.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -24,11 +19,15 @@ import tigase.jaxmpp.core.client.JID;
 import tigase.jaxmpp.core.client.XMPPException.ErrorCondition;
 import tigase.jaxmpp.core.client.exceptions.JaxmppException;
 import tigase.jaxmpp.core.client.xml.XMLException;
-import tigase.jaxmpp.core.client.xmpp.modules.disco.DiscoInfoModule;
-import tigase.jaxmpp.core.client.xmpp.modules.disco.DiscoInfoModule.Identity;
-import tigase.jaxmpp.core.client.xmpp.modules.disco.DiscoItemsModule;
-import tigase.jaxmpp.core.client.xmpp.modules.disco.DiscoItemsModule.Item;
+import tigase.jaxmpp.core.client.xmpp.modules.disco.DiscoveryModule;
+import tigase.jaxmpp.core.client.xmpp.modules.disco.DiscoveryModule.Identity;
+import tigase.jaxmpp.core.client.xmpp.modules.disco.DiscoveryModule.Item;
 import tigase.jaxmpp.core.client.xmpp.stanzas.Stanza;
+import tigase.sure.web.base.client.AppView;
+import tigase.sure.web.base.client.ResizablePanel;
+import tigase.sure.web.site.client.ClientFactory;
+import tigase.sure.web.site.client.MessageDialog;
+import tigase.sure.web.site.client.chat.JoinRoomDialog;
 
 /**
  *
@@ -230,7 +229,7 @@ public class DiscoViewImpl extends ResizeComposite implements DiscoView, Provide
                         jidBox.setText(jid.toString());
                 }
                 
-                DiscoItemsModule module = factory.jaxmpp().getModulesManager().getModule(DiscoItemsModule.class);
+                DiscoveryModule module = factory.jaxmpp().getModulesManager().getModule(DiscoveryModule.class);
                 try {
                         module.getItems(jid, node, discoItemsCallback);
                 } catch (XMLException ex) {
@@ -277,7 +276,7 @@ public class DiscoViewImpl extends ResizeComposite implements DiscoView, Provide
                 addItem(item);
         }
         
-        private class DiscoItemsCallback extends DiscoItemsModule.DiscoItemsAsyncCallback {
+        private class DiscoItemsCallback extends DiscoveryModule.DiscoItemsAsyncCallback {
 
                 @Override
                 public void onInfoReceived(String attribute, ArrayList<Item> items) throws XMLException {
@@ -286,7 +285,7 @@ public class DiscoViewImpl extends ResizeComposite implements DiscoView, Provide
                                 DiscoItem discoItem = new DiscoItem(item.getJid(), item.getNode(), item.getName());
                                 addItem(discoItem);
                                 
-                                DiscoInfoModule module = factory.jaxmpp().getModulesManager().getModule(DiscoInfoModule.class);
+                                DiscoveryModule module = factory.jaxmpp().getModulesManager().getModule(DiscoveryModule.class);
                                 try {
                                         module.getInfo(item.getJid(), item.getNode(), new DiscoInfoCallback(discoItem));
                                 } catch (JaxmppException ex) {
@@ -306,7 +305,7 @@ public class DiscoViewImpl extends ResizeComposite implements DiscoView, Provide
                 
         }
         
-        private class DiscoInfoCallback extends DiscoInfoModule.DiscoInfoAsyncCallback {
+        private class DiscoInfoCallback extends DiscoveryModule.DiscoInfoAsyncCallback {
 
                 private final DiscoItem item;
                 

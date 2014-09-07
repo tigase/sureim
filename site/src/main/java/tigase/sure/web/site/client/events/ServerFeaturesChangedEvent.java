@@ -7,7 +7,7 @@ package tigase.sure.web.site.client.events;
 import com.google.web.bindery.event.shared.Event;
 import tigase.sure.web.base.client.auth.AuthHandler;
 import java.util.Collection;
-import tigase.jaxmpp.core.client.xmpp.modules.disco.DiscoInfoModule.Identity;
+import tigase.jaxmpp.core.client.xmpp.modules.disco.DiscoveryModule.Identity;
 
 /**
  *

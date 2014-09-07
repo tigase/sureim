@@ -29,8 +29,8 @@ import tigase.jaxmpp.core.client.xmpp.modules.adhoc.Action;
 import tigase.jaxmpp.core.client.xmpp.modules.adhoc.AdHocCommansModule;
 import tigase.jaxmpp.core.client.xmpp.modules.adhoc.AdHocCommansModule.AdHocCommansAsyncCallback;
 import tigase.jaxmpp.core.client.xmpp.modules.adhoc.State;
-import tigase.jaxmpp.core.client.xmpp.modules.disco.DiscoItemsModule;
-import tigase.jaxmpp.core.client.xmpp.modules.disco.DiscoItemsModule.Item;
+import tigase.jaxmpp.core.client.xmpp.modules.disco.DiscoveryModule;
+import tigase.jaxmpp.core.client.xmpp.modules.disco.DiscoveryModule.Item;
 import tigase.jaxmpp.core.client.xmpp.stanzas.Stanza;
 
 /**
@@ -113,7 +113,7 @@ public class CommandsWidget extends ResizeComposite  {
                 commandsCombo.setVisible(true);
                 form.reset();
                 
-                DiscoItemsModule module = factory.jaxmpp().getModulesManager().getModule(DiscoItemsModule.class);
+                DiscoveryModule module = factory.jaxmpp().getModulesManager().getModule(DiscoveryModule.class);
                 try {
                         module.getItems(jid, DiscoViewImpl.COMMANDS_FEATURE, commandsItemsCallback);
                 } catch (XMLException ex) {
@@ -146,15 +146,15 @@ public class CommandsWidget extends ResizeComposite  {
                 }
         }
         
-        private class CommandsItemsCallback extends DiscoItemsModule.DiscoItemsAsyncCallback {
+        private class CommandsItemsCallback extends DiscoveryModule.DiscoItemsAsyncCallback {
 
                 private final DiscoItemsComparator discoItemsComparator = new DiscoItemsComparator();
                 
                 @Override
-                public void onInfoReceived(String attribute, ArrayList<DiscoItemsModule.Item> items) throws XMLException {
+                public void onInfoReceived(String attribute, ArrayList<DiscoveryModule.Item> items) throws XMLException {
                         commandsCombo.addItem("", (String) null);
                         Collections.sort(items, discoItemsComparator);
-                        for (DiscoItemsModule.Item item : items) {
+                        for (DiscoveryModule.Item item : items) {
                                 commandsCombo.addItem(item.getName(), item.getNode());
                         }
                 }

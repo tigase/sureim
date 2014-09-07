@@ -8,9 +8,9 @@ import com.google.gwt.view.client.AsyncDataProvider;
 import com.google.gwt.view.client.HasData;
 import com.google.gwt.view.client.Range;
 import tigase.sure.web.site.client.ClientFactory;
-import tigase.jaxmpp.ext.client.xmpp.modules.archive.Chat;
-import tigase.jaxmpp.ext.client.xmpp.modules.archive.ChatResultSet;
-import tigase.jaxmpp.ext.client.xmpp.modules.archive.ResultSet;
+import tigase.jaxmpp.core.client.xmpp.modules.xep0136.Chat;
+import tigase.jaxmpp.core.client.xmpp.modules.xep0136.ChatResultSet;
+import tigase.jaxmpp.core.client.xmpp.modules.xep0136.ResultSet;
 
 /**
  *
@@ -50,8 +50,8 @@ public class MessagesDataProvider extends AsyncDataProvider implements MessageAr
                 if (rs.getIndex() != null) {
                         first = rs.getIndex();
                 }
-                updateRowData(first - 1, rs.getItems());
-                updateRowCount(rs.getCount(), false);
+                updateRowData(first, rs.getItems());
+                updateRowCount(rs.getCount(), true);
 
 //        messages.setVisible(true);
 //        messages.glass.hide();

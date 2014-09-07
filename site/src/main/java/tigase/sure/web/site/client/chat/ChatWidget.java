@@ -13,6 +13,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import tigase.jaxmpp.core.client.xmpp.modules.chat.Chat;
 import tigase.jaxmpp.core.client.xmpp.modules.roster.RosterItem;
+import tigase.jaxmpp.core.client.xmpp.modules.roster.RosterModule;
 import tigase.jaxmpp.core.client.xmpp.stanzas.Message;
 import tigase.jaxmpp.core.client.xmpp.stanzas.StanzaType;
 
@@ -91,7 +92,7 @@ public class ChatWidget extends ResizeComposite {
         
         @Override
         public String getTitle() {
-                RosterItem ri = chat.getSessionObject().getRoster().get(chat.getJid().getBareJid());
+                RosterItem ri = RosterModule.getRosterStore(chat.getSessionObject()).get(chat.getJid().getBareJid());
                 return ri != null ? ri.getName() : chat.getJid().toString();
         }
 

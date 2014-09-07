@@ -6,16 +6,11 @@ package tigase.sure.web.site.client.archive;
 
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.place.shared.Place;
 import com.google.gwt.user.client.ui.Image;
-import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.ResizeComposite;
 import com.google.gwt.user.client.ui.Widget;
 import tigase.sure.web.base.client.AppView;
-import tigase.jaxmpp.ext.client.xmpp.modules.archive.Chat;
-import tigase.jaxmpp.ext.client.xmpp.modules.archive.MessageArchivingModule;
-import tigase.jaxmpp.ext.client.xmpp.modules.archive.MessageArchivingModule.CollectionAsyncCallback;
-import tigase.jaxmpp.ext.client.xmpp.modules.archive.ResultSet;
+import tigase.jaxmpp.core.client.xmpp.modules.xep0136.MessageArchivingModule;
 import tigase.sure.web.site.client.ClientFactory;
 import tigase.sure.web.site.client.events.ServerFeaturesChangedEvent;
 import tigase.sure.web.site.client.events.ServerFeaturesChangedHandler;
@@ -27,10 +22,9 @@ import tigase.jaxmpp.core.client.BareJID;
 import tigase.jaxmpp.core.client.JID;
 import tigase.jaxmpp.core.client.XMPPException.ErrorCondition;
 import tigase.jaxmpp.core.client.exceptions.JaxmppException;
-import tigase.jaxmpp.core.client.xml.XMLException;
-import tigase.jaxmpp.core.client.xmpp.modules.disco.DiscoInfoModule.Identity;
+import tigase.jaxmpp.core.client.xmpp.modules.disco.DiscoveryModule;
 import tigase.jaxmpp.core.client.xmpp.stanzas.Stanza;
-import tigase.jaxmpp.ext.client.xmpp.modules.archive.MessageArchivingModule.SettingsAsyncCallback;
+import tigase.jaxmpp.core.client.xmpp.modules.xep0136.MessageArchivingModule.SettingsAsyncCallback;
 
 /**
  *
@@ -71,22 +65,22 @@ public class ArchiveViewImpl extends ResizeComposite implements ArchiveView {
         
         private final ServerFeaturesChangedHandler serverFeaturesChangedHandler = new ServerFeaturesChangedHandler() {
 
-                public void serverFeaturesChanged(Collection<Identity> identities, Collection<String> features) {
-                        boolean ok =  (features != null && features.contains("urn:xmpp:archive:auto"));
-                        factory.actionBarFactory().setVisible("archive", ok);
-                        MessageArchivingModule module = factory.jaxmpp().getModulesManager().getModule(MessageArchivingModule.class);
-                        if (ok) {
-                                try {
-                                        module.getSettings(settingsAsyncCallback);
-                                } catch (JaxmppException ex) {
-                                        log.log(Level.SEVERE, null, ex);
-                                }
-                        }
-                        else {
-                                archiveEnabled.setVisible(false);
-                                archiveDisabled.setVisible(false);
-                        }
-                }
+			@Override
+			public void serverFeaturesChanged(Collection<DiscoveryModule.Identity> identities, Collection<String> features) {
+				boolean ok = (features != null && features.contains("urn:xmpp:archive:auto"));
+				factory.actionBarFactory().setVisible("archive", ok);
+				MessageArchivingModule module = factory.jaxmpp().getModulesManager().getModule(MessageArchivingModule.class);
+				if (ok) {
+					try {
+						module.getSettings(settingsAsyncCallback);
+					} catch (JaxmppException ex) {
+						log.log(Level.SEVERE, null, ex);
+					}
+				} else {
+					archiveEnabled.setVisible(false);
+					archiveDisabled.setVisible(false);
+				}
+			}
                 
         };
         

@@ -9,12 +9,12 @@
         <groupId>tigase.sure.web</groupId>
         <artifactId>site</artifactId>
         <packaging>war</packaging>
-        <version>1.0-SNAPSHOT</version>
+        <version>2.0-SNAPSHOT</version>
         <name>Sure.IM site</name>
 
         <properties>
     <!-- Convenience property to set the GWT version -->
-                <gwtVersion>2.5.1</gwtVersion>
+                <gwtVersion>2.6.1</gwtVersion>
     <!-- GWT needs at least java 1.5 -->
                 <webappDirectory>${project.build.directory}/${project.build.finalName}</webappDirectory>
                 <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -36,9 +36,45 @@
                 <dependency>
                         <groupId>tigase.sure.web</groupId>
                         <artifactId>theme</artifactId>
-                        <version>1.0-SNAPSHOT</version>
+                        <version>2.0-SNAPSHOT</version>
                         <scope>compile</scope>
                 </dependency>
+				<dependency>
+						<groupId>tigase</groupId>
+                        <artifactId>jaxmpp-vcard</artifactId>
+                        <version>3.0.0-SNAPSHOT</version>
+                        <scope>compile</scope>
+				</dependency>			
+				<dependency>
+						<groupId>tigase</groupId>
+                        <artifactId>jaxmpp-chat</artifactId>
+                        <version>3.0.0-SNAPSHOT</version>
+                        <scope>compile</scope>
+				</dependency>	
+				<dependency>
+						<groupId>tigase</groupId>
+                        <artifactId>jaxmpp-pubsub</artifactId>
+                        <version>3.0.0-SNAPSHOT</version>
+                        <scope>compile</scope>
+				</dependency>					
+				<dependency>
+						<groupId>tigase</groupId>
+                        <artifactId>jaxmpp-registration</artifactId>
+                        <version>3.0.0-SNAPSHOT</version>
+                        <scope>compile</scope>
+				</dependency>					
+				<dependency>
+						<groupId>tigase</groupId>
+                        <artifactId>jaxmpp-adhoc</artifactId>
+                        <version>3.0.0-SNAPSHOT</version>
+                        <scope>compile</scope>
+				</dependency>
+				<dependency>
+						<groupId>tigase</groupId>
+                        <artifactId>jaxmpp-xep0136</artifactId>
+                        <version>3.0.0-SNAPSHOT</version>
+                        <scope>compile</scope>
+				</dependency>
                 <dependency>
                         <groupId>junit</groupId>
                         <artifactId>junit</artifactId>
@@ -70,7 +106,7 @@
                         <plugin>
                                 <groupId>org.codehaus.mojo</groupId>
                                 <artifactId>gwt-maven-plugin</artifactId>
-                                <version>2.5.1</version>
+                                <version>2.6.1</version>
                                 <executions>
                                         <execution>
                                                 <goals>
@@ -94,7 +130,7 @@
                         <plugin>
                                 <groupId>org.apache.maven.plugins</groupId>
                                 <artifactId>maven-war-plugin</artifactId>
-                                <version>2.1.1</version>
+                                <version>2.4</version>
                                 <executions>
                                         <execution>
                                                 <phase>compile</phase>
@@ -110,10 +146,10 @@
                         <plugin>
                                 <groupId>org.apache.maven.plugins</groupId>
                                 <artifactId>maven-compiler-plugin</artifactId>
-                                <version>2.3.2</version>
+                                <version>3.1</version>
                                 <configuration>
-                                        <source>1.5</source>
-                                        <target>1.5</target>
+                                        <source>1.7</source>
+                                        <target>1.7</target>
                                 </configuration>
                         </plugin>
                 </plugins>

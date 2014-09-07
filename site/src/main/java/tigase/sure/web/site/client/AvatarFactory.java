@@ -17,6 +17,7 @@ import tigase.jaxmpp.core.client.XMPPException.ErrorCondition;
 import tigase.jaxmpp.core.client.exceptions.JaxmppException;
 import tigase.jaxmpp.core.client.xml.Element;
 import tigase.jaxmpp.core.client.xml.XMLException;
+import tigase.jaxmpp.core.client.xmpp.modules.presence.PresenceModule;
 import tigase.jaxmpp.core.client.xmpp.modules.vcard.VCard;
 import tigase.jaxmpp.core.client.xmpp.modules.vcard.VCardModule;
 import tigase.jaxmpp.core.client.xmpp.modules.vcard.VCardModule.VCardAsyncCallback;
@@ -45,7 +46,7 @@ public class AvatarFactory extends AbstractAvatarFactory {
         public Image getAvatarForJid(final BareJID jid) {
                 Image img = null;
                 try {
-                        Presence p = factory.jaxmpp().getPresence().getBestPresence(jid);
+                        Presence p = PresenceModule.getPresenceStore(factory.sessionObject()).getBestPresence(jid);
                         if (p != null) {
                                 Element x = p.getChildrenNS("x", "vcard-temp:x:update");
                                 if (x != null) {

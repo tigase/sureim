@@ -10,6 +10,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import tigase.jaxmpp.core.client.xml.DefaultElement;
 import tigase.jaxmpp.core.client.xml.Element;
+import tigase.jaxmpp.core.client.xml.ElementFactory;
 import tigase.jaxmpp.core.client.xml.XMLException;
 import tigase.jaxmpp.core.client.xmpp.utils.DateTimeFormat;
 
@@ -131,33 +132,33 @@ public class AtomEntry {
         }
         
         public Element toElement() throws XMLException {
-                Element entry = new DefaultElement("entry");
+                Element entry = ElementFactory.create("entry");
                 entry.setXMLNS("http://www.w3.org/2005/Atom");
 
                 if (id != null) {
-                        Element idEl = new DefaultElement("id");
+                        Element idEl = ElementFactory.create("id");
                         idEl.setValue(id);
                         entry.addChild(idEl);
                 }
 
-                Element title = new DefaultElement("title");
+                Element title = ElementFactory.create("title");
                 title.setValue(this.title);
                 entry.addChild(title);
 
-                Element summary = new DefaultElement("summary");
+                Element summary = ElementFactory.create("summary");
                 entry.addChild(summary);
 
-                Element content = new DefaultElement("content");
+                Element content = ElementFactory.create("content");
                 content.setValue(this.content);
                 entry.addChild(content);
 
-                Element author = new DefaultElement("author");
-                Element authorName = new DefaultElement("name");
+                Element author = ElementFactory.create("author");
+                Element authorName = ElementFactory.create("name");
                 authorName.setValue(this.authorName);
                 author.addChild(authorName);
                 entry.addChild(author);
 
-                Element updated = new DefaultElement("updated");
+                Element updated = ElementFactory.create("updated");
                 String updatedStr = formatter.format(this.updated == null ? new Date() : this.updated);
                 updated.setValue(updatedStr);
                 entry.addChild(updated);

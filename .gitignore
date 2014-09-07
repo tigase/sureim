@@ -3,3 +3,4 @@
 */.classpath
 */target/*
 *.launch
+*.nb-configuration.xml

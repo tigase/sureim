@@ -11,7 +11,7 @@ import com.google.gwt.user.client.ui.Image;
 import tigase.sure.web.base.client.ClientFactory;
 import java.util.Collection;
 import java.util.Iterator;
-import tigase.jaxmpp.core.client.xmpp.modules.disco.DiscoInfoModule.Identity;
+import tigase.jaxmpp.core.client.xmpp.modules.disco.DiscoveryModule.Identity;
 
 /**
  *

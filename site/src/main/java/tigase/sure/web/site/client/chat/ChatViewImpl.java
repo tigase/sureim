@@ -9,11 +9,10 @@ import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.logical.shared.SelectionEvent;
 import com.google.gwt.event.logical.shared.SelectionHandler;
-import com.google.gwt.place.shared.Place;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.*;
-import tigase.sure.web.base.client.ActionBar;
+import java.util.Date;
 import tigase.sure.web.base.client.AppView;
 import tigase.sure.web.base.client.roster.FlatRoster;
 import tigase.sure.web.base.client.roster.FlatRoster.RosterItemClickHandler;
@@ -26,27 +25,22 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import tigase.jaxmpp.core.client.AsyncCallback;
 import tigase.jaxmpp.core.client.BareJID;
 import tigase.jaxmpp.core.client.JID;
-import tigase.jaxmpp.core.client.XMPPException.ErrorCondition;
+import tigase.jaxmpp.core.client.SessionObject;
 import tigase.jaxmpp.core.client.exceptions.JaxmppException;
-import tigase.jaxmpp.core.client.observer.Listener;
 import tigase.jaxmpp.core.client.xml.Element;
 import tigase.jaxmpp.core.client.xml.XMLException;
 import tigase.jaxmpp.core.client.xmpp.modules.chat.Chat;
-import tigase.jaxmpp.core.client.xmpp.modules.chat.ChatSelector;
-import tigase.jaxmpp.core.client.xmpp.modules.chat.DefaultChatSelector;
 import tigase.jaxmpp.core.client.xmpp.modules.chat.MessageModule;
-import tigase.jaxmpp.core.client.xmpp.modules.chat.MessageModule.MessageEvent;
 import tigase.jaxmpp.core.client.xmpp.modules.muc.MucModule;
-import tigase.jaxmpp.core.client.xmpp.modules.muc.MucModule.MucEvent;
+import tigase.jaxmpp.core.client.xmpp.modules.muc.Occupant;
 import tigase.jaxmpp.core.client.xmpp.modules.muc.Room;
 import tigase.jaxmpp.core.client.xmpp.modules.presence.PresenceModule;
-import tigase.jaxmpp.core.client.xmpp.modules.presence.PresenceModule.PresenceEvent;
 import tigase.jaxmpp.core.client.xmpp.modules.roster.RosterItem;
+import tigase.jaxmpp.core.client.xmpp.modules.roster.RosterModule;
 import tigase.jaxmpp.core.client.xmpp.stanzas.Message;
-import tigase.jaxmpp.core.client.xmpp.stanzas.Stanza;
+import tigase.jaxmpp.core.client.xmpp.stanzas.Presence;
 
 /**
  *
@@ -60,9 +54,8 @@ public class ChatViewImpl extends ResizeComposite implements ChatView {
         private final TabLayoutPanel tabLayout;
         private final HashMap<Chat,ChatWidget> chats;
         private final HashMap<BareJID, MucRoomWidget> rooms;
-        private final ChatSelector chatSelector = new DefaultChatSelector();
-        private final Listener<MessageEvent> messageListener;
-        private final Listener<MucEvent> mucListener;
+        private final MessageHandler messageListener;
+        private final MucHandler mucListener;
         
         private final Widget addContactAction;
         private final Widget joinRoomAction;
@@ -182,15 +175,15 @@ public class ChatViewImpl extends ResizeComposite implements ChatView {
                         }                        
                 });
                 
-                factory.jaxmpp().getModulesManager().getModule(PresenceModule.class).addListener(PresenceModule.SubscribeRequest, new Listener<PresenceEvent>() {
+                factory.jaxmpp().getModulesManager().getModule(PresenceModule.class).addSubscribeRequestHandler(new PresenceModule.SubscribeRequestHandler() {
 
-                        public void handleEvent(PresenceEvent be) throws JaxmppException {
-                                DialogBox dlg = new ContactSubscribeRequestDialog(factory, be.getJid().getBareJid());
-                                dlg.show();
-                                dlg.center();
-                        }
-                        
-                });
+					@Override
+					public void onSubscribeRequest(SessionObject sessionObject, Presence stanza, BareJID jid) {
+						DialogBox dlg = new ContactSubscribeRequestDialog(factory, jid);
+                        dlg.show();
+                        dlg.center();
+					}
+				});
                 
                 appView.setLeftSidebar(roster);
 //                appView.sinkEvents(Event.ONCONTEXTMENU);
@@ -217,32 +210,21 @@ public class ChatViewImpl extends ResizeComposite implements ChatView {
                 
                 appView.setCenter(tabLayout);
                 
-                messageListener = new Listener<MessageEvent>() {
-
-                        public void handleEvent(MessageEvent be) throws JaxmppException {
-                                if (be.getChat() != null) {
-                                        handleMessageEvent(be);                                
-                                }
-                                else {
-                                        handleMucMessageEvent(be);
-                                }
-                        }
-                        
-                };
+                messageListener = new MessageHandler();
                 
-                MessageModule messageModule = factory.jaxmpp().getModulesManager().getModule(MessageModule.class);
-                messageModule.addListener(messageListener);
+				factory.jaxmpp().getEventBus().addHandler(MessageModule.MessageReceivedHandler.MessageReceivedEvent.class, messageListener);
+				factory.jaxmpp().getEventBus().addHandler(MessageModule.ChatCreatedHandler.ChatCreatedEvent.class, messageListener);
+				factory.jaxmpp().getEventBus().addHandler(MessageModule.ChatClosedHandler.ChatClosedEvent.class, messageListener);
+						
+				mucListener = new MucHandler();
+				factory.jaxmpp().getEventBus().addHandler(MucModule.MucMessageReceivedHandler.MucMessageReceivedEvent.class, mucListener);
+				factory.jaxmpp().getEventBus().addHandler(MucModule.YouJoinedHandler.YouJoinedEvent.class, mucListener);
+				factory.jaxmpp().getEventBus().addHandler(MucModule.RoomClosedHandler.RoomClosedEvent.class, mucListener);
+				factory.jaxmpp().getEventBus().addHandler(MucModule.OccupantChangedNickHandler.OccupantChangedNickEvent.class, mucListener);
+				factory.jaxmpp().getEventBus().addHandler(MucModule.OccupantChangedPresenceHandler.OccupantChangedPresenceEvent.class, mucListener);
+				factory.jaxmpp().getEventBus().addHandler(MucModule.OccupantComesHandler.OccupantComesEvent.class, mucListener);
+				factory.jaxmpp().getEventBus().addHandler(MucModule.OccupantLeavedHandler.OccupantLeavedEvent.class, mucListener);
 
-                mucListener = new Listener<MucModule.MucEvent>() {
-
-                        public void handleEvent(MucEvent be) throws JaxmppException {
-                                handleMucEvent(be);
-                        }
-                        
-                };
-                MucModule mucModule = factory.jaxmpp().getModulesManager().getModule(MucModule.class);
-                mucModule.addListener(mucListener);
-                
                 initWidget(appView);
                 
                 updateActionBar();
@@ -251,7 +233,7 @@ public class ChatViewImpl extends ResizeComposite implements ChatView {
         public void openChat(BareJID bareJid) {
                 JID jid = JID.jidInstance(bareJid);
                 MessageModule messageModule = factory.jaxmpp().getModulesManager().getModule(MessageModule.class);
-                Chat chat = chatSelector.getChat(messageModule.getChats(), jid, null);
+				Chat chat = messageModule.getChatManager().getChat(jid, null);
                 if (chat == null) {
                         try {
                                 chat = messageModule.createChat(jid);
@@ -277,83 +259,6 @@ public class ChatViewImpl extends ResizeComposite implements ChatView {
                 }
                 
                 return roomWidget;
-        }
-        
-        protected void handleMessageEvent(MessageEvent be) {
-                if (be.getType() == MessageModule.ChatCreated) {
-                        ChatWidget chatWidget = chats.get(be.getChat());
-                        if (chatWidget == null) {
-                                chatWidget = new ChatWidget(factory, be.getChat());
-                                chats.put(be.getChat(), chatWidget);
-                                tabLayout.add(chatWidget, chatWidget.getTitle());
-                                tabLayout.selectTab(chatWidget);
-                                updateActionBar();                                
-                        }
-                }
-                else if (be.getType() == MessageModule.ChatClosed) {
-                        ChatWidget chatWidget = chats.get(be.getChat());
-                        if (chatWidget != null) {
-                                chats.remove(be.getChat());
-                                tabLayout.remove(chatWidget);
-                                updateActionBar();
-                        }                        
-                }
-                else if (be.getType() == MessageModule.MessageReceived) {
-                        ChatWidget chatWidget = chats.get(be.getChat());
-                        if (chatWidget != null) {
-                                boolean visible = chatWidget.handleMessage(be.getMessage());
-                                if (!visible) {
-                                        if (tabLayout.getSelectedIndex() != tabLayout.getWidgetIndex(chatWidget)) {
-                                                tabLayout.getTabWidget(chatWidget).getElement().getStyle().setColor("#DD4B39");
-                                        }
-                                        if (!isVisible(this)) {
-                                                factory.actionBarFactory().setWaitingEvents("chat", 1);
-                                        }
-                                }
-                        }
-                }
-        }
-        
-        protected void handleMucEvent(MucEvent be) {
-                if (be.getType() == MucModule.MucMessageReceived) {
-                        try {              
-                                openRoom(be.getRoom());
-                                handleMucMessage(be.getMessage());
-                        }
-                        catch (JaxmppException ex) {
-                                Logger.getLogger("ChatViewImpl").log(Level.SEVERE, ex.getMessage(), ex);
-                        }
-                }
-                else if (be.getType() == MucModule.YouJoined) {
-                        Room room = be.getRoom();
-                        MucRoomWidget roomWidget = openRoom(room);
-                        if (roomWidget != null) {
-                                roomWidget.handleMucEvent(be);
-                        }
-                }       
-                else if (be.getType() == MucModule.RoomClosed) {
-                        Room room = be.getRoom();
-                        MucRoomWidget roomWidget = rooms.get(room.getRoomJid());
-                        if (roomWidget != null) {
-                                rooms.remove(room.getRoomJid());
-                                tabLayout.remove(roomWidget);
-                                updateActionBar();
-                        }
-                }
-                else {
-                        Room room = be.getRoom();
-                        MucRoomWidget roomWidget = rooms.get(room.getRoomJid());
-                        if (roomWidget != null) {
-                                roomWidget.handleMucEvent(be);
-                        }
-                }
-        }
-        
-        protected void handleMucMessageEvent(MessageEvent be) throws XMLException {
-                if (be.getType() == MessageModule.MessageReceived) {
-                        Message m = (Message) be.getMessage();
-                        handleMucMessage(m);
-                }
         }
         
         protected void handleMucMessage(Message m) throws XMLException {
@@ -452,7 +357,7 @@ public class ChatViewImpl extends ResizeComposite implements ChatView {
                         public void execute() {
                                 try {
                                         popup.hide();
-                                        factory.jaxmpp().getRoster().remove(ri.getJid());
+                                        RosterModule.getRosterStore(factory.sessionObject()).remove(ri.getJid());
                                 } catch (XMLException ex) {
                                         Logger.getLogger(ChatViewImpl.class.getName()).log(Level.SEVERE, null, ex);
                                 } catch (JaxmppException ex) {
@@ -499,5 +404,112 @@ public class ChatViewImpl extends ResizeComposite implements ChatView {
                         return false;
                 }
         }
+		
+		private class MessageHandler implements MessageModule.ChatClosedHandler, 
+				MessageModule.ChatCreatedHandler, MessageModule.MessageReceivedHandler {
+
+		@Override
+		public void onChatClosed(SessionObject sessionObject, Chat chat) {
+			ChatWidget chatWidget = chats.get(chat);
+			if (chatWidget != null) {
+				chats.remove(chat);
+				tabLayout.remove(chatWidget);
+				updateActionBar();
+			}  
+		}
+
+		@Override
+		public void onChatCreated(SessionObject sessionObject, Chat chat, Message message) {
+			ChatWidget chatWidget = chats.get(chat);
+			if (chatWidget == null) {
+				chatWidget = new ChatWidget(factory, chat);
+				chats.put(chat, chatWidget);
+				tabLayout.add(chatWidget, chatWidget.getTitle());
+				tabLayout.selectTab(chatWidget);
+				updateActionBar();
+			}
+		}
+
+		@Override
+		public void onMessageReceived(SessionObject sessionObject, Chat chat, Message stanza) {
+			ChatWidget chatWidget = chats.get(chat);
+			if (chatWidget != null) {
+				boolean visible = chatWidget.handleMessage(stanza);
+				if (!visible) {
+					if (tabLayout.getSelectedIndex() != tabLayout.getWidgetIndex(chatWidget)) {
+						tabLayout.getTabWidget(chatWidget).getElement().getStyle().setColor("#DD4B39");
+					}
+					if (!isVisible(ChatViewImpl.this)) {
+						factory.actionBarFactory().setWaitingEvents("chat", 1);
+					}
+				}
+			}
+		}
+			
+		}
         
+		private class MucHandler implements MucModule.RoomClosedHandler, MucModule.YouJoinedHandler, MucModule.MucMessageReceivedHandler,
+				MucModule.OccupantChangedNickHandler, MucModule.OccupantChangedPresenceHandler, 
+				MucModule.OccupantComesHandler, MucModule.OccupantLeavedHandler{
+
+		@Override
+		public void onRoomClosed(SessionObject sessionObject, Presence presence, Room room) {
+			MucRoomWidget roomWidget = rooms.get(room.getRoomJid());
+			if (roomWidget != null) {
+				rooms.remove(room.getRoomJid());
+				tabLayout.remove(roomWidget);
+				updateActionBar();
+			}
+		}
+
+		@Override
+		public void onYouJoined(SessionObject sessionObject, Room room, String asNickname) {
+			refreshOccupantsList(room);
+		}
+
+		@Override
+		public void onMucMessageReceived(SessionObject sessionObject, Message message, Room room, String nickname, Date timestamp) {
+                BareJID roomJid = room.getRoomJid();
+                MucRoomWidget roomWidget = rooms.get(roomJid);
+                if (roomWidget != null) {
+                        boolean visible = roomWidget.handleMessage(message);
+                        if (!visible) {
+                                if (tabLayout.getSelectedIndex() != tabLayout.getWidgetIndex(roomWidget)) {
+                                        tabLayout.getTabWidget(roomWidget).getElement().getStyle().setColor("#DD4B39");
+                                }
+                                if (!isVisible(ChatViewImpl.this)) {
+                                        factory.actionBarFactory().setWaitingEvents("chat", 1);
+                                }
+                        }
+                }
+		}
+		
+		private void refreshOccupantsList(Room room) {
+				MucRoomWidget roomWidget = openRoom(room);
+				if (roomWidget != null) {
+					roomWidget.refreshOccupantsList();
+				}			
+		}
+
+		@Override
+		public void onOccupantChangedNick(SessionObject sessionObject, Room room, Occupant occupant, String oldNickname, String newNickname) {
+			refreshOccupantsList(room);
+		}
+
+		@Override
+		public void onOccupantChangedPresence(SessionObject sessionObject, Room room, Occupant occupant, Presence newPresence) {
+			refreshOccupantsList(room);
+		}
+
+		@Override
+		public void onOccupantComes(SessionObject sessionObject, Room room, Occupant occupant, String nickname) {
+			refreshOccupantsList(room);
+		}
+
+		@Override
+		public void onOccupantLeaved(SessionObject sessionObject, Room room, Occupant occupant) {
+			refreshOccupantsList(room);
+		}
+			
+		}
 }

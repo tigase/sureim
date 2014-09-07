@@ -90,7 +90,7 @@ public class ContactDialog extends DialogBox {
                                                 groups = new String[] { group };
                                         }
  
-                                        factory.jaxmpp().getRoster().add(jid, name, groups, new AsyncCallback() {
+										RosterModule.getRosterStore(factory.sessionObject()).add(jid, name, groups, new AsyncCallback() {
 
                                                 public void onError(Stanza responseStanza, XMPPException.ErrorCondition error) throws JaxmppException {
                                                 }
@@ -115,7 +115,7 @@ public class ContactDialog extends DialogBox {
                 });
                 
                 if (jid != null) {
-                        RosterItem ri = factory.jaxmpp().getRoster().get(jid);
+                        RosterItem ri = RosterModule.getRosterStore(factory.sessionObject()).get(jid);
                         jidTextBox.setText(ri.getJid().toString());
                         nameTextBox.setText(ri.getName());
                         String group = "";

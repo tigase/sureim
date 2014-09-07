@@ -1,57 +1,37 @@
 package tigase.sure.web.site.client;
 
-import tigase.sure.web.site.client.auth.AuthPlace;
 import com.google.gwt.activity.shared.ActivityManager;
 import com.google.gwt.activity.shared.ActivityMapper;
 import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.core.client.JsArray;
 import com.google.gwt.dom.client.Style;
 import com.google.gwt.dom.client.Style.Unit;
-import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.http.client.*;
 import com.google.gwt.i18n.client.Dictionary;
-import com.google.gwt.jsonp.client.JsonpRequestBuilder;
 import com.google.gwt.place.shared.Place;
 import com.google.gwt.place.shared.PlaceController;
 import com.google.gwt.place.shared.PlaceHistoryHandler;
 import com.google.gwt.user.client.Cookies;
-import com.google.gwt.user.client.Random;
-import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.*;
 import com.google.web.bindery.event.shared.EventBus;
-import tigase.sure.web.base.client.ActionBar;
-import tigase.sure.web.base.client.AppView;
+import java.util.Set;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import tigase.jaxmpp.core.client.ConnectionConfiguration;
+import tigase.jaxmpp.core.client.JID;
+import tigase.jaxmpp.core.client.SessionObject;
+import tigase.jaxmpp.core.client.exceptions.JaxmppException;
+import tigase.jaxmpp.core.client.xmpp.modules.auth.SaslModule;
+import tigase.jaxmpp.gwt.client.connectors.BoshConnector;
+import tigase.jaxmpp.gwt.client.connectors.WebSocket;
+import tigase.jaxmpp.gwt.client.dns.WebDnsResolver;
 import tigase.sure.web.base.client.ResizablePanel;
 import tigase.sure.web.base.client.RootView;
 import tigase.sure.web.base.client.auth.AuthEvent;
 import tigase.sure.web.base.client.auth.AuthHandler;
 import tigase.sure.web.base.client.auth.AuthRequestEvent;
 import tigase.sure.web.base.client.auth.AuthRequestHandler;
-import tigase.sure.web.base.client.roster.FlatRoster;
+import tigase.sure.web.site.client.auth.AuthPlace;
 import tigase.sure.web.site.client.chat.ChatPlace;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import tigase.jaxmpp.core.client.BareJID;
-import tigase.jaxmpp.core.client.Connector;
-import tigase.jaxmpp.core.client.JID;
-import tigase.jaxmpp.core.client.SessionObject;
-import tigase.jaxmpp.core.client.connector.AbstractBoshConnector;
-import tigase.jaxmpp.core.client.connector.AbstractBoshConnector.BoshConnectorEvent;
-import tigase.jaxmpp.core.client.exceptions.JaxmppException;
-import tigase.jaxmpp.core.client.observer.Listener;
-import tigase.jaxmpp.core.client.xml.Element;
-import tigase.jaxmpp.core.client.xmpp.modules.auth.SaslModule;
-import tigase.jaxmpp.core.client.xmpp.modules.disco.DiscoInfoModule;
-import tigase.jaxmpp.core.client.xmpp.stanzas.ErrorElement;
-import tigase.jaxmpp.gwt.client.Jaxmpp;
-import tigase.jaxmpp.gwt.client.connectors.BoshConnector;
-import tigase.jaxmpp.gwt.client.connectors.WebSocket;
-import tigase.sure.web.base.client.auth.AuthFailureEvent;
 
 /**
  * Entry point classes define
@@ -79,52 +59,6 @@ public class Xode implements EntryPoint {
 
                 RootView view = new RootView(factory);
 
-                factory.jaxmpp().addListener(Connector.Error, new Listener<BoshConnectorEvent>() {
-
-                        public void handleEvent(BoshConnectorEvent be) throws JaxmppException {
-                                // needed to handle see-other-host
-                                Element error = be.getStreamErrorElement();
-                                if (error != null) {
-                                        Element seeOtherHost = error.getChildrenNS("see-other-host", "urn:ietf:params:xml:ns:xmpp-streams");
-                                        if (seeOtherHost != null) {
-                                                //authenticateInt2(jid, password, seeOtherHost.getValue());
-												selectNodeToConnect(jid, password, seeOtherHost.getValue());
-                                        }
-                                }
-                        }
-                        
-                });
-                factory.jaxmpp().addListener(Connector.StreamTerminated, new Listener<BoshConnectorEvent>() {
-
-                        public void handleEvent(BoshConnectorEvent be) throws JaxmppException {
-                                // needed to handle see-other-host
-                                Element error = be.getStreamErrorElement();
-                                if (error != null) {
-                                        Element seeOtherHost = error.getChildrenNS("see-other-host", "urn:ietf:params:xml:ns:xmpp-streams");
-                                        if (seeOtherHost != null) {
-                                                //authenticateInt2(jid, password, seeOtherHost.getValue());
-												selectNodeToConnect(jid, password, seeOtherHost.getValue());
-                                        }
-                                }
-                        }
-                        
-                });
-				factory.jaxmpp().addListener(Connector.StreamTerminated, new Listener<BoshConnectorEvent>() {
-
-					public void handleEvent(BoshConnectorEvent be) throws JaxmppException {
-						Element stream = be.getBody();
-						if (stream == null)
-							return;
-						List<Element> streamError = stream.getChildren("stream:error");
-						if (streamError != null && !streamError.isEmpty()) {
-							Element seeOtherHost = streamError.get(0).getChildrenNS("see-other-host", "urn:ietf:params:xml:ns:xmpp-streams");
-							if (seeOtherHost != null) {
-								selectNodeToConnect(jid, password, seeOtherHost.getValue());
-							}
-						}						
-					}
-					
-				});
 				
 //                AbsolutePanel center = new AbsolutePanel();
 //                center.add(new Label("Center panel"));
@@ -188,190 +122,38 @@ public class Xode implements EntryPoint {
                 authenticateInt(null, null, null);
         }
 
-        private void authenticateInt3(JID jid, String password, String boshUrl) {
-                Jaxmpp jaxmpp = factory.jaxmpp();
-//                if (jaxmpp.isConnected()) {
-//                       try {
-//                                jaxmpp.disconnect();
-//                        } catch (JaxmppException ex) {
-//                                Logger.getLogger(Xode.class.getName()).log(Level.SEVERE, null, ex);
-//                        }
-//                }
-        
-                jaxmpp.getProperties().setUserProperty(AbstractBoshConnector.SEE_OTHER_HOST_KEY, true);
-                
-                if (jid != null) {
-                        String url = boshUrl != null ? boshUrl : getBoshUrl(jid.getDomain());
-                        jaxmpp.getProperties().setUserProperty(BoshConnector.BOSH_SERVICE_URL_KEY, url);
-
-//                        jaxmpp.getProperties().setUserProperty(SessionObject.RESOURCE, "jaxmpp");
-                        jaxmpp.getProperties().setUserProperty(SessionObject.USER_BARE_JID, jid.getBareJid());
-                        jaxmpp.getProperties().setUserProperty(SessionObject.PASSWORD, password);
-                        jaxmpp.getProperties().setUserProperty(SessionObject.SERVER_NAME, jid.getDomain());
-                }
-                else {
-                        Dictionary root = Dictionary.getDictionary("root");
-                        String domain = root.get("anon-domain");
-                        String url = boshUrl != null ? boshUrl : getBoshUrl(domain);
-                        jaxmpp.getProperties().setUserProperty(BoshConnector.BOSH_SERVICE_URL_KEY, url);
-                        jaxmpp.getProperties().setUserProperty(SessionObject.SERVER_NAME, domain);
-                }
-                
-                try {
-                        jaxmpp.login();
-                } catch (JaxmppException ex) {
-                        log.log(Level.WARNING, "login exception", ex);
-                        //log.log(Level.WARNING, "login exception", ex);
-                }
-        }
-
         public void authenticateInt(final JID jid, final String password, String boshUrl) {                 
                 // storing jid and password to use it during reconnection for see-other-host
                 this.jid = jid;
                 this.password = password;
                 
-                if (boshUrl != null) {
-                        authenticateInt3(jid, password, boshUrl);
-                        return;
-                }
-                
-                final Dictionary root = Dictionary.getDictionary("root");
-                String domain;
-                if (jid == null) {
-                        domain = root.get("anon-domain");
-                }
-                else {
-                        domain = jid.getDomain();
-                }
-                                
-                authenticateInt2(jid, password, domain);
-        }
-
-		private void resolveDomain(final String domain, final com.google.gwt.user.client.rpc.AsyncCallback<DnsResult> callback) {
-                final Dictionary root = Dictionary.getDictionary("root");
-                String url = root.get("dns-resolver");
-				url += "?version=2";
-				url += "&domain=" + URL.encodeQueryString(domain);
-				JsonpRequestBuilder builder = new JsonpRequestBuilder();
-				builder.requestObject(url, callback);					
-		}
-		
-        public void authenticateInt2(final JID jid, final String password, String domain) {                 
-                final Dictionary root = Dictionary.getDictionary("root");
-
-				if (dnsResult != null && domain.equals(dnsResult.getDomain()) && dnsResult.hasMore()) {
-						selectNodeToConnect(jid, password, null);
-						return;
-				}						
-                
-				resolveDomain(domain, new com.google.gwt.user.client.rpc.AsyncCallback<DnsResult>() {
-                        
-                        public void onFailure(Throwable caught) {
-								dnsResult = null;
-                                String boshUrl = getBoshUrl((jid != null) ? jid.getDomain() : root.get("anon-domain"));
-                                authenticateInt3(jid, password, boshUrl);                                
-                        }
-
-                        public void onSuccess(DnsResult result) {
-								dnsResult = result;
+				final Dictionary root = Dictionary.getDictionary("root");
 				
-								selectNodeToConnect(jid, password, null);							
-//                                JsArray<DnsEntry> entriesJs = result.getEntries();
-//                                String domain = null;
-//                                int port = 0;
-//                                // filter only IPv4
-//                                List<DnsEntry> entries = new ArrayList<DnsEntry>();
-//                                for (int i=0; i<entriesJs.length(); i++) {
-//                                        DnsEntry entry = entriesJs.get(i);
-//                                        if (entry.getIp().contains(":"))
-//                                                continue;
-//                                        
-//                                        entries.add(entry);
-//                                }
-//                                if (entries.size() > 1) {
-//                                        while (domain == null || domain.contains(":")) {
-//                                                int rand = Random.nextInt(entries.size());
-//                                                domain = entries.get(rand).getIp();
-//                                                port = entries.get(rand).getPort();
-//                                        }                                        
-//                                }
-//                                else if (entries.size() > 0) {
-//                                        domain = entries.get(0).getResultHost();
-//                                        port = entries.get(0).getPort();
-//                                }
-//                                else {
-//                                        domain = jid.getDomain();
-//                                }                                
-//                                String boshUrl = "http://" + domain + (port != 0 ? (":" + port) : "") + "/bosh";                                
-//                                authenticateInt3(jid, password, boshUrl);                                
-                        }
-                        
-                });                
-        }
-		
-		private void selectNodeToConnect(final JID jid, final String password, final String host) {		
-				String boshUrl = null;
-				if (host != null) {
-						boshUrl = dnsResult.getUrlForHost(host);
-						if (boshUrl == null) {
-								resolveDomain(host, new com.google.gwt.user.client.rpc.AsyncCallback<DnsResult>() {
-
-										@Override
-										public void onFailure(Throwable caught) {
-												factory.eventBus().fireEvent(new AuthFailureEvent("Could not resolve host IP address"));
-										}
-
-										@Override
-										public void onSuccess(DnsResult result) {
-												String url = null;
-												if (WebSocket.isSupported()) {
-														int wsCount = result.getWebSocket().length();
-														if (wsCount > 0) {
-																url = result.getWebSocket().get(0).getUrl();
-														}
-												}
-												if (url == null) {
-														int boshCount = result.getBosh().length();
-														if (boshCount > 0) {
-																url = result.getBosh().get(0).getUrl();
-														}
-												}
-												if (url != null) {
-														authenticateInt3(jid, password, url);
-												}
-												else {
-														factory.eventBus().fireEvent(new AuthFailureEvent("Could not connect to any IP address"));
-												}
-										}
-					
-								});
-								return;
-						}
+				ConnectionConfiguration connCfg = factory.jaxmpp().getConnectionConfiguration();
+				connCfg.setDomain(null);
+				connCfg.setUserJID(jid == null ? null : jid.getBareJid());
+				if (jid == null) {
+					String domain = root.get("anon-domain");
+					connCfg.setDomain(domain);
+					if (boshUrl == null) {
+						boshUrl = getBoshUrl(domain);
+					}
 				}
-				boolean secure = "https:".equals(Window.Location.getProtocol());
-				while (boshUrl == null && dnsResult.hasMore()) {
-						boshUrl = dnsResult.next();
-			
-//			boolean secureUrl = boshUrl.startsWith("https://") || boshUrl.startsWith("wss://");
-//			if (secure != secureUrl) {
-//				dnsResult.connectionFailed(boshUrl);
-//				boshUrl = null;
-//				continue;
-//			}
-			
-						if (!WebSocket.isSupported() && (boshUrl.startsWith("ws://") || boshUrl.startsWith("wss://"))) {
-								dnsResult.connectionFailed(boshUrl);
-								boshUrl = null;
-						}
-				}
-
 				if (boshUrl != null) {
-						authenticateInt3(jid, password, boshUrl);
+					factory.jaxmpp().getSessionObject().setUserProperty(BoshConnector.BOSH_SERVICE_URL_KEY, boshUrl);
+				} else {
+					factory.jaxmpp().getSessionObject().setUserProperty(BoshConnector.BOSH_SERVICE_URL_KEY, null);
+					String webDnsResolver = root.get("dns-resolver");
+					factory.jaxmpp().getSessionObject().setUserProperty(WebDnsResolver.WEB_DNS_RESOLVER_URL_KEY, webDnsResolver);
 				}
-				else {
-						factory.eventBus().fireEvent(new AuthFailureEvent("Could not connect to any IP address"));
-				}
-		}		
+				connCfg.setUserPassword(password);
+				try {
+                        factory.jaxmpp().login();
+                } catch (JaxmppException ex) {
+                        log.log(Level.WARNING, "login exception", ex);
+                        //log.log(Level.WARNING, "login exception", ex);
+                }
+        }
         
         public static String getBoshUrl(String domain) {
                 Dictionary domains = Dictionary.getDictionary("domains");
@@ -384,6 +166,11 @@ public class Xode implements EntryPoint {
                                 url = domains.get("default");
                         }
                 }
+				if (WebSocket.isSupported()) {
+					if (url.startsWith("http://")) {
+						url = url.replace("http://", "ws://").replace(":5280", ":5290");
+					}
+				}
                 return url;
         }
         

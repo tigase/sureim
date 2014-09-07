@@ -20,7 +20,7 @@ import java.util.Collection;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import tigase.jaxmpp.core.client.exceptions.JaxmppException;
-import tigase.jaxmpp.core.client.xmpp.modules.disco.DiscoInfoModule;
+import tigase.jaxmpp.core.client.xmpp.modules.disco.DiscoveryModule;
 import tigase.jaxmpp.core.client.xmpp.modules.registration.InBandRegistrationModule;
 
 /**
@@ -40,7 +40,7 @@ public class SettingsViewImpl extends ResizeComposite implements SettingsView {
         
         private final ServerFeaturesChangedHandler serverFeaturesChangedHandler = new ServerFeaturesChangedHandler() {
 
-                public void serverFeaturesChanged(Collection<DiscoInfoModule.Identity> identities, Collection<String> features_) {
+                public void serverFeaturesChanged(Collection<DiscoveryModule.Identity> identities, Collection<String> features_) {
                         features = features_;
                 }
                 
