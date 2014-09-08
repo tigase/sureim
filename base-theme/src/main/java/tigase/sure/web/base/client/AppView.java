@@ -5,6 +5,8 @@
 package tigase.sure.web.base.client;
 
 import com.google.gwt.dom.client.Style.Unit;
+import com.google.gwt.event.logical.shared.AttachEvent;
+import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.ui.DockLayoutPanel;
 import com.google.gwt.user.client.ui.Panel;
 import com.google.gwt.user.client.ui.ResizeComposite;
@@ -55,8 +57,19 @@ public class AppView extends ResizeComposite {
                 setLeftSidebar(widget, 20);
         }
         
-        public void setLeftSidebar(Widget widget, double size) {
+        public void setLeftSidebar(final Widget widget, double size) {
                 this.sidebarLeft = widget;
+				new AttachEvent.Handler() {
+					HandlerRegistration reg = widget.addAttachHandler(this);
+					
+					@Override
+					public void onAttachOrDetach(AttachEvent event) {
+						if (event.isAttached()) {
+							widget.getElement().addClassName(factory.theme().style().sidebarLeft());
+							reg.removeHandler();
+						}
+					}
+				};				
                 panel.addWest(sidebarLeft, size);
         }
         
@@ -64,8 +77,19 @@ public class AppView extends ResizeComposite {
                 setRightSidebar(widget, 20);
         }
 
-        public void setRightSidebar(Widget widget, double size) {
+        public void setRightSidebar(final Widget widget, double size) {
                 this.sidebarRight = widget;
+				new AttachEvent.Handler() {
+					HandlerRegistration reg = widget.addAttachHandler(this);
+					
+					@Override
+					public void onAttachOrDetach(AttachEvent event) {
+						if (event.isAttached()) {
+							widget.getElement().addClassName(factory.theme().style().sidebarRight());
+							reg.removeHandler();
+						}
+					}
+				};
                 panel.addEast(sidebarRight, size);
         }
 

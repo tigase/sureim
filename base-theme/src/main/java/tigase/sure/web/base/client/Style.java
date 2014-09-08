@@ -26,6 +26,7 @@ public interface Style extends CssResource {
         String actionBarLink();
         String actionBarSearch();
         String actionBarActionIcon();
+		String actionBarHolder();
         
         String rosterItem();
         String rosterItemName();
@@ -44,4 +45,7 @@ public interface Style extends CssResource {
         String popupPanel();   
 		
 		String errorPanelStyle();
+		
+		String sidebarLeft();
+		String sidebarRight();
 }

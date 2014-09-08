@@ -69,5 +69,11 @@ public class ActionBar extends ResizeComposite {
                         panel.add(searchBox);
                 }
         }
+		
+		@Override
+		public void onAttach() {
+			super.onAttach();
+			this.getElement().getParentElement().addClassName(factory.theme().style().actionBarHolder());
+		}
         
 }

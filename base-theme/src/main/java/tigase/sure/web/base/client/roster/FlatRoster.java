@@ -203,12 +203,12 @@ public class FlatRoster extends ResizeComposite implements AvatarChangedHandler 
                         if (value != null) {
                                 try {
                                         sb.appendHtmlConstant("<table class='" + factory.theme().style().rosterItem() 
-                                                + "'><tr><td colspan='2' class='" + factory.theme().style().rosterItemName() + "'>");
-                                        sb.appendEscaped(value.getName());
-                                        sb.appendHtmlConstant("</td><td rowspan='2' width='32px'>");
+                                                + "'><tr><td rowspan='2' width='40px' style='padding:0px;font-size:0px;'>");
                                         Image avatar = factory.avatarFactory().getAvatarForJid(value.getJid());
-                                        avatar.setSize("32px", "32px");
-                                        sb.appendHtmlConstant(avatar.toString());
+                                        avatar.setSize("40px", "40px");
+                                        sb.appendHtmlConstant(avatar.toString());										
+                                        sb.appendHtmlConstant("</td><td colspan='2' class='" + factory.theme().style().rosterItemName() + "'>");
+						                sb.appendEscaped(value.getName());
                                         sb.appendHtmlConstant("</td></tr><tr><td width='16px'>");
 
                                         Presence p = PresenceModule.getPresenceStore(factory.sessionObject()).getBestPresence(value.getJid());

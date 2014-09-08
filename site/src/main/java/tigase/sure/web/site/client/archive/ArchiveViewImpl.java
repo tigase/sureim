@@ -112,7 +112,7 @@ public class ArchiveViewImpl extends ResizeComposite implements ArchiveView {
                 appView.setLeftSidebar(contactList);
 
                 CalendarWidget calendar = new CalendarWidget(factory, controller);
-                appView.setRightSidebar(calendar, 15);
+                appView.setRightSidebar(calendar, 17);
                 Messages messages = new Messages(factory, controller);
                 appView.setCenter(messages);
                 

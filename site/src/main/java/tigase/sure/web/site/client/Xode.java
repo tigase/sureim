@@ -122,7 +122,8 @@ public class Xode implements EntryPoint {
                 authenticateInt(null, null, null);
         }
 
-        public void authenticateInt(final JID jid, final String password, String boshUrl) {                 
+        public void authenticateInt(JID jid, String password, String boshUrl) {   
+
                 // storing jid and password to use it during reconnection for see-other-host
                 this.jid = jid;
                 this.password = password;
