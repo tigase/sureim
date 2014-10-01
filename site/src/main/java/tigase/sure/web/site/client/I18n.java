@@ -119,6 +119,13 @@ public interface I18n extends Constants {
         @DefaultStringValue("Register")
         String register();
         
+		// -- Management
+		@DefaultStringValue("Management")
+		String management();
+		
+		@DefaultStringValue("Other")
+		String commandUndefinedGroup();
+		
         // -- Settings 
         // ---- General
         @DefaultStringValue("General")

@@ -12,6 +12,7 @@ import tigase.sure.web.site.client.auth.AuthView;
 import tigase.sure.web.site.client.bookmarks.BookmarksManager;
 import tigase.sure.web.site.client.chat.ChatView;
 import tigase.sure.web.site.client.disco.DiscoView;
+import tigase.sure.web.site.client.management.ManagementView;
 import tigase.sure.web.site.client.pubsub.PubSubPublishView;
 import tigase.sure.web.site.client.settings.SettingsView;
 
@@ -34,6 +35,8 @@ public interface ClientFactory extends tigase.sure.web.base.client.ClientFactory
         DiscoView discoView();
         
         I18n i18n();
+		
+		ManagementView managementView();
         
         PlaceController placeController();
 

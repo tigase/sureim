@@ -43,6 +43,8 @@ import tigase.sure.web.site.client.chat.ChatViewImpl;
 import tigase.sure.web.site.client.disco.DiscoView;
 import tigase.sure.web.site.client.disco.DiscoViewImpl;
 import tigase.sure.web.site.client.events.ServerFeaturesChangedEvent;
+import tigase.sure.web.site.client.management.ManagementView;
+import tigase.sure.web.site.client.management.ManagementViewImpl;
 import tigase.sure.web.site.client.pubsub.PubSubPublishView;
 import tigase.sure.web.site.client.pubsub.PubSubPublishViewImpl;
 import tigase.sure.web.site.client.settings.SettingsView;
@@ -67,6 +69,7 @@ public class ClientFactoryImpl extends tigase.sure.web.base.client.ClientFactory
         private final I18n i18n = GWT.create(I18n.class);
         private final PlaceController placeController;
         private final ResourceBindHandler jaxmppBindListener = new ResourceBindHandler();
+		private final ManagementViewImpl managementView;
         
         public ClientFactoryImpl() {
                 super();
@@ -94,6 +97,7 @@ public class ClientFactoryImpl extends tigase.sure.web.base.client.ClientFactory
                 chatView = new ChatViewImpl(this);
                 archiveView = new ArchiveViewImpl(this);                
                 discoView = new DiscoViewImpl(this);
+				managementView = new ManagementViewImpl(this);
                 pubSubPublishView = new PubSubPublishViewImpl(this);
                 settingsView = new SettingsViewImpl(this);
                                 
@@ -155,6 +159,11 @@ public class ClientFactoryImpl extends tigase.sure.web.base.client.ClientFactory
                 return i18n;
         }
         
+		@Override
+		public ManagementView managementView() {
+			return managementView;
+		}
+		
         @Override
         public PlaceController placeController() {
                 return placeController;

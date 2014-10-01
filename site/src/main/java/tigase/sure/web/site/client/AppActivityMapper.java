@@ -15,6 +15,8 @@ import tigase.sure.web.site.client.chat.ChatActivity;
 import tigase.sure.web.site.client.chat.ChatPlace;
 import tigase.sure.web.site.client.disco.DiscoActivity;
 import tigase.sure.web.site.client.disco.DiscoPlace;
+import tigase.sure.web.site.client.management.ManagementActivity;
+import tigase.sure.web.site.client.management.ManagementPlace;
 import tigase.sure.web.site.client.pubsub.PubSubPublishActivity;
 import tigase.sure.web.site.client.pubsub.PubSubPublishPlace;
 import tigase.sure.web.site.client.settings.SettingsActivity;
@@ -49,6 +51,9 @@ public class AppActivityMapper implements ActivityMapper {
         else if (place instanceof SettingsPlace) {
                 return new SettingsActivity((SettingsPlace) place, clientFactory);
         }
+		else if (place instanceof ManagementPlace) {
+				return new ManagementActivity((ManagementPlace) place, clientFactory);
+		}
         else if (place instanceof PubSubPublishPlace) {
                 return new PubSubPublishActivity((PubSubPublishPlace) place, clientFactory);
         }
