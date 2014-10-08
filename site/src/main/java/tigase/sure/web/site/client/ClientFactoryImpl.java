@@ -18,6 +18,7 @@ import tigase.jaxmpp.core.client.exceptions.JaxmppException;
 import tigase.jaxmpp.core.client.xml.XMLException;
 import tigase.jaxmpp.core.client.xmpp.modules.BookmarksModule;
 import tigase.jaxmpp.core.client.xmpp.modules.ResourceBinderModule;
+import tigase.jaxmpp.core.client.xmpp.modules.adhoc.AdHocCommansModule;
 import tigase.jaxmpp.core.client.xmpp.modules.auth.AuthModule;
 import tigase.jaxmpp.core.client.xmpp.modules.auth.SaslModule;
 import tigase.jaxmpp.core.client.xmpp.modules.chat.MessageModule;
@@ -84,6 +85,7 @@ public class ClientFactoryImpl extends tigase.sure.web.base.client.ClientFactory
 				}
 				jaxmpp().getModulesManager().register(new MessageModule());
 				jaxmpp().getModulesManager().register(new MucModule());
+				jaxmpp().getModulesManager().register(new AdHocCommansModule());
 				jaxmpp().getModulesManager().register(new VCardModule());
 				jaxmpp().getModulesManager().register(new PubSubModule());
 				

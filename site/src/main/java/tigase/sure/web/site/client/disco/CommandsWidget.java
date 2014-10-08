@@ -44,12 +44,18 @@ public class CommandsWidget extends ResizeComposite  {
                 void error(String msg);
         };
         
+		public interface ProgressHandler {
+			void started();
+			void finished();
+		}
+		
         private final ClientFactory factory;
         
         private final DockLayoutPanel layout;//FlowPanel layout;
+		protected final HorizontalPanel comboPanel;
         private final ListBox commandsCombo;
         
-        private final Form form;
+        protected final Form form;
         HorizontalPanel buttons;
         
         private final FinishHandler finishHandler;
@@ -57,7 +63,8 @@ public class CommandsWidget extends ResizeComposite  {
         private final CommandExecCallback commandExecCallback;
         private JID jid;
         private final ScrollPanel scroll;
-        
+        private ProgressHandler progressHandler;
+		
         public CommandsWidget(ClientFactory factory_, FinishHandler finishHandler) {
                 this.factory = factory_;
                 this.finishHandler = finishHandler;
@@ -70,7 +77,7 @@ public class CommandsWidget extends ResizeComposite  {
                 layout.getElement().getStyle().setLeft(10, Unit.PCT);
                 
                 AbsolutePanel panel = new AbsolutePanel();
-                HorizontalPanel comboPanel = new HorizontalPanel();
+                comboPanel = new HorizontalPanel();
                 Label commandsLabel = new Label(factory.i18n().availableCommands()+":");
                 comboPanel.add(commandsLabel);                
                 commandsLabel.getElement().getStyle().setFontSize(1.1, Unit.EM);
@@ -107,6 +114,10 @@ public class CommandsWidget extends ResizeComposite  {
                 initWidget(layout);
         }
         
+		public void setProgressHandler(ProgressHandler progressHandler) {
+			this.progressHandler = progressHandler;
+		}
+		
         public void updateCommandsList(JID jid) {
                 this.jid = jid;                
                 commandsCombo.clear();
@@ -141,6 +152,7 @@ public class CommandsWidget extends ResizeComposite  {
                 AdHocCommansModule adHocCommands = factory.jaxmpp().getModulesManager().getModule(AdHocCommansModule.class);
                 try {
                         adHocCommands.execute(jid, node, Action.execute, null, commandExecCallback);
+						if (progressHandler != null) progressHandler.started();
                 } catch (JaxmppException ex) {
                         Logger.getLogger(CommandsWidget.class.getName()).log(Level.SEVERE, null, ex);
                 }
@@ -209,6 +221,7 @@ public class CommandsWidget extends ResizeComposite  {
                                                         try {
                                                                 adHocCommands.execute(jid, node, Action.cancel, null, commandExecCallback);
                                                                 finishHandler.finished();
+																if (progressHandler != null) progressHandler.started();
                                                         } catch (JaxmppException ex) {
                                                                 Logger.getLogger(CommandsWidget.class.getName()).log(Level.SEVERE, null, ex);
                                                         }
@@ -226,6 +239,7 @@ public class CommandsWidget extends ResizeComposite  {
                                                         try {
                                                                 JabberDataElement data = form.getData();
                                                                 adHocCommands.execute(jid, node, Action.execute, data, commandExecCallback);
+																if (progressHandler != null) progressHandler.started();
                                                         } catch (JaxmppException ex) {
                                                                 Logger.getLogger(CommandsWidget.class.getName()).log(Level.SEVERE, null, ex);
                                                         }
@@ -241,18 +255,22 @@ public class CommandsWidget extends ResizeComposite  {
                                         close.addClickHandler(new ClickHandler() {
                                                 public void onClick(ClickEvent event) {
                                                         finishHandler.finished();
+														if (progressHandler != null) progressHandler.finished();
                                                 }                                                
                                         });
                                 }
                         }
+						if (progressHandler != null) progressHandler.finished();
                 }
 
                 public void onError(Stanza responseStanza, ErrorCondition error) throws JaxmppException {
                         finishHandler.error(error.getElementName());
+						if (progressHandler != null) progressHandler.finished();
                 }
 
                 public void onTimeout() throws JaxmppException {
                         finishHandler.error(factory.i18n().requestTimedOut());
+						if (progressHandler != null) progressHandler.finished();
                 }
                 
         }
