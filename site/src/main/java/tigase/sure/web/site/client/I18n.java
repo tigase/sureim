@@ -126,6 +126,10 @@ public interface I18n extends Constants {
 		@DefaultStringValue("Other")
 		String commandUndefinedGroup();
 		
+		// -- Statistics
+		@DefaultStringValue("Statistics")
+		String statistics();
+		
         // -- Settings 
         // ---- General
         @DefaultStringValue("General")

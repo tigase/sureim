@@ -21,6 +21,8 @@ import tigase.sure.web.site.client.pubsub.PubSubPublishActivity;
 import tigase.sure.web.site.client.pubsub.PubSubPublishPlace;
 import tigase.sure.web.site.client.settings.SettingsActivity;
 import tigase.sure.web.site.client.settings.SettingsPlace;
+import tigase.sure.web.site.client.stats.StatsActivity;
+import tigase.sure.web.site.client.stats.StatsPlace;
 
 /**
  *
@@ -56,7 +58,9 @@ public class AppActivityMapper implements ActivityMapper {
 		}
         else if (place instanceof PubSubPublishPlace) {
                 return new PubSubPublishActivity((PubSubPublishPlace) place, clientFactory);
-        }
+        } else if (place instanceof StatsPlace) {
+				return new StatsActivity((StatsPlace) place, clientFactory);
+		}
         return null;
     }
     

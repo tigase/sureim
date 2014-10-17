@@ -12,7 +12,7 @@ import tigase.jaxmpp.core.client.xmpp.modules.disco.DiscoveryModule.Identity;
  *
  * @author andrzej
  */
-class DiscoItem {
+public class DiscoItem {
         
         private final JID jid;
         private final String node;
@@ -21,7 +21,7 @@ class DiscoItem {
         private Collection<String> features;
         private Collection<Identity> identities;
 
-        DiscoItem(JID jid, String node, String name) {
+        public DiscoItem(JID jid, String node, String name) {
                 this.jid = jid;
                 this.node = node;
                 this.name = name;

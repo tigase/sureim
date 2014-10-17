@@ -17,7 +17,7 @@ import tigase.jaxmpp.core.client.xmpp.modules.disco.DiscoveryModule.Identity;
  *
  * @author andrzej
  */
-class DiscoItemCell extends AbstractCell<DiscoItem> implements Cell<DiscoItem> {
+public class DiscoItemCell extends AbstractCell<DiscoItem> implements Cell<DiscoItem> {
 
         private final ClientFactory factory;
         

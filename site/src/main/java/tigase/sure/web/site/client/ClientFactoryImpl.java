@@ -50,6 +50,8 @@ import tigase.sure.web.site.client.pubsub.PubSubPublishView;
 import tigase.sure.web.site.client.pubsub.PubSubPublishViewImpl;
 import tigase.sure.web.site.client.settings.SettingsView;
 import tigase.sure.web.site.client.settings.SettingsViewImpl;
+import tigase.sure.web.site.client.stats.StatsView;
+import tigase.sure.web.site.client.stats.StatsViewImpl;
 
 /**
  *
@@ -67,6 +69,7 @@ public class ClientFactoryImpl extends tigase.sure.web.base.client.ClientFactory
         private final DiscoView discoView;
         private final PubSubPublishView pubSubPublishView;
         private final SettingsView settingsView;
+		private final StatsView statsView;
         private final I18n i18n = GWT.create(I18n.class);
         private final PlaceController placeController;
         private final ResourceBindHandler jaxmppBindListener = new ResourceBindHandler();
@@ -102,6 +105,7 @@ public class ClientFactoryImpl extends tigase.sure.web.base.client.ClientFactory
 				managementView = new ManagementViewImpl(this);
                 pubSubPublishView = new PubSubPublishViewImpl(this);
                 settingsView = new SettingsViewImpl(this);
+				statsView = new StatsViewImpl(this);
                                 
 				jaxmpp().getEventBus().addHandler(ResourceBinderModule.ResourceBindErrorHandler.ResourceBindErrorEvent.class, jaxmppBindListener);
 				jaxmpp().getEventBus().addHandler(ResourceBinderModule.ResourceBindSuccessHandler.ResourceBindSuccessEvent.class, jaxmppBindListener);
@@ -180,6 +184,11 @@ public class ClientFactoryImpl extends tigase.sure.web.base.client.ClientFactory
         public SettingsView settingsView() {
                 return settingsView;
         }
+
+		@Override
+		public StatsView statsView() {
+				return statsView;
+		}
  
 		private class ResourceBindHandler implements ResourceBinderModule.ResourceBindErrorHandler, 
 				ResourceBinderModule.ResourceBindSuccessHandler {

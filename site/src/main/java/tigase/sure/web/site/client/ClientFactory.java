@@ -15,6 +15,7 @@ import tigase.sure.web.site.client.disco.DiscoView;
 import tigase.sure.web.site.client.management.ManagementView;
 import tigase.sure.web.site.client.pubsub.PubSubPublishView;
 import tigase.sure.web.site.client.settings.SettingsView;
+import tigase.sure.web.site.client.stats.StatsView;
 
 /**
  *
@@ -43,5 +44,7 @@ public interface ClientFactory extends tigase.sure.web.base.client.ClientFactory
         PubSubPublishView pubSubPublishView();
         
         SettingsView settingsView();
+		
+		StatsView statsView();
         
 }
