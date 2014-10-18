@@ -19,6 +19,7 @@ import com.google.gwt.view.client.ListDataProvider;
 import com.google.gwt.view.client.SelectionChangeEvent;
 import com.google.gwt.view.client.SingleSelectionModel;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import static java.util.Collections.list;
 import java.util.Comparator;
@@ -28,12 +29,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import tigase.jaxmpp.core.client.BareJID;
 import tigase.jaxmpp.core.client.JID;
 import tigase.jaxmpp.core.client.XMPPException;
 import tigase.jaxmpp.core.client.exceptions.JaxmppException;
-import tigase.jaxmpp.core.client.xml.Element;
 import tigase.jaxmpp.core.client.xml.XMLException;
-import tigase.jaxmpp.core.client.xmpp.forms.Field;
 import tigase.jaxmpp.core.client.xmpp.forms.JabberDataElement;
 import tigase.jaxmpp.core.client.xmpp.forms.XDataType;
 import tigase.jaxmpp.core.client.xmpp.modules.adhoc.Action;
@@ -46,9 +46,8 @@ import tigase.sure.web.site.client.ClientFactory;
 import tigase.sure.web.site.client.disco.CommandsWidget;
 import tigase.sure.web.site.client.disco.DiscoItem;
 import tigase.sure.web.site.client.disco.DiscoItemCell;
-import tigase.sure.web.site.client.disco.DiscoPlace;
-import tigase.sure.web.site.client.disco.DiscoViewImpl;
-import static tigase.sure.web.site.client.disco.DiscoViewImpl.COMMANDS_FEATURE;
+import tigase.sure.web.site.client.events.ServerFeaturesChangedEvent;
+import tigase.sure.web.site.client.events.ServerFeaturesChangedHandler;
 
 /**
  *
@@ -66,7 +65,54 @@ public class StatsViewImpl extends ResizeComposite implements StatsView {
 	private final tigase.sure.web.base.client.widgets.FlowPanel layout;
 	private final StatsStore store = new StatsStore();
 	private ChartJS packetsPerSecondGraph;
+	private ChartJS totalQueuesWaitGraph;
 	private Timer timer;
+	private ChartJS userConnectionsGraph;
+	private ChartJS userSessionsGraph;
+	
+	private final ServerFeaturesChangedHandler serverFeaturesChangedHandler = new ServerFeaturesChangedHandler() {
+
+		@Override
+		public void serverFeaturesChanged(Collection<DiscoveryModule.Identity> identities, Collection<String> features) {
+			BareJID jid = factory.sessionObject().getUserBareJid();
+			boolean hidden = true;
+			
+			if (jid != null) {
+				DiscoveryModule module = factory.jaxmpp().getModulesManager().getModule(DiscoveryModule.class);
+				try {
+					module.getItems(JID.jidInstance(jid.getDomain()), null, new DiscoveryModule.DiscoItemsAsyncCallback() {
+
+						@Override
+						public void onInfoReceived(String attribute, ArrayList<DiscoveryModule.Item> items) throws XMLException {
+							boolean hidden = true;
+							if (items != null) {
+								for (DiscoveryModule.Item item : items) {
+									if (item.getJid() != null && "stats".equals(item.getJid().getLocalpart())) {
+										hidden = false;
+									}
+								}
+							}
+							factory.actionBarFactory().setVisible("stats", !hidden);
+						}
+
+						@Override
+						public void onError(Stanza responseStanza, XMPPException.ErrorCondition error) throws JaxmppException {
+						}
+
+						@Override
+						public void onTimeout() throws JaxmppException {
+						}
+					});
+				} catch (XMLException ex) {
+					Logger.getLogger(StatsViewImpl.class.getName()).log(Level.SEVERE, null, ex);
+				} catch (JaxmppException ex) {
+					Logger.getLogger(StatsViewImpl.class.getName()).log(Level.SEVERE, null, ex);
+				}			
+			}
+			factory.actionBarFactory().setVisible("stats", !hidden);
+		}
+
+	};
 	
     public StatsViewImpl(ClientFactory factory_) {
 		factory = factory_;	
@@ -83,6 +129,8 @@ public class StatsViewImpl extends ResizeComposite implements StatsView {
 
 		});	
 		
+		factory.eventBus().addHandler(ServerFeaturesChangedEvent.TYPE, serverFeaturesChangedHandler);
+		
 		provider = new ListDataProvider<DiscoItem>();
 		list = new CellList<DiscoItem>(new DiscoItemCell(factory));
 		provider.addDataDisplay(list);	
@@ -93,7 +141,8 @@ public class StatsViewImpl extends ResizeComposite implements StatsView {
 		appView.setLeftSidebar(new ScrollPanel(list), 25);
 		
 		layout = new tigase.sure.web.base.client.widgets.FlowPanel();
-		layout.getElement().getStyle().setWidth(100, Style.Unit.PCT);		
+		layout.getElement().getStyle().setWidth(100, Style.Unit.PCT);	
+		layout.getElement().getStyle().setOverflowY(Style.Overflow.AUTO);
 		appView.setCenter(layout);
 		
 		selectionModel.addSelectionChangeHandler(new SelectionChangeEvent.Handler() {
@@ -118,14 +167,9 @@ public class StatsViewImpl extends ResizeComposite implements StatsView {
 			//layout.getElement().appendChild(c1);
 			Map<String, Object> data = new HashMap<String, Object>();
 			data.put("labels", new ArrayList<String>());
-			((List) data.get("labels")).add(" ");
-			((List) data.get("labels")).add(" ");
-			((List) data.get("labels")).add(" ");
-			((List) data.get("labels")).add(" ");
-			((List) data.get("labels")).add(" ");
 			data.put("datasets", new ArrayList());
 			Map<String, Object> dataset = new HashMap<String, Object>();
-			dataset.put("label", "Packets per second");
+			dataset.put("label", "Packets last minute");
 			dataset.put("fillColor", "rgba(220,220,220,0.2)");
 			dataset.put("strokeColor", "rgba(220,220,220,1)");
 			dataset.put("pointColor", "rgba(220,220,220,1)");
@@ -133,18 +177,126 @@ public class StatsViewImpl extends ResizeComposite implements StatsView {
 			dataset.put("pointHighlightFill", "#fff");
 			dataset.put("pointHighlightStroke", "rgba(220,220,220,1)");
 			dataset.put("data", new ArrayList());
-			((List) dataset.get("data")).add(0);
-			((List) dataset.get("data")).add(0);
-			((List) dataset.get("data")).add(0);
-			((List) dataset.get("data")).add(0);
-			((List) dataset.get("data")).add(0);
+			for (int i=0; i<store.getMaxRecords(); i++) {
+				((List) data.get("labels")).add(" ");
+				((List) dataset.get("data")).add(0);
+			}
 			((List) data.get("datasets")).add(dataset);
 			packetsPerSecondGraph = new ChartJS(data);
+			packetsPerSecondGraph.setPixelWidth(600);
+			packetsPerSecondGraph.setPixelHeight(300);
 			layout.add(packetsPerSecondGraph);
 			//packetsPerSecondGraph = ChartJS.createLineChart("packetsPerSecondGraph", data);	
 			//packetsPerSecondGraph.addToElement(layout.getElement());
 		}
-		
+		if (totalQueuesWaitGraph == null) {
+			Map<String, Object> data = new HashMap<String, Object>();
+			data.put("labels", new ArrayList<String>());
+			data.put("datasets", new ArrayList());
+			Map<String, Object> dataset = new HashMap<String, Object>();
+			dataset.put("label", "In queue wait");
+			dataset.put("fillColor", "rgba(220,220,220,0.2)");
+			dataset.put("strokeColor", "rgba(220,220,220,1)");
+			dataset.put("pointColor", "rgba(220,220,220,1)");
+			dataset.put("pointStrokeColor", "#fff");
+			dataset.put("pointHighlightFill", "#fff");
+			dataset.put("pointHighlightStroke", "rgba(220,220,220,1)");
+			dataset.put("data", new ArrayList());		
+			for (int i=0; i<store.getMaxRecords(); i++) {
+				((List) data.get("labels")).add(" ");
+				((List) dataset.get("data")).add(0);
+			}
+			((List) data.get("datasets")).add(dataset);
+			dataset = new HashMap<String, Object>();
+			dataset.put("label", "Out queue wait");
+			dataset.put("fillColor", "rgba(151,187,205,0.2)");
+			dataset.put("strokeColor", "rgba(151,187,205,1)");
+			dataset.put("pointColor", "rgba(151,187,205,1)");
+			dataset.put("pointStrokeColor", "#fff");
+			dataset.put("pointHighlightFill", "#fff");
+			dataset.put("pointHighlightStroke", "rgba(151,187,205,1)");
+			dataset.put("data", new ArrayList());			
+			for (int i=0; i<store.getMaxRecords(); i++) {
+				((List) dataset.get("data")).add(0);
+			}
+			((List) data.get("datasets")).add(dataset);
+			totalQueuesWaitGraph = new ChartJS(data);
+			totalQueuesWaitGraph.setPixelWidth(600);
+			totalQueuesWaitGraph.setPixelHeight(300);
+			layout.add(totalQueuesWaitGraph);			
+		}
+		if (userConnectionsGraph == null) {
+			Map<String, Object> data = new HashMap<String, Object>();
+			data.put("labels", new ArrayList<String>());
+			data.put("datasets", new ArrayList());
+			Map<String, Object> dataset = new HashMap<String, Object>();
+			dataset.put("label", "Maximum user connections");
+			dataset.put("fillColor", "rgba(220,220,220,0.2)");
+			dataset.put("strokeColor", "rgba(220,220,220,1)");
+			dataset.put("pointColor", "rgba(220,220,220,1)");
+			dataset.put("pointStrokeColor", "#fff");
+			dataset.put("pointHighlightFill", "#fff");
+			dataset.put("pointHighlightStroke", "rgba(220,220,220,1)");
+			dataset.put("data", new ArrayList());		
+			for (int i=0; i<store.getMaxRecords(); i++) {
+				((List) data.get("labels")).add(" ");
+				((List) dataset.get("data")).add(0);
+			}
+			((List) data.get("datasets")).add(dataset);
+			dataset = new HashMap<String, Object>();
+			dataset.put("label", "Open user connections");
+			dataset.put("fillColor", "rgba(151,187,205,0.2)");
+			dataset.put("strokeColor", "rgba(151,187,205,1)");
+			dataset.put("pointColor", "rgba(151,187,205,1)");
+			dataset.put("pointStrokeColor", "#fff");
+			dataset.put("pointHighlightFill", "#fff");
+			dataset.put("pointHighlightStroke", "rgba(151,187,205,1)");
+			dataset.put("data", new ArrayList());			
+			for (int i=0; i<store.getMaxRecords(); i++) {
+				((List) dataset.get("data")).add(0);
+			}		
+			((List) data.get("datasets")).add(dataset);
+			userConnectionsGraph = new ChartJS(data);
+			userConnectionsGraph.setPixelWidth(600);
+			userConnectionsGraph.setPixelHeight(300);
+			layout.add(userConnectionsGraph);			
+		}
+		if (userSessionsGraph == null) {
+				Map<String, Object> data = new HashMap<String, Object>();
+			data.put("labels", new ArrayList<String>());
+			data.put("datasets", new ArrayList());
+			Map<String, Object> dataset = new HashMap<String, Object>();
+			dataset.put("label", "Maximum user sessions");
+			dataset.put("fillColor", "rgba(220,220,220,0.2)");
+			dataset.put("strokeColor", "rgba(220,220,220,1)");
+			dataset.put("pointColor", "rgba(220,220,220,1)");
+			dataset.put("pointStrokeColor", "#fff");
+			dataset.put("pointHighlightFill", "#fff");
+			dataset.put("pointHighlightStroke", "rgba(220,220,220,1)");
+			dataset.put("data", new ArrayList());		
+			for (int i=0; i<store.getMaxRecords(); i++) {
+				((List) data.get("labels")).add(" ");
+				((List) dataset.get("data")).add(0);
+			}
+			((List) data.get("datasets")).add(dataset);
+			dataset = new HashMap<String, Object>();
+			dataset.put("label", "Open user sessions");
+			dataset.put("fillColor", "rgba(151,187,205,0.2)");
+			dataset.put("strokeColor", "rgba(151,187,205,1)");
+			dataset.put("pointColor", "rgba(151,187,205,1)");
+			dataset.put("pointStrokeColor", "#fff");
+			dataset.put("pointHighlightFill", "#fff");
+			dataset.put("pointHighlightStroke", "rgba(151,187,205,1)");
+			dataset.put("data", new ArrayList());			
+			for (int i=0; i<store.getMaxRecords(); i++) {
+				((List) dataset.get("data")).add(0);
+			}		
+			((List) data.get("datasets")).add(dataset);
+			userSessionsGraph = new ChartJS(data);
+			userSessionsGraph.setPixelWidth(600);
+			userSessionsGraph.setPixelHeight(300);
+			layout.add(userSessionsGraph);			
+		}		
 		JID jid = JID.jidInstance("stats", factory.jaxmpp().getSessionObject().getUserBareJid().getDomain());
 
 		DiscoveryModule module = factory.jaxmpp().getModulesManager().getModule(DiscoveryModule.class);
@@ -159,6 +311,10 @@ public class StatsViewImpl extends ResizeComposite implements StatsView {
 	
 	private void retrieveStats(final JID jid, final String node) {
 		store.clear();
+		boolean sessMan = (node.endsWith("/sess-man"));
+		resetGraphs(sessMan);
+		userConnectionsGraph.setVisible(sessMan);
+		userSessionsGraph.setVisible(sessMan);
 		if (timer != null)
 			timer.cancel();
 		
@@ -180,8 +336,8 @@ public class StatsViewImpl extends ResizeComposite implements StatsView {
 						@Override
 						protected void onResponseReceived(String sessionid, String node, State status, JabberDataElement data) throws JaxmppException {
 							StatsItem item = new StatsItem(data, node.replace("stats/", ""));
-							store.add(item);
-							refreshGraphs(item);
+							boolean overflow = store.add(item);
+							refreshGraphs(item, true);
 						}
 
 						@Override
@@ -227,11 +383,55 @@ public class StatsViewImpl extends ResizeComposite implements StatsView {
 		provider.getList().add(idx, item);
 	}
 	
-	private void refreshGraphs(StatsItem item) {
+	private void refreshGraphs(StatsItem item, boolean overflow) {
+		if (overflow) {
+			packetsPerSecondGraph.removeData();
+			totalQueuesWaitGraph.removeData();
+			if (item.openUserConnections != null) {
+				userConnectionsGraph.removeData();
+				userSessionsGraph.removeData();
+			}
+		}
+		
 		DateTimeFormat format = DateTimeFormat.getFormat(com.google.gwt.i18n.shared.DateTimeFormat.PredefinedFormat.HOUR24_MINUTE);
+		String ts = format.format(new Date());
 		JsArrayInteger data = (JsArrayInteger) JsArrayInteger.createArray();
 		data.push(item.lastMinutePackets);
-		packetsPerSecondGraph.addData(data, format.format(new Date()));
+		packetsPerSecondGraph.addData(data, ts);
+		data = (JsArrayInteger) JsArrayInteger.createArray();
+		data.push(item.totalInQueuesWait);
+		data.push(item.totalOutQueuesWait);
+		totalQueuesWaitGraph.addData(data, ts);
+		if (item.openUserConnections != null) {
+			data = (JsArrayInteger) JsArrayInteger.createArray();
+			data.push(item.maxUserConnections);
+			data.push(item.openUserConnections);
+			userConnectionsGraph.addData(data, ts);
+			data = (JsArrayInteger) JsArrayInteger.createArray();
+			data.push(item.maxUserSessions);
+			data.push(item.openUserSessions);
+			userSessionsGraph.addData(data, ts);			
+		}
+	}
+	
+	private void resetGraphs(boolean sessMan) {
+		for (int i=0; i<store.getMaxRecords(); i++) {
+			JsArrayInteger data = (JsArrayInteger) JsArrayInteger.createArray();
+			data.push(0);
+			packetsPerSecondGraph.addData(data, " ");
+			packetsPerSecondGraph.removeData();
+			data = (JsArrayInteger) JsArrayInteger.createArray();
+			data.push(0);
+			data.push(0);
+			totalQueuesWaitGraph.addData(data, " ");
+			totalQueuesWaitGraph.removeData();
+			if (sessMan) {
+				userConnectionsGraph.addData(data, " ");
+				userConnectionsGraph.removeData();
+				userSessionsGraph.addData(data, " ");
+				userSessionsGraph.removeData();
+			}
+		}
 	}
 	
 	private class DiscoItemsCallback extends DiscoveryModule.DiscoItemsAsyncCallback {

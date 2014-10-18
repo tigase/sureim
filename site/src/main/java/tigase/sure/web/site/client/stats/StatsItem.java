@@ -18,11 +18,20 @@ public class StatsItem {
 	public final Integer lastMinutePackets;
 	public final Integer totalInQueuesWait;
 	public final Integer totalOutQueuesWait;
+	// sess-man only
+	public final Integer openUserConnections;
+	public final Integer maxUserConnections;
+	public final Integer openUserSessions;
+	public final Integer maxUserSessions;
 	
 	public StatsItem(JabberDataElement data, String prefix) throws XMLException {
 		lastMinutePackets = getValue(data, prefix, "/Last minute packets");
 		totalInQueuesWait = getValue(data, prefix, "/Total In queues wait");
 		totalOutQueuesWait = getValue(data, prefix, "/Total Out queues wait");
+		openUserConnections = getValue(data, prefix, "/Open user connections");
+		maxUserConnections = getValue(data, prefix, "/Maximum user connections");
+		openUserSessions = getValue(data, prefix, "/Open user sessions");
+		maxUserSessions = getValue(data, prefix, "/Maximum user sessions");
 	}
 	
 	private Integer getValue(JabberDataElement data, String prefix, String field) throws XMLException {

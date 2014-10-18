@@ -11,8 +11,10 @@ import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.core.client.JsArray;
 import com.google.gwt.core.client.JsArrayInteger;
 import com.google.gwt.core.client.ScriptInjector;
+import com.google.gwt.dom.client.CanvasElement;
 import com.google.gwt.dom.client.Document;
 import com.google.gwt.dom.client.Element;
+import com.google.gwt.dom.client.Style;
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.ui.SimplePanel;
@@ -28,7 +30,8 @@ public class ChartJS extends SimplePanel {
 	private static boolean injected = false;
 	
 	private JavaScriptObject chart;
-	private Element canvas;
+	private CanvasElement canvas;
+	private Element legend;
 	private Map data;
 	
 	public static final void inject(final Callback<Void,Exception> callback) {
@@ -57,6 +60,10 @@ public class ChartJS extends SimplePanel {
 	public ChartJS(Map data) {
 		canvas = Document.get().createCanvasElement();
 		getElement().appendChild(canvas);
+		canvas.getStyle().setFloat(Style.Float.LEFT);
+		legend = Document.get().createDivElement();
+		legend.getStyle().setFloat(Style.Float.LEFT);
+		getElement().appendChild(legend);
 		this.data = data;
 		sinkEvents(Event.ONCLICK);	
 	}
@@ -73,12 +80,34 @@ public class ChartJS extends SimplePanel {
 			console.log("creating chart with data", data);
 			var canvas = this.@tigase.sure.web.site.client.stats.ChartJS::canvas;
 			var ctx = canvas.getContext("2d");
-			var chart = new Chart(ctx).Line(data);
+			var chart = new Chart(ctx).Line(data, {
+				animationSteps: 6,
+				legendTemplate: "<ul class=\"<%=name.toLowerCase()%>-legend\"><% for (var i=0; i<datasets.length; i++){%><li><span style=\"color:<%=datasets[i].strokeColor%>\"><%if(datasets[i].label){%><%=datasets[i].label%><%}%></span></li><%}%></ul>"
+			});
 			this.@tigase.sure.web.site.client.stats.ChartJS::chart = chart;
+			this.@tigase.sure.web.site.client.stats.ChartJS::legend.innerHTML = chart.generateLegend();
 		} catch (ex) {
 			console.log('Exception creating chart', data, ex);
 		}
 	}-*/;
+	
+	public void setPixelWidth(int width) {
+		canvas.setWidth(width);
+	}
+	
+	public void setPixelHeight(int height) {
+		canvas.setHeight(height);
+	}
+	
+	@Override
+	public void setHeight(String height) {
+		canvas.getStyle().setProperty("height", height);
+	}
+	
+	@Override
+	public void setWidth(String width) {
+		canvas.getStyle().setProperty("width", width);
+	}
 	
 //	public static ChartJS createLineChart(String id, Map data) {
 //		ChartJS instance = new ChartJS();

@@ -18,11 +18,19 @@ public class StatsStore {
 	
 	private final List<StatsItem> items = new ArrayList<StatsItem>();
 	
-	public void add(StatsItem item) {
+	/**
+	 * Adds item to store
+	 * 
+	 * @param item
+	 * @return true if limit of items was reached and oldest one was removed
+	 */
+	public boolean add(StatsItem item) {
 		items.add(item);
 		if (items.size() > MAX_SIZE) {
 			items.remove(0);
+			return true;
 		}
+		return false;
 	}
 	
 	public List<StatsItem> getItems() {
@@ -31,6 +39,10 @@ public class StatsStore {
 	
 	public void clear() {
 		items.clear();
+	}
+	
+	public int getMaxRecords() {
+		return MAX_SIZE;
 	}
 	
 }
