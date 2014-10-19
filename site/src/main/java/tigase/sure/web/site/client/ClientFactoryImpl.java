@@ -27,6 +27,7 @@ import tigase.jaxmpp.core.client.xmpp.modules.disco.DiscoveryModule.DiscoInfoAsy
 import tigase.jaxmpp.core.client.xmpp.modules.disco.DiscoveryModule.Identity;
 import tigase.jaxmpp.core.client.xmpp.modules.muc.MucModule;
 import tigase.jaxmpp.core.client.xmpp.modules.pubsub.PubSubModule;
+import tigase.jaxmpp.core.client.xmpp.modules.streammng.StreamManagementModule;
 import tigase.jaxmpp.core.client.xmpp.modules.vcard.VCardModule;
 import tigase.jaxmpp.core.client.xmpp.modules.xep0136.MessageArchivingModule;
 import tigase.jaxmpp.core.client.xmpp.stanzas.Stanza;
@@ -113,7 +114,17 @@ public class ClientFactoryImpl extends tigase.sure.web.base.client.ClientFactory
                 jaxmpp().getEventBus().addHandler(JaxmppCore.DisconnectedHandler.DisconnectedEvent.class, new JaxmppCore.DisconnectedHandler() {
 					@Override
 					public void onDisconnected(SessionObject sessionObject) {
-						eventBus().fireEvent(new AuthEvent(null));
+						if (StreamManagementModule.isResumptionEnabled(sessionObject())) {
+							Logger.getLogger(ClientFactoryImpl.class.getName()).severe("trying to resume broken connection");
+							try {
+								jaxmpp().login();
+							} catch (JaxmppException ex) {
+								Logger.getLogger(ClientFactoryImpl.class.getName()).log(Level.SEVERE, null, ex);
+							}
+						}
+						else {
+							eventBus().fireEvent(new AuthEvent(null));
+						}
 					}
 				});
 
