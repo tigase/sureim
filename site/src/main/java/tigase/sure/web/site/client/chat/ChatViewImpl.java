@@ -41,6 +41,7 @@ import tigase.jaxmpp.core.client.xmpp.modules.roster.RosterItem;
 import tigase.jaxmpp.core.client.xmpp.modules.roster.RosterModule;
 import tigase.jaxmpp.core.client.xmpp.stanzas.Message;
 import tigase.jaxmpp.core.client.xmpp.stanzas.Presence;
+import tigase.jaxmpp.gwt.client.GwtSessionObject;
 
 /**
  *
@@ -134,7 +135,15 @@ public class ChatViewImpl extends ResizeComposite implements ChatView {
                         }
                         
                 });
-                
+				
+               appView.getActionBar().addAction(factory.theme().collectionsCloud(), new ClickHandler() {
+
+                        public void onClick(ClickEvent event) {
+//                                throw new UnsupportedOperationException("Not supported yet.");
+                                ((GwtSessionObject) factory.sessionObject()).test();
+                        }
+                        
+                });                
                 factory.actionBarFactory().addLink("chat", "Chat", new ClickHandler() {
 
                         public void onClick(ClickEvent event) {

@@ -11,6 +11,8 @@ import com.google.gwt.place.shared.Place;
 import com.google.gwt.place.shared.PlaceController;
 import com.google.gwt.place.shared.PlaceHistoryHandler;
 import com.google.gwt.user.client.Cookies;
+import com.google.gwt.user.client.Timer;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.*;
 import com.google.web.bindery.event.shared.EventBus;
 import java.util.Set;
@@ -19,10 +21,16 @@ import java.util.logging.Logger;
 import tigase.jaxmpp.core.client.ConnectionConfiguration;
 import tigase.jaxmpp.core.client.JID;
 import tigase.jaxmpp.core.client.SessionObject;
+import tigase.jaxmpp.core.client.XMPPException;
 import tigase.jaxmpp.core.client.exceptions.JaxmppException;
+import tigase.jaxmpp.core.client.xmpp.modules.ResourceBinderModule;
 import tigase.jaxmpp.core.client.xmpp.modules.auth.SaslModule;
+import tigase.jaxmpp.core.client.xmpp.modules.streammng.StreamManagementModule;
+import tigase.jaxmpp.gwt.client.GwtSessionObject;
+import tigase.jaxmpp.gwt.client.Jaxmpp;
 import tigase.jaxmpp.gwt.client.connectors.BoshConnector;
 import tigase.jaxmpp.gwt.client.connectors.WebSocket;
+import tigase.jaxmpp.gwt.client.connectors.WebSocketConnector;
 import tigase.jaxmpp.gwt.client.dns.WebDnsResolver;
 import tigase.sure.web.base.client.ResizablePanel;
 import tigase.sure.web.base.client.RootView;
@@ -53,7 +61,6 @@ public class Xode implements EntryPoint {
          * This is the entry point method.
          */
         public void onModuleLoad() {
-
                 factory = GWT.create(ClientFactory.class);
                 factory.theme().style().ensureInjected();
 
@@ -114,12 +121,50 @@ public class Xode implements EntryPoint {
 
                 placeController.goTo(new AuthPlace());
                 
-                if (Cookies.getCookie("username") != null && Cookies.getCookie("password") != null) {
-                        authenticateInt(JID.jidInstance(Cookies.getCookie("username")), Cookies.getCookie("password"), null);
-                }
-                //authenticateTest(factory);
-                
-                authenticateInt(null, null, null);
+			Window.addWindowClosingHandler(new Window.ClosingHandler() {
+				@Override
+				public void onWindowClosing(Window.ClosingEvent event) {
+					if (factory.jaxmpp().isConnected() && factory.sessionObject().getUserBareJid() != null 
+							&& factory.jaxmpp().getSessionObject().getProperty(BoshConnector.BOSH_SERVICE_URL_KEY) != null
+							&& ((String) factory.jaxmpp().getSessionObject().getProperty(BoshConnector.BOSH_SERVICE_URL_KEY)).startsWith("ws")) {
+						String session = ((GwtSessionObject) factory.sessionObject()).serialize();
+						if (session != null) {
+							storeSerializedSession(session);
+						}
+					}
+				}
+			});				
+				
+				String session = restoreSerializedSession();
+				if (session != null && !session.isEmpty()) {
+					GwtSessionObject sessionObject = (GwtSessionObject) factory.sessionObject();
+					try {
+						sessionObject.restore(session);
+						final Jaxmpp jaxmpp = factory.jaxmpp();
+						Timer t = new Timer() {
+							@Override
+							public void run() {
+								try {
+									new StreamManagementResumptionHandler(jaxmpp).resume();
+								} catch (JaxmppException ex) {
+									Logger.getLogger(Xode.class.getName()).log(Level.SEVERE, null, ex);
+								}
+							}
+						};
+						t.schedule(100);
+					} catch (GwtSessionObject.RestoringSessionException ex) {
+						Logger.getLogger(Xode.class.getName()).log(Level.SEVERE, null, ex);
+//					} catch (JaxmppException ex) {
+//						Logger.getLogger(Xode.class.getName()).log(Level.SEVERE, null, ex);
+					}
+				} else {
+					if (Cookies.getCookie("username") != null && Cookies.getCookie("password") != null) {
+							authenticateInt(JID.jidInstance(Cookies.getCookie("username")), Cookies.getCookie("password"), null);
+					}
+					//authenticateTest(factory);
+
+					authenticateInt(null, null, null);
+				}
         }
 
         public void authenticateInt(JID jid, String password, String boshUrl) {   
@@ -174,6 +219,14 @@ public class Xode implements EntryPoint {
 				}
                 return url;
         }
+		
+		private static native void storeSerializedSession(String data) /*-{
+			window.sessionStorage.setItem('jaxmppSession', data);
+		}-*/;
+		
+		private static native String restoreSerializedSession() /*-{
+			return window.sessionStorage.getItem('jaxmppSession');
+		}-*/;
         
         private class XTest extends ResizeComposite implements ProvidesResize, AcceptsOneWidget {
 
@@ -222,4 +275,51 @@ public class Xode implements EntryPoint {
                 }
                 
         }
+		
+	private class StreamManagementResumptionHandler implements StreamManagementModule.StreamResumedHandler, StreamManagementModule.StreamManagementFailedHandler {
+
+		private final Jaxmpp jaxmpp;
+		
+		public StreamManagementResumptionHandler(Jaxmpp jaxmpp) {
+			this.jaxmpp = jaxmpp;
+		}
+		
+		public void resume() throws JaxmppException {
+			try {
+				jaxmpp.getEventBus().addHandler(
+						StreamManagementModule.StreamManagementFailedHandler.StreamManagementFailedEvent.class, this);
+				jaxmpp.getEventBus().addHandler(
+						StreamManagementModule.StreamResumedHandler.StreamResumedEvent.class, this);
+				jaxmpp.login();
+					
+			} catch (JaxmppException ex) {
+				cleanUp();
+				throw ex;
+			}			
+		}
+		
+		@Override
+		public void onStreamResumed(SessionObject sessionObject, Long h, String previd) throws JaxmppException {
+			cleanUp();
+			factory.eventBus().fireEvent(new AuthEvent(ResourceBinderModule.getBindedJID(sessionObject)));
+		}
+
+		@Override
+		public void onStreamManagementFailed(SessionObject sessionObject, XMPPException.ErrorCondition condition) {
+			cleanUp();
+			//StreamManagementModule.reset(sessionObject);
+			try {
+//				jaxmpp.login();
+				sessionObject.clear();
+			} catch (JaxmppException ex) {
+				Logger.getLogger(Xode.class.getName()).log(Level.SEVERE, null, ex);
+//				factory.eventBus().fireEvent(new AuthEvent(null));
+			}
+			factory.eventBus().fireEvent(new AuthEvent(null));
+		}
+
+		private void cleanUp() {
+			jaxmpp.getEventBus().remove(this);
+		}
+	}
 }
