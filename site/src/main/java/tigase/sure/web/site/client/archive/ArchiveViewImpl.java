@@ -121,7 +121,7 @@ public class ArchiveViewImpl extends ResizeComposite implements ArchiveView {
                         public void onClick(ClickEvent event) {
                                 MessageArchivingModule module = factory.jaxmpp().getModulesManager().getModule(MessageArchivingModule.class);
                                 try {
-                                        module.setAutoArchive(false);
+                                        module.setAutoArchive(false,null);
                                 }
                                 catch (JaxmppException ex) {
                                         log.log(Level.SEVERE, null, ex);
@@ -138,7 +138,7 @@ public class ArchiveViewImpl extends ResizeComposite implements ArchiveView {
                         public void onClick(ClickEvent event) {
                                 MessageArchivingModule module = factory.jaxmpp().getModulesManager().getModule(MessageArchivingModule.class);
                                 try {
-                                        module.setAutoArchive(true);
+                                        module.setAutoArchive(true,null);
                                 }
                                 catch (JaxmppException ex) {
                                         log.log(Level.SEVERE, null, ex);
