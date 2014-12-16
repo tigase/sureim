@@ -4,28 +4,10 @@
  */
 package tigase.sure.web.site.client.pubsub;
 
-import com.google.gwt.dom.client.Style;
-import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.event.dom.client.KeyUpEvent;
-import com.google.gwt.event.dom.client.KeyUpHandler;
-import com.google.gwt.i18n.client.Dictionary;
-import com.google.gwt.place.shared.Place;
-import com.google.gwt.user.client.ui.*;
-import tigase.sure.web.base.client.AppView;
-import tigase.sure.web.base.client.widgets.Markdown;
-import tigase.sure.web.site.client.ClientFactory;
-import tigase.sure.web.site.client.MessageDialog;
-import tigase.sure.web.site.client.events.ServerFeaturesChangedEvent;
-import tigase.sure.web.site.client.events.ServerFeaturesChangedHandler;
-import java.util.Collection;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import tigase.jaxmpp.core.client.BareJID;
 import tigase.jaxmpp.core.client.JID;
 import tigase.jaxmpp.core.client.XMPPException.ErrorCondition;
 import tigase.jaxmpp.core.client.exceptions.JaxmppException;
-import tigase.jaxmpp.core.client.xml.DefaultElement;
 import tigase.jaxmpp.core.client.xml.Element;
 import tigase.jaxmpp.core.client.xmpp.modules.disco.DiscoveryModule;
 import tigase.jaxmpp.core.client.xmpp.modules.pubsub.PubSubAsyncCallback;
@@ -33,6 +15,30 @@ import tigase.jaxmpp.core.client.xmpp.modules.pubsub.PubSubErrorCondition;
 import tigase.jaxmpp.core.client.xmpp.modules.pubsub.PubSubModule;
 import tigase.jaxmpp.core.client.xmpp.stanzas.IQ;
 import tigase.jaxmpp.core.client.xmpp.stanzas.Stanza;
+import tigase.sure.web.base.client.AppView;
+import tigase.sure.web.base.client.widgets.Markdown;
+import tigase.sure.web.site.client.ClientFactory;
+import tigase.sure.web.site.client.MessageDialog;
+import tigase.sure.web.site.client.events.ServerFeaturesChangedEvent;
+import tigase.sure.web.site.client.events.ServerFeaturesChangedHandler;
+
+import java.util.Collection;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
+import com.google.gwt.dom.client.Style;
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.event.dom.client.KeyUpEvent;
+import com.google.gwt.event.dom.client.KeyUpHandler;
+import com.google.gwt.i18n.client.Dictionary;
+import com.google.gwt.user.client.ui.AbsolutePanel;
+import com.google.gwt.user.client.ui.FlexTable;
+import com.google.gwt.user.client.ui.Label;
+import com.google.gwt.user.client.ui.ResizeComposite;
+import com.google.gwt.user.client.ui.ScrollPanel;
+import com.google.gwt.user.client.ui.TextArea;
+import com.google.gwt.user.client.ui.TextBox;
 
 /**
  *
