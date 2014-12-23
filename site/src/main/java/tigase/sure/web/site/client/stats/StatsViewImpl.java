@@ -35,6 +35,7 @@ import tigase.jaxmpp.core.client.XMPPException;
 import tigase.jaxmpp.core.client.exceptions.JaxmppException;
 import tigase.jaxmpp.core.client.xml.XMLException;
 import tigase.jaxmpp.core.client.xmpp.forms.JabberDataElement;
+import tigase.jaxmpp.core.client.xmpp.forms.TextMultiField;
 import tigase.jaxmpp.core.client.xmpp.forms.XDataType;
 import tigase.jaxmpp.core.client.xmpp.modules.adhoc.Action;
 import tigase.jaxmpp.core.client.xmpp.modules.adhoc.AdHocCommansModule;
@@ -69,6 +70,9 @@ public class StatsViewImpl extends ResizeComposite implements StatsView {
 	private Timer timer;
 	private ChartJS userConnectionsGraph;
 	private ChartJS userSessionsGraph;
+	
+	private List<String> clusterNodes = new ArrayList<String>();
+	private List<String> colors = new ArrayList<String>();
 	
 	private final ServerFeaturesChangedHandler serverFeaturesChangedHandler = new ServerFeaturesChangedHandler() {
 
@@ -157,31 +161,41 @@ public class StatsViewImpl extends ResizeComposite implements StatsView {
 		initWidget(appView);
 	}
 	
-	@Override
-	public void refresh() {
+	private void refreshColors() {
+		colors.clear();
+		int x = (int) Math.ceil(Math.sqrt((double) clusterNodes.size()));
+		for (int i=1; i<=x; i++) {
+			for (int j=1; j<=x; j++) {
+				colors.add("" + ((int) Math.floor(128/i)) + "," + ((int) Math.floor(128/j)));
+			}
+		}
+
+	}
+	
+	private void initGraphs() {
 		if (packetsPerSecondGraph == null) {
-			//com.google.gwt.dom.client.Element c1 = DOM.createElement("canvas");
-			//c1.setAttribute("id", "packetsPerSecondGraph");
-			//c1.setAttribute("width", "90%");
-			//c1.setAttribute("height", "300px");
-			//layout.getElement().appendChild(c1);
 			Map<String, Object> data = new HashMap<String, Object>();
 			data.put("labels", new ArrayList<String>());
 			data.put("datasets", new ArrayList());
-			Map<String, Object> dataset = new HashMap<String, Object>();
-			dataset.put("label", "Packets last minute");
-			dataset.put("fillColor", "rgba(220,220,220,0.2)");
-			dataset.put("strokeColor", "rgba(220,220,220,1)");
-			dataset.put("pointColor", "rgba(220,220,220,1)");
-			dataset.put("pointStrokeColor", "#fff");
-			dataset.put("pointHighlightFill", "#fff");
-			dataset.put("pointHighlightStroke", "rgba(220,220,220,1)");
-			dataset.put("data", new ArrayList());
-			for (int i=0; i<store.getMaxRecords(); i++) {
-				((List) data.get("labels")).add(" ");
-				((List) dataset.get("data")).add(0);
+			for (String clusterNode : clusterNodes) {
+				String color = colors.get(clusterNodes.indexOf(clusterNode));
+				Map<String, Object> dataset = new HashMap<String, Object>();
+				dataset.put("label", "Packets last minute (" + clusterNode + ")");
+				dataset.put("fillColor", "rgba(" + color + ",220,0.2)");
+				dataset.put("strokeColor", "rgba(" + color + ",220,1)");
+				dataset.put("pointColor", "rgba(" + color + ",220,1)");
+				dataset.put("pointStrokeColor", "#fff");
+				dataset.put("pointHighlightFill", "#fff");
+				dataset.put("pointHighlightStroke", "rgba(" + color + ",220,1)");
+				dataset.put("data", new ArrayList());
+				for (int i = 0; i < store.getMaxRecords(); i++) {
+					((List) dataset.get("data")).add(0);
+				}
+				((List) data.get("datasets")).add(dataset);
 			}
-			((List) data.get("datasets")).add(dataset);
+			for (int i = 0; i < store.getMaxRecords(); i++) {
+				((List) data.get("labels")).add(" ");
+			}
 			packetsPerSecondGraph = new ChartJS(data);
 			packetsPerSecondGraph.setPixelWidth(600);
 			packetsPerSecondGraph.setPixelHeight(300);
@@ -193,110 +207,182 @@ public class StatsViewImpl extends ResizeComposite implements StatsView {
 			Map<String, Object> data = new HashMap<String, Object>();
 			data.put("labels", new ArrayList<String>());
 			data.put("datasets", new ArrayList());
-			Map<String, Object> dataset = new HashMap<String, Object>();
-			dataset.put("label", "In queue wait");
-			dataset.put("fillColor", "rgba(220,220,220,0.2)");
-			dataset.put("strokeColor", "rgba(220,220,220,1)");
-			dataset.put("pointColor", "rgba(220,220,220,1)");
-			dataset.put("pointStrokeColor", "#fff");
-			dataset.put("pointHighlightFill", "#fff");
-			dataset.put("pointHighlightStroke", "rgba(220,220,220,1)");
-			dataset.put("data", new ArrayList());		
-			for (int i=0; i<store.getMaxRecords(); i++) {
+			for (String clusterNode : clusterNodes) {
+				String color = colors.get(clusterNodes.indexOf(clusterNode));
+				Map<String, Object> dataset = new HashMap<String, Object>();
+				dataset.put("label", "In queue wait (" + clusterNode + ")");
+				dataset.put("fillColor", "rgba(" + color + ",220,0.2)");
+				dataset.put("strokeColor", "rgba(" + color + ",220,1)");
+				dataset.put("pointColor", "rgba(" + color + ",220,1)");
+				dataset.put("pointStrokeColor", "#fff");
+				dataset.put("pointHighlightFill", "#fff");
+				dataset.put("pointHighlightStroke", "rgba(" + color + ",220,1)");
+				dataset.put("data", new ArrayList());
+				for (int i = 0; i < store.getMaxRecords(); i++) {
+					((List) dataset.get("data")).add(0);
+				}
+				((List) data.get("datasets")).add(dataset);
+			}
+			for (String clusterNode : clusterNodes) {
+				String color = colors.get(clusterNodes.indexOf(clusterNode));
+				Map<String, Object> dataset = new HashMap<String, Object>();
+				dataset.put("label", "Out queue wait (" + clusterNode + ")");
+				dataset.put("fillColor", "rgba(" + color + ",105,0.2)");
+				dataset.put("strokeColor", "rgba(" + color + ",105,1)");
+				dataset.put("pointColor", "rgba(" + color + ",105,1)");
+				dataset.put("pointStrokeColor", "#fff");
+				dataset.put("pointHighlightFill", "#fff");
+				dataset.put("pointHighlightStroke", "rgba(" + color + ",105,1)");
+				dataset.put("data", new ArrayList());
+				for (int i = 0; i < store.getMaxRecords(); i++) {
+					((List) dataset.get("data")).add(0);
+				}
+				((List) data.get("datasets")).add(dataset);
+			}
+			for (int i = 0; i < store.getMaxRecords(); i++) {
 				((List) data.get("labels")).add(" ");
-				((List) dataset.get("data")).add(0);
 			}
-			((List) data.get("datasets")).add(dataset);
-			dataset = new HashMap<String, Object>();
-			dataset.put("label", "Out queue wait");
-			dataset.put("fillColor", "rgba(151,187,205,0.2)");
-			dataset.put("strokeColor", "rgba(151,187,205,1)");
-			dataset.put("pointColor", "rgba(151,187,205,1)");
-			dataset.put("pointStrokeColor", "#fff");
-			dataset.put("pointHighlightFill", "#fff");
-			dataset.put("pointHighlightStroke", "rgba(151,187,205,1)");
-			dataset.put("data", new ArrayList());			
-			for (int i=0; i<store.getMaxRecords(); i++) {
-				((List) dataset.get("data")).add(0);
-			}
-			((List) data.get("datasets")).add(dataset);
 			totalQueuesWaitGraph = new ChartJS(data);
 			totalQueuesWaitGraph.setPixelWidth(600);
 			totalQueuesWaitGraph.setPixelHeight(300);
-			layout.add(totalQueuesWaitGraph);			
+			layout.add(totalQueuesWaitGraph);
 		}
 		if (userConnectionsGraph == null) {
 			Map<String, Object> data = new HashMap<String, Object>();
 			data.put("labels", new ArrayList<String>());
 			data.put("datasets", new ArrayList());
-			Map<String, Object> dataset = new HashMap<String, Object>();
-			dataset.put("label", "Maximum user connections");
-			dataset.put("fillColor", "rgba(220,220,220,0.2)");
-			dataset.put("strokeColor", "rgba(220,220,220,1)");
-			dataset.put("pointColor", "rgba(220,220,220,1)");
-			dataset.put("pointStrokeColor", "#fff");
-			dataset.put("pointHighlightFill", "#fff");
-			dataset.put("pointHighlightStroke", "rgba(220,220,220,1)");
-			dataset.put("data", new ArrayList());		
-			for (int i=0; i<store.getMaxRecords(); i++) {
-				((List) data.get("labels")).add(" ");
-				((List) dataset.get("data")).add(0);
+			for (String clusterNode : clusterNodes) {
+				String color = colors.get(clusterNodes.indexOf(clusterNode));
+				Map<String, Object> dataset = new HashMap<String, Object>();
+				dataset.put("label", "Maximum user connections (" + clusterNode + ")");
+				dataset.put("fillColor", "rgba(" + color + ",220,0.2)");
+				dataset.put("strokeColor", "rgba(" + color + ",220,1)");
+				dataset.put("pointColor", "rgba(" + color + ",220,1)");
+				dataset.put("pointStrokeColor", "#fff");
+				dataset.put("pointHighlightFill", "#fff");
+				dataset.put("pointHighlightStroke", "rgba(" + color + ",220,1)");
+				dataset.put("data", new ArrayList());
+				for (int i = 0; i < store.getMaxRecords(); i++) {
+					((List) dataset.get("data")).add(0);
+				}
+				((List) data.get("datasets")).add(dataset);
 			}
-			((List) data.get("datasets")).add(dataset);
-			dataset = new HashMap<String, Object>();
-			dataset.put("label", "Open user connections");
-			dataset.put("fillColor", "rgba(151,187,205,0.2)");
-			dataset.put("strokeColor", "rgba(151,187,205,1)");
-			dataset.put("pointColor", "rgba(151,187,205,1)");
-			dataset.put("pointStrokeColor", "#fff");
-			dataset.put("pointHighlightFill", "#fff");
-			dataset.put("pointHighlightStroke", "rgba(151,187,205,1)");
-			dataset.put("data", new ArrayList());			
-			for (int i=0; i<store.getMaxRecords(); i++) {
-				((List) dataset.get("data")).add(0);
-			}		
-			((List) data.get("datasets")).add(dataset);
+			for (String clusterNode : clusterNodes) {
+				String color = colors.get(clusterNodes.indexOf(clusterNode));
+				Map<String, Object> dataset = new HashMap<String, Object>();
+				dataset.put("label", "Open user connections (" + clusterNode + ")");
+				dataset.put("fillColor", "rgba(" + color + ",105,0.2)");
+				dataset.put("strokeColor", "rgba(" + color + ",105,1)");
+				dataset.put("pointColor", "rgba(" + color + ",105,1)");
+				dataset.put("pointStrokeColor", "#fff");
+				dataset.put("pointHighlightFill", "#fff");
+				dataset.put("pointHighlightStroke", "rgba(" + color + ",105,1)");
+				dataset.put("data", new ArrayList());
+				for (int i = 0; i < store.getMaxRecords(); i++) {
+					((List) dataset.get("data")).add(0);
+				}
+				((List) data.get("datasets")).add(dataset);
+			}
+			for (int i = 0; i < store.getMaxRecords(); i++) {
+				((List) data.get("labels")).add(" ");
+			}
+
 			userConnectionsGraph = new ChartJS(data);
 			userConnectionsGraph.setPixelWidth(600);
 			userConnectionsGraph.setPixelHeight(300);
-			layout.add(userConnectionsGraph);			
+			layout.add(userConnectionsGraph);
 		}
 		if (userSessionsGraph == null) {
-				Map<String, Object> data = new HashMap<String, Object>();
+			Map<String, Object> data = new HashMap<String, Object>();
 			data.put("labels", new ArrayList<String>());
 			data.put("datasets", new ArrayList());
-			Map<String, Object> dataset = new HashMap<String, Object>();
-			dataset.put("label", "Maximum user sessions");
-			dataset.put("fillColor", "rgba(220,220,220,0.2)");
-			dataset.put("strokeColor", "rgba(220,220,220,1)");
-			dataset.put("pointColor", "rgba(220,220,220,1)");
-			dataset.put("pointStrokeColor", "#fff");
-			dataset.put("pointHighlightFill", "#fff");
-			dataset.put("pointHighlightStroke", "rgba(220,220,220,1)");
-			dataset.put("data", new ArrayList());		
-			for (int i=0; i<store.getMaxRecords(); i++) {
-				((List) data.get("labels")).add(" ");
-				((List) dataset.get("data")).add(0);
+			for (String clusterNode : clusterNodes) {
+				String color = colors.get(clusterNodes.indexOf(clusterNode));
+				Map<String, Object> dataset = new HashMap<String, Object>();
+				dataset.put("label", "Maximum user sessions (" + clusterNode + ")");
+				dataset.put("fillColor", "rgba(" + color + ",220,0.2)");
+				dataset.put("strokeColor", "rgba(" + color + ",220,1)");
+				dataset.put("pointColor", "rgba(" + color + ",220,1)");
+				dataset.put("pointStrokeColor", "#fff");
+				dataset.put("pointHighlightFill", "#fff");
+				dataset.put("pointHighlightStroke", "rgba(" + color + ",220,1)");
+				dataset.put("data", new ArrayList());
+				for (int i = 0; i < store.getMaxRecords(); i++) {
+					((List) dataset.get("data")).add(0);
+				}
+				((List) data.get("datasets")).add(dataset);
 			}
-			((List) data.get("datasets")).add(dataset);
-			dataset = new HashMap<String, Object>();
-			dataset.put("label", "Open user sessions");
-			dataset.put("fillColor", "rgba(151,187,205,0.2)");
-			dataset.put("strokeColor", "rgba(151,187,205,1)");
-			dataset.put("pointColor", "rgba(151,187,205,1)");
-			dataset.put("pointStrokeColor", "#fff");
-			dataset.put("pointHighlightFill", "#fff");
-			dataset.put("pointHighlightStroke", "rgba(151,187,205,1)");
-			dataset.put("data", new ArrayList());			
-			for (int i=0; i<store.getMaxRecords(); i++) {
-				((List) dataset.get("data")).add(0);
-			}		
-			((List) data.get("datasets")).add(dataset);
+			for (String clusterNode : clusterNodes) {
+				String color = colors.get(clusterNodes.indexOf(clusterNode));
+				Map<String, Object> dataset = new HashMap<String, Object>();
+				dataset.put("label", "Open user sessions (" + clusterNode + ")");
+				dataset.put("fillColor", "rgba(" + color + ",105,0.2)");
+				dataset.put("strokeColor", "rgba(" + color + ",105,1)");
+				dataset.put("pointColor", "rgba(" + color + ",105,1)");
+				dataset.put("pointStrokeColor", "#fff");
+				dataset.put("pointHighlightFill", "#fff");
+				dataset.put("pointHighlightStroke", "rgba(" + color + ",105,1)");
+				dataset.put("data", new ArrayList());
+				for (int i = 0; i < store.getMaxRecords(); i++) {
+					((List) dataset.get("data")).add(0);
+				}
+				((List) data.get("datasets")).add(dataset);
+			}
+			for (int i = 0; i < store.getMaxRecords(); i++) {
+				((List) data.get("labels")).add(" ");
+			}
+
 			userSessionsGraph = new ChartJS(data);
 			userSessionsGraph.setPixelWidth(600);
 			userSessionsGraph.setPixelHeight(300);
-			layout.add(userSessionsGraph);			
-		}		
+			layout.add(userSessionsGraph);
+		}			
+	}
+	
+	@Override
+	public void refresh() {
+		try {
+			factory.jaxmpp().getModule(AdHocCommansModule.class).execute(JID.jidInstance("cl-comp", factory.sessionObject().getUserBareJid().getDomain(), null), 
+					"cluster-nodes-list", Action.execute, null, new AdHocCommansModule.AdHocCommansAsyncCallback() {
+
+				@Override
+				protected void onResponseReceived(String sessionid, String node, State status, JabberDataElement data) throws JaxmppException {
+					try {
+					clusterNodes.clear();
+					String[] nodesStr = ((TextMultiField) data.getField("Cluster nodes:")).getFieldValue();
+					for (String nodeStr : nodesStr) {
+						clusterNodes.add(nodeStr);
+					}
+					Collections.sort(clusterNodes);			
+					refreshColors();
+					initGraphs();
+					} catch (Throwable ex) {
+						Logger.getLogger(StatsViewImpl.class.getName()).log(Level.SEVERE, null, ex);
+					}
+				}
+
+				@Override
+				public void onError(Stanza responseStanza, XMPPException.ErrorCondition error) throws JaxmppException {
+					// retrieval of list of cluster nodes failed, let's assume this is not clustered installation
+					clusterNodes.clear();
+					clusterNodes.add(factory.sessionObject().getUserBareJid().getDomain());				
+					refreshColors();
+					initGraphs();
+				}
+
+				@Override
+				public void onTimeout() throws JaxmppException {
+					// retrieval of list of cluster nodes failed, let's assume this is not clustered installation
+					clusterNodes.clear();
+					clusterNodes.add(factory.sessionObject().getUserBareJid().getDomain());
+					refreshColors();
+					initGraphs();
+				}
+			});
+		} catch (JaxmppException ex) {
+			Logger.getLogger(StatsViewImpl.class.getName()).log(Level.SEVERE, null, ex);
+		}
+		
 		JID jid = JID.jidInstance("stats", factory.jaxmpp().getSessionObject().getUserBareJid().getDomain());
 
 		DiscoveryModule module = factory.jaxmpp().getModulesManager().getModule(DiscoveryModule.class);
@@ -326,31 +412,41 @@ public class StatsViewImpl extends ResizeComposite implements StatsView {
 					timer.cancel();
 					return;
 				}
+				final Counter counter = new Counter(clusterNodes.size());
+				final StatsItem item = new StatsItem(node.replace("stats/", ""));
 				AdHocCommansModule adHocCommands = factory.jaxmpp().getModulesManager().getModule(AdHocCommansModule.class);
 				try {
 					JabberDataElement data = new JabberDataElement(XDataType.submit);
 					data.addListSingleField("Stats level", "FINEST");
 					// data should contain info about level of stats - FINEST ??
-					adHocCommands.execute(jid, node, Action.execute, data, new AdHocCommansModule.AdHocCommansAsyncCallback() {
+					for (final String clusterNode : clusterNodes) {
+						adHocCommands.execute(JID.jidInstance(jid.getLocalpart(), clusterNode), node, Action.execute, data, new AdHocCommansModule.AdHocCommansAsyncCallback() {
+							
+							@Override
+							protected void onResponseReceived(String sessionid, String node, State status, JabberDataElement data) throws JaxmppException {
+								item.setValues(clusterNode, data);
+								finished();
+							}
 
-						@Override
-						protected void onResponseReceived(String sessionid, String node, State status, JabberDataElement data) throws JaxmppException {
-							StatsItem item = new StatsItem(data, node.replace("stats/", ""));
-							boolean overflow = store.add(item);
-							refreshGraphs(item, true);
-						}
+							@Override
+							public void onError(Stanza responseStanza, XMPPException.ErrorCondition error) throws JaxmppException {
+								finished();
+							}
 
-						@Override
-						public void onError(Stanza responseStanza, XMPPException.ErrorCondition error) throws JaxmppException {
-							throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-						}
+							@Override
+							public void onTimeout() throws JaxmppException {
+								finished();
+							}
+							
+							protected void finished() {
+								if (counter.dec() > 0)
+									return;
+								boolean overflow = store.add(item);
+								refreshGraphs(item, true);
+							}
 
-						@Override
-						public void onTimeout() throws JaxmppException {
-							throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-						}
-
-					});
+						});
+					}
 //						if (progressHandler != null) progressHandler.started();
 				} catch (JaxmppException ex) {
 					Logger.getLogger(CommandsWidget.class.getName()).log(Level.SEVERE, null, ex);
@@ -383,11 +479,11 @@ public class StatsViewImpl extends ResizeComposite implements StatsView {
 		provider.getList().add(idx, item);
 	}
 	
-	private void refreshGraphs(StatsItem item, boolean overflow) {
+	private void refreshGraphs(StatsItem items, boolean overflow) {
 		if (overflow) {
 			packetsPerSecondGraph.removeData();
 			totalQueuesWaitGraph.removeData();
-			if (item.openUserConnections != null) {
+			if (items.hasOpenUserConnections()) {
 				userConnectionsGraph.removeData();
 				userSessionsGraph.removeData();
 			}
@@ -396,20 +492,41 @@ public class StatsViewImpl extends ResizeComposite implements StatsView {
 		DateTimeFormat format = DateTimeFormat.getFormat(com.google.gwt.i18n.shared.DateTimeFormat.PredefinedFormat.HOUR24_MINUTE);
 		String ts = format.format(new Date());
 		JsArrayInteger data = (JsArrayInteger) JsArrayInteger.createArray();
-		data.push(item.lastMinutePackets);
+		for (String clusterNode : clusterNodes) {
+			StatsItem.Item item = items.getValues(clusterNode);
+			data.push(item.lastMinutePackets);
+		}
 		packetsPerSecondGraph.addData(data, ts);
 		data = (JsArrayInteger) JsArrayInteger.createArray();
-		data.push(item.totalInQueuesWait);
-		data.push(item.totalOutQueuesWait);
+		for (String clusterNode : clusterNodes) {
+			StatsItem.Item item = items.getValues(clusterNode);
+			data.push(item.totalInQueuesWait);
+		}
+		for (String clusterNode : clusterNodes) {
+			StatsItem.Item item = items.getValues(clusterNode);
+			data.push(item.totalOutQueuesWait);
+		}
 		totalQueuesWaitGraph.addData(data, ts);
-		if (item.openUserConnections != null) {
+		if (items.hasOpenUserConnections()) {
 			data = (JsArrayInteger) JsArrayInteger.createArray();
-			data.push(item.maxUserConnections);
-			data.push(item.openUserConnections);
+			for (String clusterNode : clusterNodes) {
+				StatsItem.Item item = items.getValues(clusterNode);
+				data.push(item.maxUserConnections);
+			}
+			for (String clusterNode : clusterNodes) {
+				StatsItem.Item item = items.getValues(clusterNode);
+				data.push(item.openUserConnections);
+			}
 			userConnectionsGraph.addData(data, ts);
 			data = (JsArrayInteger) JsArrayInteger.createArray();
-			data.push(item.maxUserSessions);
-			data.push(item.openUserSessions);
+			for (String clusterNode : clusterNodes) {
+				StatsItem.Item item = items.getValues(clusterNode);
+				data.push(item.maxUserSessions);
+			}
+			for (String clusterNode : clusterNodes) {
+				StatsItem.Item item = items.getValues(clusterNode);
+				data.push(item.openUserSessions);
+			}
 			userSessionsGraph.addData(data, ts);			
 		}
 	}
@@ -417,12 +534,16 @@ public class StatsViewImpl extends ResizeComposite implements StatsView {
 	private void resetGraphs(boolean sessMan) {
 		for (int i=0; i<store.getMaxRecords(); i++) {
 			JsArrayInteger data = (JsArrayInteger) JsArrayInteger.createArray();
-			data.push(0);
+			for (String clusterNode : clusterNodes) {
+				data.push(0);
+			}
 			packetsPerSecondGraph.addData(data, " ");
 			packetsPerSecondGraph.removeData();
 			data = (JsArrayInteger) JsArrayInteger.createArray();
-			data.push(0);
-			data.push(0);
+			for (String clusterNode : clusterNodes) {
+				data.push(0);
+				data.push(0);
+			}
 			totalQueuesWaitGraph.addData(data, " ");
 			totalQueuesWaitGraph.removeData();
 			if (sessMan) {
@@ -479,5 +600,20 @@ public class StatsViewImpl extends ResizeComposite implements StatsView {
 			return n1.compareTo(n2);
 		}
 
+	}
+	
+	private class Counter {
+		
+		private int value;
+		
+		public Counter(int start) {
+			this.value = start;
+		}
+		
+		public int dec() {
+			this.value--;
+			return this.value;
+		}
+		
 	}
 }
