@@ -65,7 +65,7 @@ public class CommandsWidget extends ResizeComposite  {
         private final ScrollPanel scroll;
         private ProgressHandler progressHandler;
 		
-        public CommandsWidget(ClientFactory factory_, FinishHandler finishHandler) {
+        public CommandsWidget(ClientFactory factory_, boolean withoutCommandsCombo, FinishHandler finishHandler) {
                 this.factory = factory_;
                 this.finishHandler = finishHandler;
         
@@ -101,11 +101,18 @@ public class CommandsWidget extends ResizeComposite  {
                 commandsItemsCallback = new CommandsItemsCallback();
                 commandExecCallback = new CommandExecCallback();
                 panel.add(comboPanel);
-                layout.addNorth(panel, 3);
+				if (withoutCommandsCombo) {
+					layout.addNorth(panel, 0);
+					panel.setVisible(false);
+				} else
+					layout.addNorth(panel, 3);
                 
                 buttons = new HorizontalPanel();
                 
-                layout.addSouth(buttons, 3);
+				if (withoutCommandsCombo)
+					layout.addSouth(buttons, 4);
+				else
+					layout.addSouth(buttons, 3);
                 
                 form = new Form(factory);
                 scroll = new ScrollPanel(form);

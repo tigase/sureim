@@ -77,6 +77,8 @@ public class ChartJS extends SimplePanel {
 	
 	public native void createChart(JavaScriptObject data) /*-{
 		try {
+			if (this.@tigase.sure.web.site.client.stats.ChartJS::chart)
+				return;
 			console.log("creating chart with data", data);
 			var canvas = this.@tigase.sure.web.site.client.stats.ChartJS::canvas;
 			var ctx = canvas.getContext("2d");

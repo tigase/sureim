@@ -193,7 +193,7 @@ public class DiscoViewImpl extends ResizeComposite implements DiscoView, Provide
                         
                 };
                 
-                commandsWidget = new CommandsWidget(factory, commandFinishHandler);
+                commandsWidget = new CommandsWidget(factory, false, commandFinishHandler);
                 layout.add(commandsWidget);
                 commandsWidget.reset();
                 

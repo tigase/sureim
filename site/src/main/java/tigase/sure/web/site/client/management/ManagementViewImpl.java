@@ -75,7 +75,7 @@ public class ManagementViewImpl extends ResizeComposite implements ManagementVie
 		progress.getStyle().setVisibility(Style.Visibility.VISIBLE);
 		layout.getElement().appendChild(progress);
 		
-		commandsWidget = new CommandsWidget(factory, new CommandsWidget.FinishHandler() {
+		commandsWidget = new CommandsWidget(factory, true, new CommandsWidget.FinishHandler() {
 			@Override
 			public void finished() {
 				log.severe("command finished");
