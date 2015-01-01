@@ -868,9 +868,9 @@ public class StatsViewImpl extends ResizeComposite implements StatsView {
 				v = getValue(data, "sess-man/Open user sessions");
 				onlineUsers = Integer.parseInt("0" + v);
 				v = getValue(data, "message-router/CPU usage [%]");
-				cpuPerc = Integer.parseInt("0" + v.substring(2, 4));
+				cpuPerc = (int) Math.round(Double.parseDouble(v));//Integer.parseInt("0" + v.substring(2, 4));
 				v = getValue(data, "message-router/HEAP usage [%]");
-				memPerc = Integer.parseInt("0" + v.substring(0, 2));
+				memPerc = (int) Math.round(Double.parseDouble(v));//Integer.parseInt("0" + v.substring(0, 2));
 			}
 
 			final String getValue(JabberDataElement data, String name) throws XMLException {
