@@ -34,6 +34,10 @@ public class RootView extends ResizeComposite {
                 navPanel.addStyleName("navigationBar");
                 
                 Dictionary root = Dictionary.getDictionary("root");
+				String version = null;
+				try {
+					version = root.get("version");
+				} catch (Throwable ex) {}
                 String navStr = root.get("navigation");
                 JSONArray navArr = (JSONArray) JSONParser.parseLenient(navStr);
                 
@@ -80,6 +84,11 @@ public class RootView extends ResizeComposite {
                 Anchor anchor  = new Anchor("© " + factory.baseI18n().copyright());                
                 anchor.addStyleName(factory.theme().style().footerBarItem());
                 footerPanel.add(anchor);
+				if (version != null && !version.isEmpty()) {
+					anchor = new Anchor(factory.baseI18n().version() + " " + version);
+					anchor.addStyleName(factory.theme().style().footerBarItem());
+					footerPanel.add(anchor);
+				}
                 anchor = new Anchor(factory.baseI18n().termsOfService(), "terms.txt");                
                 anchor.addStyleName(factory.theme().style().footerBarItem());
                 anchor.setTarget("_blank");

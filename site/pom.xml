@@ -18,7 +18,15 @@
 		<!-- GWT needs at least java 1.5 -->
 		<webappDirectory>${project.build.directory}/${project.build.finalName}</webappDirectory>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<maven.build.timestamp.format>yyyy-MM-dd/HH:mm:ss</maven.build.timestamp.format>
+		<timestamp>${maven.build.timestamp}</timestamp>
 	</properties>
+
+	<scm>
+		<connection>scm:git:https://repository.tigase.org/git/sureim.git</connection>
+		<developerConnection>scm:git:https://repository.tigase.org/git/sureim.git</developerConnection>
+		<url>https://projects.tigase.org/projects/sureim/repository</url>
+	</scm>
 
 	<dependencies>
 		<dependency>
@@ -95,6 +103,89 @@
 		<outputDirectory>${webappDirectory}/WEB-INF/classes</outputDirectory>
 
 		<plugins>
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>buildnumber-maven-plugin</artifactId>
+				<version>1.2</version>
+				<configuration>
+					<timestampFormat>{0,date} {0,time}</timestampFormat>
+					<doCheck>false</doCheck>
+					<doUpdate>false</doUpdate>
+					<getRevisionOnlyOnce>true</getRevisionOnlyOnce>
+					<shortRevisionLength>8</shortRevisionLength>
+				</configuration>
+				<executions>
+					<execution>
+						<phase>validate</phase>
+						<goals>
+							<goal>create</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>			
+			<plugin>
+				<groupId>org.codehaus.gmaven</groupId>
+				<artifactId>gmaven-plugin</artifactId>
+				<version>1.5</version>
+				<executions>
+					<execution>
+						<id>gitver</id>
+						<phase>validate</phase>
+						<goals>
+							<goal>execute</goal>
+						</goals>
+						<configuration>
+							<providerSelection>2.0</providerSelection>
+							<properties>
+								<script>git rev-list HEAD --count</script>
+							</properties>
+							<source>
+								def version
+								try {
+									def command = project.properties.script
+									def process = command.execute()
+									process.waitFor()
+
+									version = process.in.text.trim()
+								} catch (Exception e) {
+									version = '0'
+								}
+								println "setting revision to: " + version
+
+								project.properties.setProperty( 'gitVersion' , version )
+
+							</source>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>			
+			
+			<plugin>
+				<artifactId>maven-resources-plugin</artifactId>
+				<version>2.7</version>
+				<executions>
+					<execution>
+						<id>copy-resources</id>
+						<!-- here the phase you need -->
+						<phase>validate</phase>
+						<goals>
+							<goal>copy-resources</goal>
+						</goals>
+						<configuration>
+							<outputDirectory>${webappDirectory}</outputDirectory>
+							<resources>          
+								<resource>
+									<directory>src/main/resources</directory>
+									<filtering>true</filtering>
+									<includes>
+										<include>generatedProps.js</include>
+									</includes>				
+								</resource>
+							</resources>              
+						</configuration>            
+					</execution>
+				</executions>
+			</plugin>			
 			
 			<!-- GWT Maven Plugin -->
 			<plugin>
