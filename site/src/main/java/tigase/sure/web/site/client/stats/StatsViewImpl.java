@@ -21,6 +21,7 @@ import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.ui.ResizeComposite;
 import com.google.gwt.user.client.ui.ScrollPanel;
+import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.view.client.ListDataProvider;
 import com.google.gwt.view.client.SelectionChangeEvent;
 import com.google.gwt.view.client.SingleSelectionModel;
@@ -155,6 +156,7 @@ public class StatsViewImpl extends ResizeComposite implements StatsView {
 		appView.setLeftSidebar(new ScrollPanel(list), 25);
 
 		layout = new tigase.sure.web.base.client.widgets.FlowPanel();
+			
 		layout.getElement().getStyle().setWidth(100, Style.Unit.PCT);
 		layout.getElement().getStyle().setOverflowY(Style.Overflow.AUTO);
 		appView.setCenter(layout);
@@ -430,6 +432,9 @@ public class StatsViewImpl extends ResizeComposite implements StatsView {
 			userSessionsGraph.setPixelWidth(600);
 			userSessionsGraph.setPixelHeight(300);
 			layout.add(userSessionsGraph);
+		}
+		for (int i=0; i<layout.getWidgetCount(); i++) {
+			layout.getWidget(i).getElement().getStyle().setFloat(Style.Float.LEFT);
 		}
 	}
 
