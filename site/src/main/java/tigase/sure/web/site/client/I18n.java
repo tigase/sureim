@@ -11,7 +11,10 @@ import com.google.gwt.i18n.client.Constants;
  * @author andrzej
  */
 public interface I18n extends Constants {
-        
+	
+	@DefaultStringValue("Logout")
+    String logout();
+	
         @DefaultStringValue("Chat")
         String chat();
         

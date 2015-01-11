@@ -124,4 +124,7 @@ public class RootView extends ResizeComposite {
                 return centerWidget;
         }
         
+		public AbsolutePanel getNav() { 
+			return navPanel;
+		}
 }

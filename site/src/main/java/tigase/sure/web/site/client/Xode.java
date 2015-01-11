@@ -6,6 +6,8 @@ import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Style;
 import com.google.gwt.dom.client.Style.Unit;
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.i18n.client.Dictionary;
 import com.google.gwt.place.shared.Place;
 import com.google.gwt.place.shared.PlaceController;
@@ -92,28 +94,46 @@ public class Xode implements EntryPoint {
                 historyHandler.register(placeController, eventBus, defaultPlace);
 
                 //appView.getActionBar().setSearchBox(new TextBox());
+				final Anchor logout = new Anchor(factory.i18n().logout());
+				logout.setStyleName(factory.theme().style().navigationBarItem());
+				logout.addStyleName(factory.theme().style().right());
+				logout.addClickHandler(new ClickHandler() {
+					@Override
+					public void onClick(ClickEvent event) {
+						try {
+							factory.jaxmpp().disconnect();
+						} catch (JaxmppException ex) {
+							Logger.getLogger(Xode.class.getName()).log(Level.SEVERE, null, ex);
+						}
+					}
+				});	
+				logout.getElement().getStyle().setVisibility(Style.Visibility.HIDDEN);
+				view.getNav().add(logout);
 
                 RootLayoutPanel.get().add(view);
 
                 //historyHandler.handleCurrentHistory();
 
                 eventBus.addHandler(AuthEvent.TYPE, new AuthHandler() {
-
+						@Override
                         public void authenticated(JID jid) {                                
                                 if (factory.jaxmpp().getSessionObject().getProperty(SessionObject.USER_BARE_JID) != null) {
+										logout.getElement().getStyle().setVisibility(Style.Visibility.VISIBLE);
                                         placeController.goTo(new ChatPlace());
                                 }
                                 else {
+										logout.getElement().getStyle().setVisibility(Style.Visibility.HIDDEN);
                                         placeController.goTo(new AuthPlace());
                                 }
                         }
-
+						@Override
                         public void deauthenticated(String msg, SaslModule.SaslError saslError) {
+								logout.getElement().getStyle().setVisibility(Style.Visibility.HIDDEN);
                                 placeController.goTo(new AuthPlace());
                         }
                 });
                 eventBus.addHandler(AuthRequestEvent.TYPE, new AuthRequestHandler() {
-
+						@Override
                         public void authenticate(JID jid, String password, String boshUrl) {
                                 authenticateInt(jid, password, boshUrl);
                         }
