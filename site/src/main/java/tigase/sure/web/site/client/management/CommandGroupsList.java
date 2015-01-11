@@ -7,6 +7,9 @@ package tigase.sure.web.site.client.management;
 
 import com.google.gwt.cell.client.AbstractCell;
 import com.google.gwt.cell.client.Cell;
+import com.google.gwt.cell.client.ValueUpdater;
+import com.google.gwt.dom.client.Element;
+import com.google.gwt.dom.client.NativeEvent;
 import com.google.gwt.dom.client.Style;
 import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
 import com.google.gwt.user.cellview.client.CellList;
@@ -25,6 +28,7 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 /**
  *
@@ -117,7 +121,9 @@ public class CommandGroupsList implements IsWidget {
 	}
 
 	private class CommandItemCell extends AbstractCell<CommandItem> implements Cell<CommandItem> {
-
+	
+		private CellList list;
+		
 		@Override
 		public void render(Context context, CommandItem value, SafeHtmlBuilder sb) {
 			sb.appendHtmlConstant("<table>").appendHtmlConstant("<tr>")
@@ -128,7 +134,23 @@ public class CommandGroupsList implements IsWidget {
 					.appendHtmlConstant("</table>");
 			//sb.appendHtmlConstant("<b>").appendEscaped(value.getName()).appendHtmlConstant("</b>");
 		}
+	
+        @Override
+        public void onBrowserEvent(Context context, Element parent, CommandItem value, NativeEvent event, ValueUpdater<CommandItem> valueUpdater) {
+			if (list != null && list.getSelectionModel() != null) {
+				((SingleSelectionModel) list.getSelectionModel()).clear();
+			}
+			super.onBrowserEvent(context, parent, value, event, valueUpdater);
+		}
 		
+		@Override
+		public Set<String> getConsumedEvents() {
+			 return Collections.singleton("click");
+		}
+		
+		public void setList(CellList list) {
+			this.list = list;
+		}
 	}
 	
 	private class CommandList2 implements CommandList {
@@ -140,11 +162,13 @@ public class CommandGroupsList implements IsWidget {
 		
 		public CommandList2() {
 			provider = new ListDataProvider<CommandItem>();
-            list = new CellList<CommandItem>(new CommandItemCell());
+			CommandItemCell cell = new CommandItemCell();
+            list = new CellList<CommandItem>(cell);
+			cell.setList(list);
 			list.setSelectionModel(new SingleSelectionModel());
 			list.getElement().getStyle().setBackgroundColor("transparent");
 			list.getElement().getStyle().setOverflowY(Style.Overflow.SCROLL);
-            provider.addDataDisplay(list);					
+            provider.addDataDisplay(list);
 			list.getSelectionModel().addSelectionChangeHandler(selectionChangeHandler);
 		}
 		
