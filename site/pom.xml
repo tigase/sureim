@@ -38,7 +38,7 @@
 		<dependency>
 			<groupId>tigase.sure.web</groupId>
 			<artifactId>theme</artifactId>
-			<version>2.0</version>
+			<version>2.0.0</version>
 			<scope>compile</scope>
 		</dependency>
 		<dependency>
