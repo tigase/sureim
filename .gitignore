@@ -4,3 +4,5 @@
 */target/*
 *.launch
 *.nb-configuration.xml
+site/gwt-unitCache
+site/war
