@@ -136,14 +136,14 @@ public class ChatViewImpl extends ResizeComposite implements ChatView {
                         
                 });
 				
-               appView.getActionBar().addAction(factory.theme().collectionsCloud(), new ClickHandler() {
-
-                        public void onClick(ClickEvent event) {
-//                                throw new UnsupportedOperationException("Not supported yet.");
-                                ((GwtSessionObject) factory.sessionObject()).test();
-                        }
-                        
-                });                
+//               appView.getActionBar().addAction(factory.theme().collectionsCloud(), new ClickHandler() {
+//
+//                        public void onClick(ClickEvent event) {
+////                                throw new UnsupportedOperationException("Not supported yet.");
+//                                ((GwtSessionObject) factory.sessionObject()).test();
+//                        }
+//
+//                });                
                 factory.actionBarFactory().addLink("chat", "Chat", new ClickHandler() {
 
                         public void onClick(ClickEvent event) {
