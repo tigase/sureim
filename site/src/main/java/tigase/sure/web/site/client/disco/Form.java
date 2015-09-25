@@ -77,7 +77,7 @@ public class Form extends Composite {
                                 }
                                 w = textBox;
                         }
-                        else if ("text-multi".equals(field.getType()) || "jid-multi".equals(field.getType())) {
+                        else if ("text-multi".equals(field.getType())) {
                                 TextArea textArea = new TextArea();
                                 String[] values = ((TextMultiField) field).getFieldValue();
                                 if (values != null) {
@@ -94,7 +94,29 @@ public class Form extends Composite {
                                         if (value != null) {
                                                 textArea.setValue(value);
                                         }
-                                }
+																}
+                                w = textArea;
+                        }
+                        else if ("jid-multi".equals(field.getType())) {
+                                TextArea textArea = new TextArea();
+                                JID[] values = ((JidMultiField) field).getFieldValue();
+                                if (values != null) {
+                                        String value = null;
+                                        for (JID v : values) {
+                                                if (value != null) {
+                                                        value += "\n";
+                                                }
+                                                else {
+                                                        value = "";
+                                                }
+																								if (v != null) {
+																									value += v.toString();
+																								}
+                                        }
+                                        if (value != null) {
+                                                textArea.setValue(value);
+                                        }
+																}
                                 w = textArea;
                         }
                         else if ("text-private".equals(field.getType())) {
@@ -122,7 +144,8 @@ public class Form extends Composite {
                                 w = listBox;
                         }
                         else if ("list-multi".equals(field.getType())) {
-                                ListBox listBox = new ListBox(true);
+                                ListBox listBox = new ListBox();
+                                listBox.setMultipleSelect(true);
                                 List<Element> options = ((ListMultiField) field).getChildren("option");
                                 for (Element option : options) {
                                         String label = option.getAttribute("label");
@@ -225,7 +248,8 @@ public class Form extends Composite {
                                 ((ListSingleField) field).setFieldValue(val);
                         }
                         else if ("list-multi".equals(field.getType())) {
-                                ListBox listBox = new ListBox(true);
+                                ListBox listBox = new ListBox();
+                                listBox.setMultipleSelect(true);
                                 List<String> selections = new ArrayList<String>();
                                 for (int idx = 0; idx < listBox.getItemCount(); idx++) {
                                         if (listBox.isItemSelected(row)) {
