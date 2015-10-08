@@ -1,7 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project
-	xmlns="http://maven.apache.org/POM/4.0.0"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
 	<!-- POM file generated with GWT webAppCreator -->
@@ -11,7 +9,7 @@
 	<packaging>war</packaging>
 	<version>2.1-SNAPSHOT</version>
 	<name>Sure.IM site</name>
-	
+
 	<properties>
 		<!-- Convenience property to set the GWT version -->
 		<gwtVersion>2.7.0</gwtVersion>
@@ -32,9 +30,20 @@
 		<dependency>
 			<groupId>com.google.gwt</groupId>
 			<artifactId>gwt-user</artifactId>
-			<version>${gwtVersion}</version>
+			<version>2.7.0</version>
 			<scope>provided</scope>
 		</dependency>
+<!--		<dependency>
+			<groupId>com.google.gwt</groupId>
+			<artifactId>gwt-dev</artifactId>
+			<version>2.7.0</version>
+			<scope>compile</scope>
+		</dependency>-->
+<!--		<dependency>
+			<groupId>asm</groupId>
+			<artifactId>asm</artifactId>
+			<version>3.3.1</version>
+		</dependency>-->
 		<dependency>
 			<groupId>tigase.sure.web</groupId>
 			<artifactId>theme</artifactId>
@@ -122,7 +131,7 @@
 						</goals>
 					</execution>
 				</executions>
-			</plugin>			
+			</plugin>
 			<plugin>
 				<groupId>org.codehaus.gmaven</groupId>
 				<artifactId>gmaven-plugin</artifactId>
@@ -142,13 +151,13 @@
 							<source>
 								def version
 								try {
-									def command = project.properties.script
-									def process = command.execute()
-									process.waitFor()
+								def command = project.properties.script
+								def process = command.execute()
+								process.waitFor()
 
-									version = process.in.text.trim()
+								version = process.in.text.trim()
 								} catch (Exception e) {
-									version = '0'
+								version = '0'
 								}
 								println "setting revision to: " + version
 
@@ -158,8 +167,8 @@
 						</configuration>
 					</execution>
 				</executions>
-			</plugin>			
-			
+			</plugin>
+
 			<plugin>
 				<artifactId>maven-resources-plugin</artifactId>
 				<version>2.7</version>
@@ -173,20 +182,20 @@
 						</goals>
 						<configuration>
 							<outputDirectory>${webappDirectory}</outputDirectory>
-							<resources>          
+							<resources>
 								<resource>
 									<directory>src/main/resources</directory>
 									<filtering>true</filtering>
 									<includes>
 										<include>generatedProps.js</include>
-									</includes>				
+									</includes>
 								</resource>
-							</resources>              
-						</configuration>            
+							</resources>
+						</configuration>
 					</execution>
 				</executions>
-			</plugin>			
-			
+			</plugin>
+
 			<!-- GWT Maven Plugin -->
 			<plugin>
 				<groupId>org.codehaus.mojo</groupId>
@@ -202,9 +211,12 @@
 						</goals>
 					</execution>
 				</executions>
-				<!-- Plugin configuration. There are many available options, see 
+				<!-- Plugin configuration. There are many available options, see
 				gwt-maven-plugin documentation at codehaus.org -->
 				<configuration>
+					<localWorkers>8</localWorkers>
+					<optimize>0</optimize>
+					<draftCompile>true</draftCompile>
 					<runTarget>index.html</runTarget>
 					<hostedWebapp>${webappDirectory}</hostedWebapp>
 					<i18nMessagesBundle>tigase.sure.web.site.client.Messages</i18nMessagesBundle>
@@ -244,12 +256,12 @@
 			<extension>
 				<groupId>org.apache.maven.wagon</groupId>
 				<artifactId>wagon-ssh-external</artifactId>
-				<version>2.2</version>
+				<version>2.10</version>
 			</extension>
 			<extension>
 				<groupId>org.apache.maven.wagon</groupId>
 				<artifactId>wagon-ssh</artifactId>
-				<version>2.2</version>
+				<version>2.10</version>
 			</extension>
 		</extensions>
 	</build>
@@ -258,7 +270,7 @@
 		<repository>
 			<id>gwt-mobile-webkit</id>
 			<url>http://gwt-mobile-webkit.googlecode.com/svn/repo</url>
-		</repository>	
+		</repository>
 		<repository>
 			<id>tigase</id>
 			<name>Tigase repository</name>
@@ -271,7 +283,7 @@
 			<snapshots>
 				<enabled>true</enabled>
 			</snapshots>
-		</repository>		
+		</repository>
 	</repositories>
 	<distributionManagement>
 		<repository>
