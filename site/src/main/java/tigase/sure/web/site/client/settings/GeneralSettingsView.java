@@ -4,16 +4,24 @@
  */
 package tigase.sure.web.site.client.settings;
 
+import tigase.jaxmpp.core.client.AsyncCallback;
+import tigase.jaxmpp.core.client.SessionObject;
+import tigase.jaxmpp.core.client.XMPPException;
+
 import com.google.gwt.dom.client.Style;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.ui.*;
+
 import tigase.sure.web.base.client.widgets.View;
 import tigase.sure.web.site.client.ClientFactory;
+
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
 import tigase.jaxmpp.core.client.exceptions.JaxmppException;
 import tigase.jaxmpp.core.client.xmpp.modules.registration.InBandRegistrationModule;
+import tigase.jaxmpp.core.client.xmpp.stanzas.Stanza;
 
 /**
  *
@@ -59,7 +67,7 @@ public class GeneralSettingsView extends Composite implements View {
                 dlg.setStyleName("dialogBox");
                 dlg.setTitle(factory.i18n().changePassword());
                 
-                FlexTable table = new FlexTable();
+                final FlexTable table = new FlexTable();
                 Label label = new Label(factory.i18n().changePassword());
                 label.getElement().getStyle().setFontSize(1.2, Style.Unit.EM);
                 label.getElement().getStyle().setFontWeight(Style.FontWeight.BOLD);
@@ -78,6 +86,7 @@ public class GeneralSettingsView extends Composite implements View {
                 table.setWidget(3, 0, cancel);
                 cancel.addClickHandler(new ClickHandler() {
 
+												@Override
                         public void onClick(ClickEvent event) {
                                 dlg.hide();
                         }
@@ -91,27 +100,45 @@ public class GeneralSettingsView extends Composite implements View {
                 table.setWidget(3, 1, ok);
                 ok.addClickHandler(new ClickHandler() {
 
+												@Override
                         public void onClick(ClickEvent event) {
                                 String p1 = pass1.getText();
                                 String p2 = pass2.getText();
                                 
-                                if (p1 == null || p1.isEmpty() || p2 == null || p2.isEmpty())
-                                        return;
+                                if (p1 == null || p1.isEmpty() || p2 == null || p2.isEmpty() || !p2.equals( p1)){
+																				Label label = new Label("Passwords are empty or different!");
+																				label.getElement().getStyle().setFontSize(1.2, Style.Unit.EM);
+																				table.setWidget(4, 0, label);
+																		return;
+																}
                                 
                                 String username = factory.jaxmpp().getSessionObject().getUserBareJid().getLocalpart();
+                                String domain = factory.jaxmpp().getSessionObject().getUserBareJid().getDomain();
+													final Logger log = Logger.getLogger( SettingsViewImpl.class.getName() );
                                 try {
-                                        factory.jaxmpp().getModulesManager().getModule(InBandRegistrationModule.class).register(username, p1, null, null);
-                                        dlg.hide();
-                                } catch (JaxmppException ex) {
-                                        Logger.getLogger(SettingsViewImpl.class.getName()).log(Level.SEVERE, null, ex);
+																	factory.jaxmpp().getModulesManager().register( new InBandRegistrationModule() );
+																	InBandRegistrationModule module = factory.jaxmpp().getModulesManager().getModule( InBandRegistrationModule.class );
+
+																	factory.jaxmpp().getSessionObject().setProperty( SessionObject.DOMAIN_NAME, domain );
+
+																	log.log( Level.FINE, "module: " + module + ", username: " + username
+																					 + ", domain: " + domain + ", p1: " + p1 + ", p2: " + p2 );
+
+																	module.register( username, p1, null, null );
+
+																	dlg.hide();
+																} catch ( JaxmppException ex ) {
+                                        log.log(Level.SEVERE, "There was an exception: " + ex.getLocalizedMessage(), ex);
+
                                 }
+																dlg.hide();
                         }
                         
                 });
                                 
                 dlg.setWidget(table);
                 
-                dlg.show();;
+                dlg.show();
                 dlg.center();
         }
 
