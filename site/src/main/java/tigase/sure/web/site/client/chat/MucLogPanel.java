@@ -69,11 +69,20 @@ public class MucLogPanel extends Composite {
                         if (time == null) {
                                 time = new Date();
                         }
+												Logger.getLogger(MucLogPanel.class.getName()).log(
+														Level.FINE,
+														"time: " + time
+														+ ", nick: " + nick
+														+ ", body: " + body
+														+ ", mark: " + mark
+														+ ", mine: " + mine
+
+												);
                         sb.appendHtmlConstant("<div class=\"mucEntry\">");
                         sb.appendHtmlConstant("<div class=\"mucEntryNick muc" + (mine ? "Mine" : "His") + "EntryNick\">[");
                         sb.appendEscaped(timeFormat.format(time));
                         sb.appendEscaped("] <");
-                        sb.appendEscaped(nick);
+                        sb.appendEscaped((nick != null ? nick : " *** "));
                         sb.appendEscaped("> ");
                         sb.appendHtmlConstant("</div>");
                         sb.appendHtmlConstant("<div class=\"mucEntry" + (mark ? "Mark" : "") + "Text\">");

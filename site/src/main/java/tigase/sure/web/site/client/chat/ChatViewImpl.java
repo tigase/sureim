@@ -4,6 +4,8 @@
  */
 package tigase.sure.web.site.client.chat;
 
+import tigase.jaxmpp.core.client.AsyncCallback;
+
 import com.google.gwt.dom.client.Style;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
@@ -12,7 +14,9 @@ import com.google.gwt.event.logical.shared.SelectionHandler;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.*;
+
 import java.util.Date;
+
 import tigase.sure.web.base.client.AppView;
 import tigase.sure.web.base.client.roster.FlatRoster;
 import tigase.sure.web.base.client.roster.FlatRoster.RosterItemClickHandler;
@@ -21,16 +25,23 @@ import tigase.sure.web.site.client.roster.ContactDialog;
 import tigase.sure.web.site.client.roster.ContactSubscribeRequestDialog;
 import tigase.sure.web.site.client.settings.SettingsPlace;
 import tigase.sure.web.site.client.vcard.VCardDialog;
+
 import java.util.HashMap;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
 import tigase.jaxmpp.core.client.BareJID;
 import tigase.jaxmpp.core.client.JID;
 import tigase.jaxmpp.core.client.SessionObject;
+import tigase.jaxmpp.core.client.XMPPException;
 import tigase.jaxmpp.core.client.exceptions.JaxmppException;
 import tigase.jaxmpp.core.client.xml.Element;
+import tigase.jaxmpp.core.client.xml.ElementFactory;
 import tigase.jaxmpp.core.client.xml.XMLException;
+import tigase.jaxmpp.core.client.xmpp.forms.BooleanField;
+import tigase.jaxmpp.core.client.xmpp.forms.JabberDataElement;
+import tigase.jaxmpp.core.client.xmpp.forms.XDataType;
 import tigase.jaxmpp.core.client.xmpp.modules.chat.Chat;
 import tigase.jaxmpp.core.client.xmpp.modules.chat.MessageModule;
 import tigase.jaxmpp.core.client.xmpp.modules.muc.MucModule;
@@ -39,8 +50,10 @@ import tigase.jaxmpp.core.client.xmpp.modules.muc.Room;
 import tigase.jaxmpp.core.client.xmpp.modules.presence.PresenceModule;
 import tigase.jaxmpp.core.client.xmpp.modules.roster.RosterItem;
 import tigase.jaxmpp.core.client.xmpp.modules.roster.RosterModule;
+import tigase.jaxmpp.core.client.xmpp.stanzas.IQ;
 import tigase.jaxmpp.core.client.xmpp.stanzas.Message;
 import tigase.jaxmpp.core.client.xmpp.stanzas.Presence;
+import tigase.jaxmpp.core.client.xmpp.stanzas.Stanza;
 import tigase.jaxmpp.gwt.client.GwtSessionObject;
 
 /**
@@ -233,6 +246,7 @@ public class ChatViewImpl extends ResizeComposite implements ChatView {
 				factory.jaxmpp().getEventBus().addHandler(MucModule.OccupantChangedPresenceHandler.OccupantChangedPresenceEvent.class, mucListener);
 				factory.jaxmpp().getEventBus().addHandler(MucModule.OccupantComesHandler.OccupantComesEvent.class, mucListener);
 				factory.jaxmpp().getEventBus().addHandler(MucModule.OccupantLeavedHandler.OccupantLeavedEvent.class, mucListener);
+				factory.jaxmpp().getEventBus().addHandler( MucModule.NewRoomCreatedHandler.NewRoomCreatedEvent.class, mucListener);
 
                 initWidget(appView);
                 
@@ -459,7 +473,15 @@ public class ChatViewImpl extends ResizeComposite implements ChatView {
         
 		private class MucHandler implements MucModule.RoomClosedHandler, MucModule.YouJoinedHandler, MucModule.MucMessageReceivedHandler,
 				MucModule.OccupantChangedNickHandler, MucModule.OccupantChangedPresenceHandler, 
-				MucModule.OccupantComesHandler, MucModule.OccupantLeavedHandler{
+				MucModule.OccupantComesHandler, MucModule.OccupantLeavedHandler, MucModule.NewRoomCreatedHandler{
+
+		@Override
+		public void onNewRoomCreated( SessionObject sessionObject, Room room ) {
+
+			Logger.getLogger(ChatViewImpl.class.getName()).log( Level.SEVERE, "New room created: " + room);
+
+			configureRoom( room );
+		}
 
 		@Override
 		public void onRoomClosed(SessionObject sessionObject, Presence presence, Room room) {
@@ -480,6 +502,7 @@ public class ChatViewImpl extends ResizeComposite implements ChatView {
 		public void onMucMessageReceived(SessionObject sessionObject, Message message, Room room, String nickname, Date timestamp) {
                 BareJID roomJid = room.getRoomJid();
                 MucRoomWidget roomWidget = rooms.get(roomJid);
+							Logger.getLogger(ChatViewImpl.class.getName()).log(Level.FINE, "Received MUC message: " + message + ", room: " + room + ", nickname: " + nickname + ", timestamp: " + timestamp + ", roomJid: " + roomJid + ", roomWidget: " + roomWidget);
                 if (roomWidget != null) {
                         boolean visible = roomWidget.handleMessage(message);
                         if (!visible) {
@@ -518,6 +541,61 @@ public class ChatViewImpl extends ResizeComposite implements ChatView {
 		@Override
 		public void onOccupantLeaved(SessionObject sessionObject, Room room, Occupant occupant) {
 			refreshOccupantsList(room);
+		}
+
+		protected void configureRoom( Room room ) {
+			try {
+				factory.jaxmpp().getModule(MucModule.class).getRoomConfiguration(room, new AsyncCallback() {
+
+					@Override
+					public void onError(Stanza responseStanza, XMPPException.ErrorCondition error) throws JaxmppException {
+						Logger.getLogger(ChatViewImpl.class.getName()).log( Level.SEVERE, "Error while ocnfiguring room: " + error);
+					}
+
+					@Override
+					public void onSuccess(Stanza responseStanza) throws JaxmppException {
+						Element query = responseStanza.getChildrenNS("query", "http://jabber.org/protocol/muc#owner");
+						query = ElementFactory.create(query);
+						Element x = query.getChildrenNS("x", "jabber:x:data");
+						JabberDataElement data = new JabberDataElement(x);
+						data.setAttribute("type", XDataType.submit.name());
+
+						IQ iq = IQ.createIQ();
+						iq.setTo(responseStanza.getFrom());
+						iq.setAttribute("type", "set");
+						iq.addChild(query);
+
+						factory.jaxmpp().send(iq, new AsyncCallback() {
+
+							@Override
+							public void onError(Stanza responseStanza, XMPPException.ErrorCondition error) throws JaxmppException {
+								Logger.getLogger(ChatViewImpl.class.getName()).log( Level.SEVERE, "Error while ocnfiguring room: " + error);
+							}
+
+							@Override
+							public void onSuccess(Stanza responseStanza) throws JaxmppException {
+								Logger.getLogger(ChatViewImpl.class.getName()).log( Level.FINE, "Room configured correctly: " + responseStanza);
+							}
+
+							@Override
+							public void onTimeout() throws JaxmppException {
+								Logger.getLogger(ChatViewImpl.class.getName()).log( Level.SEVERE, "Timeout while ocnfiguring room: ");
+							}
+						});
+
+						Logger.getLogger(ChatViewImpl.class.getName()).log( Level.FINE, "Room configured correctly: " + responseStanza);
+					}
+
+					@Override
+					public void onTimeout() throws JaxmppException {
+						Logger.getLogger(ChatViewImpl.class.getName()).log( Level.SEVERE, "Timeout while ocnfiguring room: ");
+					}
+
+				});
+
+			} catch ( JaxmppException ex ) {
+				Logger.getLogger( ChatViewImpl.class.getName() ).log( Level.SEVERE, null, ex );
+			}
 		}
 			
 		}
