@@ -175,7 +175,7 @@ public class StatsViewImpl extends ResizeComposite implements StatsView {
 
 	private void refreshColors() {
 		colors.clear();
-		int x = (int) Math.ceil(Math.sqrt((double) clusterNodes.size()));
+		int x = (int) Math.ceil(Math.sqrt((double) clusterNodes.size() + 1));
 		for (int i = 1; i <= x; i++) {
 			for (int j = 1; j <= x; j++) {
 				for (int k = 1; k <= x; k++) {
