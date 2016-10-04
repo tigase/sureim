@@ -57,43 +57,43 @@
 			<groupId>tigase.sure.web</groupId>
 			<artifactId>theme</artifactId>
 			<version>2.1.0-SNAPSHOT</version>
-			<scope>compile</scope>
+			<scope>provided</scope>
 		</dependency>
 		<dependency>
 			<groupId>tigase</groupId>
 			<artifactId>jaxmpp-vcard</artifactId>
 			<version>${jaxmppVersion}</version>
-			<scope>compile</scope>
+			<scope>provided</scope>
 		</dependency>
 		<dependency>
 			<groupId>tigase</groupId>
 			<artifactId>jaxmpp-chat</artifactId>
 			<version>${jaxmppVersion}</version>
-			<scope>compile</scope>
+			<scope>provided</scope>
 		</dependency>
 		<dependency>
 			<groupId>tigase</groupId>
 			<artifactId>jaxmpp-pubsub</artifactId>
 			<version>${jaxmppVersion}</version>
-			<scope>compile</scope>
+			<scope>provided</scope>
 		</dependency>
 		<dependency>
 			<groupId>tigase</groupId>
 			<artifactId>jaxmpp-registration</artifactId>
 			<version>${jaxmppVersion}</version>
-			<scope>compile</scope>
+			<scope>provided</scope>
 		</dependency>
 		<dependency>
 			<groupId>tigase</groupId>
 			<artifactId>jaxmpp-adhoc</artifactId>
 			<version>${jaxmppVersion}</version>
-			<scope>compile</scope>
+			<scope>provided</scope>
 		</dependency>
 		<dependency>
 			<groupId>tigase</groupId>
 			<artifactId>jaxmpp-xep0136</artifactId>
 			<version>${jaxmppVersion}</version>
-			<scope>compile</scope>
+			<scope>provided</scope>
 		</dependency>
 		<dependency>
 			<groupId>junit</groupId>
@@ -224,8 +224,9 @@
 				gwt-maven-plugin documentation at codehaus.org -->
 				<configuration>
 					<localWorkers>8</localWorkers>
-					<optimize>0</optimize>
-					<draftCompile>true</draftCompile>
+					<optimize>9</optimize>
+					<draftCompile>false</draftCompile>
+					<disableClassMetadata>true</disableClassMetadata>
 					<runTarget>index.html</runTarget>
 					<hostedWebapp>${webappDirectory}</hostedWebapp>
 					<i18nMessagesBundle>tigase.sure.web.site.client.Messages</i18nMessagesBundle>
@@ -237,7 +238,7 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-war-plugin</artifactId>
-				<version>2.4</version>
+				<version>3.0.0</version>
 				<executions>
 					<execution>
 						<phase>compile</phase>
@@ -248,6 +249,9 @@
 				</executions>
 				<configuration>
 					<webappDirectory>${webappDirectory}</webappDirectory>
+					<packagingExcludes>
+						WEB-INF/lib/*.jar
+					</packagingExcludes>
 				</configuration>
 			</plugin>
 			<plugin>
