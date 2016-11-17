@@ -111,9 +111,9 @@ public class ClientFactoryImpl extends tigase.sure.web.base.client.ClientFactory
 				jaxmpp().getEventBus().addHandler(ResourceBinderModule.ResourceBindErrorHandler.ResourceBindErrorEvent.class, jaxmppBindListener);
 				jaxmpp().getEventBus().addHandler(ResourceBinderModule.ResourceBindSuccessHandler.ResourceBindSuccessEvent.class, jaxmppBindListener);
                 
-                jaxmpp().getEventBus().addHandler(JaxmppCore.DisconnectedHandler.DisconnectedEvent.class, new JaxmppCore.DisconnectedHandler() {
+                jaxmpp().getEventBus().addHandler(JaxmppCore.LoggedOutHandler.LoggedOutEvent.class, new JaxmppCore.LoggedOutHandler() {
 					@Override
-					public void onDisconnected(SessionObject sessionObject) {
+					public void onLoggedOut(SessionObject sessionObject) {
 						if (StreamManagementModule.isResumptionEnabled(sessionObject())) {
 							Logger.getLogger(ClientFactoryImpl.class.getName()).severe("trying to resume broken connection");
 							try {

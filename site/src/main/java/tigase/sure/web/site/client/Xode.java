@@ -28,6 +28,7 @@ import tigase.jaxmpp.core.client.exceptions.JaxmppException;
 import tigase.jaxmpp.core.client.xmpp.modules.ResourceBinderModule;
 import tigase.jaxmpp.core.client.xmpp.modules.auth.SaslModule;
 import tigase.jaxmpp.core.client.xmpp.modules.streammng.StreamManagementModule;
+import tigase.jaxmpp.gwt.client.ConnectionManager;
 import tigase.jaxmpp.gwt.client.GwtSessionObject;
 import tigase.jaxmpp.gwt.client.Jaxmpp;
 import tigase.jaxmpp.gwt.client.connectors.BoshConnector;
@@ -201,15 +202,16 @@ public class Xode implements EntryPoint {
 				if (jid == null) {
 					String domain = root.get("anon-domain");
 					connCfg.setDomain(domain);
-					if (boshUrl == null) {
-						boshUrl = getBoshUrl(domain);
-					}
 				}
 				if (boshUrl != null) {
 					factory.jaxmpp().getSessionObject().setUserProperty(BoshConnector.BOSH_SERVICE_URL_KEY, boshUrl);
 				} else {
 					factory.jaxmpp().getSessionObject().setUserProperty(BoshConnector.BOSH_SERVICE_URL_KEY, null);
 					String webDnsResolver = root.get("dns-resolver");
+					
+					String defUrl = WebSocket.isSupported() ? "ws://" + Window.Location.getHostName() + ":5290/" : "http://" + Window.Location.getHostName() + ":5280/";
+					factory.sessionObject().setUserProperty(ConnectionManager.URL_ON_FAILURE, defUrl);
+				
 					factory.jaxmpp().getSessionObject().setUserProperty(WebDnsResolver.WEB_DNS_RESOLVER_URL_KEY, webDnsResolver);
 				}
 				connCfg.setUserPassword(password);
@@ -222,16 +224,7 @@ public class Xode implements EntryPoint {
         }
         
         public static String getBoshUrl(String domain) {
-                Dictionary domains = Dictionary.getDictionary("domains");
                 String url = "http://" + domain + ":5280/bosh";
-                if (domains != null) {
-                        Set<String> keys = domains.keySet();
-                        if (keys.contains(domain)) {
-                                url = domains.get(domain);
-                        } else if (keys.contains("default")) {
-                                url = domains.get("default");
-                        }
-                }
 				if (WebSocket.isSupported()) {
 					if (url.startsWith("http://")) {
 						url = url.replace("http://", "ws://").replace(":5280", ":5290");
