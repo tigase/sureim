@@ -90,7 +90,7 @@ public class AbstractAuthView extends ResizeComposite {
                 if (advanced) {
                         disclosure = new DisclosurePanel(factory.baseI18n().advanced());
 
-                        Label boshUrlLabel = new Label(factory.baseI18n().boshUrl() + ":");
+                        Label boshUrlLabel = new Label(factory.baseI18n().connectionUrlBoshWs() + ":");
                         FlowPanel disclosurePanel = new FlowPanel();
                         disclosurePanel.add(boshUrlLabel);
                         boshUrl = new TextBox();

@@ -27,7 +27,7 @@ public interface BaseI18n extends Constants {
         @DefaultStringValue("Password")
         String password();
         
-        @DefaultStringValue("2015 Tigase, Inc. All rights reserved")
+        @DefaultStringValue("2016 Tigase, Inc. All rights reserved")
         String copyright();
 		
 		@DefaultStringValue("Version:")
@@ -84,6 +84,6 @@ public interface BaseI18n extends Constants {
         @DefaultStringValue("Advanced")
         String advanced();
         
-        @DefaultStringValue("Bosh URL")
-        String boshUrl();
+        @DefaultStringValue("Connection URL (Bosh/WebSocket)")
+        String connectionUrlBoshWs();
 }
