@@ -21,6 +21,7 @@ import tigase.jaxmpp.core.client.xml.ElementFactory;
 import tigase.jaxmpp.core.client.xml.XMLException;
 import tigase.jaxmpp.core.client.xmpp.modules.StreamFeaturesModule;
 import tigase.jaxmpp.core.client.xmpp.modules.registration.InBandRegistrationModule;
+import tigase.jaxmpp.core.client.xmpp.modules.registration.UnifiedRegistrationForm;
 import tigase.jaxmpp.core.client.xmpp.stanzas.IQ;
 import tigase.jaxmpp.core.client.xmpp.stanzas.Stanza;
 import tigase.jaxmpp.gwt.client.Jaxmpp;
@@ -225,7 +226,7 @@ public class RegisterDialog extends DialogBox {
 		}
 
 		@Override
-		public void onReceivedRequestedFields(SessionObject sessionObject, IQ responseStanza) {
+		public void onReceivedRequestedFields(SessionObject sessionObject, IQ responseStanza, UnifiedRegistrationForm unifiedRegistrationForm) {
 			try {
 				final InBandRegistrationModule regModule = jaxmpp.getModulesManager().getModule(InBandRegistrationModule.class);
 				regModule.register(jid.toString(), password, email, new AsyncCallback() {

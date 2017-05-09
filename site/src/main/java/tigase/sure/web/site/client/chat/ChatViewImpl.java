@@ -47,6 +47,7 @@ import tigase.jaxmpp.core.client.xmpp.modules.chat.MessageModule;
 import tigase.jaxmpp.core.client.xmpp.modules.muc.MucModule;
 import tigase.jaxmpp.core.client.xmpp.modules.muc.Occupant;
 import tigase.jaxmpp.core.client.xmpp.modules.muc.Room;
+import tigase.jaxmpp.core.client.xmpp.modules.muc.XMucUserElement;
 import tigase.jaxmpp.core.client.xmpp.modules.presence.PresenceModule;
 import tigase.jaxmpp.core.client.xmpp.modules.roster.RosterItem;
 import tigase.jaxmpp.core.client.xmpp.modules.roster.RosterModule;
@@ -537,12 +538,12 @@ public class ChatViewImpl extends ResizeComposite implements ChatView {
 		public void onOccupantComes(SessionObject sessionObject, Room room, Occupant occupant, String nickname) {
 			refreshOccupantsList(room);
 		}
-
+		
 		@Override
-		public void onOccupantLeaved(SessionObject sessionObject, Room room, Occupant occupant) {
+		public void onOccupantLeaved(SessionObject sessionObject, Room room, Occupant occupant, Presence stanza, XMucUserElement xUserElement) {
 			refreshOccupantsList(room);
 		}
-
+			
 		protected void configureRoom( Room room ) {
 			try {
 				factory.jaxmpp().getModule(MucModule.class).getRoomConfiguration(room, new AsyncCallback() {
@@ -597,6 +598,6 @@ public class ChatViewImpl extends ResizeComposite implements ChatView {
 				Logger.getLogger( ChatViewImpl.class.getName() ).log( Level.SEVERE, null, ex );
 			}
 		}
-			
-		}
+
+	}
 }

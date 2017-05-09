@@ -1,8 +1,10 @@
 */.settings/*
 */.project
 */.classpath
+*/.idea/*
 */target/*
 *.launch
-*.nb-configuration.xml
+*/*.iml
+*/nb-configuration.xml
 site/gwt-unitCache
 site/war
