@@ -86,4 +86,7 @@ public interface BaseI18n extends Constants {
         
         @DefaultStringValue("Connection URL (Bosh/WebSocket)")
         String connectionUrlBoshWs();
+		
+		@DefaultStringValue("Next")
+		String next();
 }
