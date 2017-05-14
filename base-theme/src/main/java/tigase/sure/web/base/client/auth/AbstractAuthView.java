@@ -6,7 +6,14 @@ package tigase.sure.web.base.client.auth;
 
 import com.google.gwt.dom.client.Style;
 import com.google.gwt.event.dom.client.*;
+import com.google.gwt.i18n.client.Dictionary;
+import com.google.gwt.json.client.JSONArray;
+import com.google.gwt.json.client.JSONParser;
+import com.google.gwt.json.client.JSONString;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.*;
+import java.util.ArrayList;
+import java.util.List;
 import tigase.sure.web.base.client.ClientFactory;
 import tigase.sure.web.base.client.ResizablePanel;
 import tigase.jaxmpp.core.client.JID;
@@ -21,6 +28,7 @@ public class AbstractAuthView extends ResizeComposite {
         protected final ClientFactory factory;
         
         private TextBox username;
+		private String selectedDomain;
         private TextBox password;
         private Button authButton;
         private DisclosurePanel disclosure;
@@ -61,7 +69,7 @@ public class AbstractAuthView extends ResizeComposite {
                                 url = null;
                         }
                 }
-                factory.eventBus().fireEvent(new AuthRequestEvent(JID.jidInstance(username.getText()), password.getText(), url));
+                factory.eventBus().fireEvent(new AuthRequestEvent(JID.jidInstance(username.getText(), selectedDomain), password.getText(), url));
         }
         
         protected AbsolutePanel createAuthBox(boolean advanced) {
@@ -71,13 +79,65 @@ public class AbstractAuthView extends ResizeComposite {
                 header.setStyleName(factory.theme().style().authHeader());
                 panel.add(header);
                 
-                Label jidLabel = new Label(factory.baseI18n().jid());
-                jidLabel.setStyleName(factory.theme().style().authLabel());
-                panel.add(jidLabel);
+                Label usernameLabel = new Label(factory.baseI18n().username());
+                usernameLabel.setStyleName(factory.theme().style().authLabel());
+                panel.add(usernameLabel);
                 
                 username = new TextBox();
                 username.setStyleName(factory.theme().style().authTextBox());
                 panel.add(username);
+				
+			Label domainLabel = new Label(factory.baseI18n().domain());
+			domainLabel.setStyleName(factory.theme().style().authLabel());
+			panel.add(domainLabel);
+
+			Dictionary root = Dictionary.getDictionary("root");
+			String domainsStr = root.get("hosted-domains");
+			JSONArray domainsArr = (JSONArray) JSONParser.parseLenient(domainsStr);
+
+			final ListBox domainSelector = new ListBox();
+			List<String> knownDomains = new ArrayList<>();
+			knownDomains.add(Window.Location.getHostName());
+			for (int i = 0; i < domainsArr.size(); i++) {
+				String serverName = ((JSONString) domainsArr.get(i)).stringValue();
+				if (!knownDomains.contains(serverName)) {
+					knownDomains.add(serverName);
+				}
+			}
+			for (String serverName : knownDomains) {
+				domainSelector.addItem(serverName);
+			}
+			domainSelector.addItem(factory.baseI18n().other()+"...");
+			domainSelector.setSelectedIndex(0);
+			domainSelector.getElement().getStyle().setWidth(100, Style.Unit.PCT);
+			panel.add(domainSelector);
+
+			final TextBox customDomain = new TextBox();
+			customDomain.getElement().getStyle().setWidth(100, Style.Unit.PCT);
+			customDomain.setStyleName(factory.theme().style().authTextBox());
+			customDomain.setVisible(false);
+			customDomain.addChangeHandler(new ChangeHandler() {
+				@Override
+				public void onChange(ChangeEvent event) {
+					selectedDomain = customDomain.getValue();
+				}
+			});
+			panel.add(customDomain);
+
+			selectedDomain = domainSelector.getSelectedValue();
+			domainSelector.addChangeHandler(new ChangeHandler() {
+				@Override
+				public void onChange(ChangeEvent event) {
+					selectedDomain = domainSelector.getSelectedValue();
+					if ((factory.baseI18n().other() + "...").equals(selectedDomain)) {
+						selectedDomain = null;
+						customDomain.setVisible(true);
+					} else {
+						customDomain.setVisible(false);
+					}
+				}
+			});
+
                 
                 Label passwordLabel = new Label(factory.baseI18n().password());
                 passwordLabel.setStyleName(factory.theme().style().authLabel());

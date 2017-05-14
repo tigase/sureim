@@ -18,6 +18,9 @@ public interface BaseI18n extends Constants {
         @DefaultStringValue("XMPP ID")
         String jid();
 
+		@DefaultStringValue("Username")
+		String username();
+		
         @DefaultStringValue("Login")
         String login();
         
@@ -89,4 +92,8 @@ public interface BaseI18n extends Constants {
 		
 		@DefaultStringValue("Next")
 		String next();
+		
+		@DefaultStringValue("Other")
+		String other();
+		
 }
