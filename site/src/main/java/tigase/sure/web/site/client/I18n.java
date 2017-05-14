@@ -153,6 +153,15 @@ public interface I18n extends Constants {
 	@DefaultStringValue("Confirm password")
 	String confirmPassword();
 
+	@DefaultStringValue("Account")
+	String account();
+	
+	@DefaultStringValue("Remove account")
+	String removeAccount();
+	
+	@DefaultStringValue("Are you sure you want to delete your XMPP account?")
+	String accountRemovalWarning();
+	
 	// ---- Personal information
 	@DefaultStringValue("Personal information")
 	String personalInformation();
@@ -201,4 +210,5 @@ public interface I18n extends Constants {
 	// -- Registration dialog
 	@DefaultStringValue("Other...")
 	String enterCustomValue();
+	
 }
