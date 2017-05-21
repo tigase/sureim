@@ -52,16 +52,12 @@ public class AbstractAuthView extends ResizeComposite {
         }
 
         private void authFinished() {
-                authButton.setEnabled(true);
-                authButton.addStyleName(factory.theme().style().buttonDefault());
-                authButton.removeStyleName(factory.theme().style().buttonDisabled());                
+                setAuthButtonEnabled(true);
         }
         
         private void handle() {
 				errorPanel.setVisible(false);
-                authButton.setEnabled(false);
-                authButton.removeStyleName(factory.theme().style().buttonDefault());
-                authButton.addStyleName(factory.theme().style().buttonDisabled());                
+                setAuthButtonEnabled(false);
                 String url = (boshUrl != null) ? boshUrl.getText() : null;
                 if (url != null) {
                         url = url.trim();
@@ -71,6 +67,17 @@ public class AbstractAuthView extends ResizeComposite {
                 }
                 factory.eventBus().fireEvent(new AuthRequestEvent(JID.jidInstance(username.getText(), selectedDomain), password.getText(), url));
         }
+		
+		public void setAuthButtonEnabled(boolean val) {
+			authButton.setEnabled(val);
+			if (!val) {
+				authButton.removeStyleName(factory.theme().style().buttonDefault());
+                authButton.addStyleName(factory.theme().style().buttonDisabled());                
+			} else {
+				authButton.addStyleName(factory.theme().style().buttonDefault());
+                authButton.removeStyleName(factory.theme().style().buttonDisabled());                
+			}
+		}
         
         protected AbsolutePanel createAuthBox(boolean advanced) {
                 AbsolutePanel panel = new AbsolutePanel();

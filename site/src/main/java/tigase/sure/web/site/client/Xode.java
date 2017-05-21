@@ -151,16 +151,20 @@ public class Xode implements EntryPoint {
 						String session = ((GwtSessionObject) factory.sessionObject()).serialize();
 						if (session != null) {
 							storeSerializedSession(session);
+							return;
 						}
 					}
+					storeSerializedSession(null);
 				}
 			});				
 				
 				String session = restoreSerializedSession();
 				if (session != null && !session.isEmpty()) {
+					storeSerializedSession(null);
 					GwtSessionObject sessionObject = (GwtSessionObject) factory.sessionObject();
 					try {
 						sessionObject.restore(session);
+						factory.authView().setAuthButtonEnabled(false);
 						final Jaxmpp jaxmpp = factory.jaxmpp();
 						Timer t = new Timer() {
 							@Override
@@ -180,7 +184,9 @@ public class Xode implements EntryPoint {
 					}
 				} else {
 					if (Cookies.getCookie("username") != null && Cookies.getCookie("password") != null) {
+							factory.authView().setAuthButtonEnabled(false);
 							authenticateInt(JID.jidInstance(Cookies.getCookie("username")), Cookies.getCookie("password"), null);
+							return;
 					}
 					//authenticateTest(factory);
 
@@ -234,7 +240,11 @@ public class Xode implements EntryPoint {
         }
 		
 		private static native void storeSerializedSession(String data) /*-{
-			window.sessionStorage.setItem('jaxmppSession', data);
+			if (!data) {
+				window.sessionStorage.removeItem('jaxmppSession');
+			} else {
+				window.sessionStorage.setItem('jaxmppSession', data);
+			}
 		}-*/;
 		
 		private static native String restoreSerializedSession() /*-{
@@ -323,6 +333,7 @@ public class Xode implements EntryPoint {
 			//StreamManagementModule.reset(sessionObject);
 			try {
 //				jaxmpp.login();
+				jaxmpp.disconnect();
 				sessionObject.clear();
 			} catch (JaxmppException ex) {
 				Logger.getLogger(Xode.class.getName()).log(Level.SEVERE, null, ex);
