@@ -5,6 +5,7 @@
 package tigase.sure.web.site.client;
 
 import com.google.gwt.i18n.client.Constants;
+import com.google.gwt.safehtml.shared.SafeHtml;
 
 /**
  *
@@ -210,5 +211,11 @@ public interface I18n extends Constants {
 	// -- Registration dialog
 	@DefaultStringValue("Other...")
 	String enterCustomValue();
+
+	@DefaultStringValue("Selected file will be uploaded to HTTP server and will be accessible to anyone knowing address to retrieve this file.")
+	String shareWarning();
+
+	@DefaultStringValue("Share")
+	String share();
 	
 }

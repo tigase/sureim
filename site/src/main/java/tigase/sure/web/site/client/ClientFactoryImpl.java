@@ -25,6 +25,7 @@ import tigase.jaxmpp.core.client.xmpp.modules.chat.MessageModule;
 import tigase.jaxmpp.core.client.xmpp.modules.disco.DiscoveryModule;
 import tigase.jaxmpp.core.client.xmpp.modules.disco.DiscoveryModule.DiscoInfoAsyncCallback;
 import tigase.jaxmpp.core.client.xmpp.modules.disco.DiscoveryModule.Identity;
+import tigase.jaxmpp.core.client.xmpp.modules.httpfileupload.HttpFileUploadModule;
 import tigase.jaxmpp.core.client.xmpp.modules.muc.MucModule;
 import tigase.jaxmpp.core.client.xmpp.modules.pubsub.PubSubModule;
 import tigase.jaxmpp.core.client.xmpp.modules.streammng.StreamManagementModule;
@@ -92,6 +93,7 @@ public class ClientFactoryImpl extends tigase.sure.web.base.client.ClientFactory
 				jaxmpp().getModulesManager().register(new AdHocCommansModule());
 				jaxmpp().getModulesManager().register(new VCardModule());
 				jaxmpp().getModulesManager().register(new PubSubModule());
+				jaxmpp().getModulesManager().register(new HttpFileUploadModule());
 				
                 placeController = new PlaceController(eventBus());
                 avatarFactory = new AvatarFactory(this);

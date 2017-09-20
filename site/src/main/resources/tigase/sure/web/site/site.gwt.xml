@@ -8,6 +8,7 @@
 	<inherits name='tigase.sure.web.base.Base' />
 
 	<inherits name="tigase.jaxmpp.gwt.JaxmppGWT" />
+	<inherits name="tigase.jaxmpp.core.JaxmppHttpFileUpload" />
 
 	<!-- We need the JUnit module in the main module,               -->
 	<!-- otherwise eclipse complains (Google plugin bug?)           -->

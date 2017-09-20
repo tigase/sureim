@@ -190,7 +190,7 @@ public class Xode implements EntryPoint {
 					}
 					//authenticateTest(factory);
 
-					authenticateInt(null, null, null);
+					//authenticateInt(null, null, null);
 				}
         }
 

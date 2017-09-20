@@ -44,6 +44,7 @@ import tigase.jaxmpp.core.client.xmpp.forms.JabberDataElement;
 import tigase.jaxmpp.core.client.xmpp.forms.XDataType;
 import tigase.jaxmpp.core.client.xmpp.modules.chat.Chat;
 import tigase.jaxmpp.core.client.xmpp.modules.chat.MessageModule;
+import tigase.jaxmpp.core.client.xmpp.modules.httpfileupload.HttpFileUploadModule;
 import tigase.jaxmpp.core.client.xmpp.modules.muc.MucModule;
 import tigase.jaxmpp.core.client.xmpp.modules.muc.Occupant;
 import tigase.jaxmpp.core.client.xmpp.modules.muc.Room;
@@ -77,6 +78,7 @@ public class ChatViewImpl extends ResizeComposite implements ChatView {
         private final Widget closeChatAction;
         private final Widget settingsAction;
         private final Widget bookmarksAction;
+	private final Widget sendFileAction;
         
         public ChatViewImpl(ClientFactory factory_) {                
                 this.factory = factory_;
@@ -116,6 +118,51 @@ public class ChatViewImpl extends ResizeComposite implements ChatView {
                         
                 });
                 
+				sendFileAction = appView.getActionBar().addAction(factory.theme().socialShare(), new ClickHandler() {
+					@Override
+					public void onClick(ClickEvent event) {
+	                    int idx = tabLayout.getSelectedIndex();
+						if (idx < 0) {
+							return;
+						}
+						final Widget widget = (Widget) tabLayout.getWidget(idx);
+						if (widget != null) {
+							final DialogBox dlg = new SendFileDialog(factory, new SendFileDialog.Handler() {
+								@Override
+								public void fileUploaded(HttpFileUploadModule.Slot slot, SendFileDialog.JsFile file) {
+									if (widget instanceof ChatWidget) {
+										MessageModule messageModule = factory.jaxmpp().getModulesManager().getModule(MessageModule.class);
+										try {
+											Chat chat = ((ChatWidget) widget).getChat();
+											Message msg = chat.createMessage(slot.getGetUri());
+											HttpFileUploadModule.addOobLink(msg, slot.getGetUri());
+											HttpFileUploadModule.addFileInfoFormToStanza(msg, file.getName(), file.getSize(), file.getType());
+											messageModule.sendMessage(msg);
+											((ChatWidget) widget).handleMessage(msg);
+										} catch (JaxmppException ex) {
+											Logger.getLogger(ChatViewImpl.class.getName()).log(Level.SEVERE, null, ex);
+										}
+									} else if (widget instanceof MucRoomWidget) {
+										try {
+											Room room = ((MucRoomWidget) widget).getRoom();
+											Message msg = room.createMessage(slot.getGetUri());
+											HttpFileUploadModule.addOobLink(msg, slot.getGetUri());
+											HttpFileUploadModule.addFileInfoFormToStanza(msg, file.getName(), file.getSize(), file.getType());
+											room.sendMessage(msg);
+										} catch (XMLException ex) {
+											Logger.getLogger(ChatViewImpl.class.getName()).log(Level.SEVERE, null, ex);
+										} catch (JaxmppException ex) {
+											Logger.getLogger(ChatViewImpl.class.getName()).log(Level.SEVERE, null, ex);
+										}
+									}
+								}
+							});
+							dlg.show();
+							dlg.center();
+						}
+					}
+				});
+				
                 closeChatAction = appView.getActionBar().addAction(factory.theme().navigationCancel(), new ClickHandler() {
 
                         public void onClick(ClickEvent event) {
@@ -413,6 +460,7 @@ public class ChatViewImpl extends ResizeComposite implements ChatView {
         
         protected void updateActionBar() {
                 closeChatAction.setVisible(tabLayout.getWidgetCount() > 0);
+				sendFileAction.setVisible(tabLayout.getWidgetCount() > 0);
         }
                 
         public static boolean isVisible(Widget w) {

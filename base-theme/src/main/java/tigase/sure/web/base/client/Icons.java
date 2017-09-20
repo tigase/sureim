@@ -72,5 +72,8 @@ public interface Icons extends ClientBundle {
                 
         @Source("icons/10-device-access-mic-muted.png")
         ImageResource microfoneOff();
+		
+		@Source("icons/6-social-share.png")
+		ImageResource socialShare();
         
 }
