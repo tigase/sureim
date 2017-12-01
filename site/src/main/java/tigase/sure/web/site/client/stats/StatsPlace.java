@@ -24,15 +24,16 @@ import com.google.gwt.place.shared.Place;
 import com.google.gwt.place.shared.PlaceTokenizer;
 
 /**
- *
  * @author andrzej
  */
-public class StatsPlace extends Place {
+public class StatsPlace
+		extends Place {
 
 	public StatsPlace() {
 	}
 
-	public static class Tokenizer implements PlaceTokenizer<StatsPlace> {
+	public static class Tokenizer
+			implements PlaceTokenizer<StatsPlace> {
 
 		@Override
 		public StatsPlace getPlace(String token) {

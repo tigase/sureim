@@ -24,30 +24,31 @@ import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.core.client.JsArray;
 
 /**
- *
  * @author andrzej
  */
-public class DnsResult extends JavaScriptObject {
+public class DnsResult
+		extends JavaScriptObject {
 
-   protected DnsResult() {}
+	protected DnsResult() {
+	}
 
-   public final native String getDomain() /*-{
+	public final native String getDomain() /*-{
      return this.domain;
    }-*/;
-   
-   public final native JsArray<DnsEntry> getC2S() /*-{
-     return this.c2s;
-   }-*/;        
 
-   public final native JsArray<DnsEntry> getBosh() /*-{
+	public final native JsArray<DnsEntry> getC2S() /*-{
+     return this.c2s;
+   }-*/;
+
+	public final native JsArray<DnsEntry> getBosh() /*-{
 	 return this.bosh;
    }-*/;
-   
-   public final native JsArray<DnsEntry> getWebSocket() /*-{
+
+	public final native JsArray<DnsEntry> getWebSocket() /*-{
 	 return this.websocket;
-   }-*/;   
-   
-   public final native String next() /*-{
+   }-*/;
+
+	public final native String next() /*-{
 	   var urls = [];
 	   for (var i=0; i<this.websocket.length; i++) {
 		   if((!this.websocket[i].failed) && (this.websocket[i].url.indexOf("wss://") == 0)) {
@@ -75,8 +76,8 @@ public class DnsResult extends JavaScriptObject {
 	   }
 	   return null;
    }-*/;
-   
-   public final native boolean hasMore() /*-{
+
+	public final native boolean hasMore() /*-{
 	   for (var i=0; i<this.websocket.length; i++) {
 		   if(!this.websocket[i].failed) {
 			   return true;
@@ -89,8 +90,8 @@ public class DnsResult extends JavaScriptObject {
 	   }
 	   return false;
    }-*/;
-   
-   public final native void connectionFailed(String url) /*-{
+
+	public final native void connectionFailed(String url) /*-{
 	   for (var i=0; i<this.websocket.length; i++) {
 	       if (this.websocket[i].url == url) {
 		       this.websocket[i].failed = true;
@@ -102,8 +103,8 @@ public class DnsResult extends JavaScriptObject {
 		   }
 	   }
    }-*/;
-   
-   public final native String getUrlForHost(String host) /*-{
+
+	public final native String getUrlForHost(String host) /*-{
 	   for (var i=0; i<this.websocket.length; i++) {
 	       if (this.websocket[i].url.indexOf("wss://"+host) >= 0)
 		       return this.websocket[i].url;

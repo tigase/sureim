@@ -27,6 +27,7 @@ import tigase.jaxmpp.core.client.xmpp.modules.xep0136.ResultSet;
 
 public interface MessageArchivingListener {
 
-        void onReceiveCollections(final ResultSet<Chat> rs);
-        void onReceiveChat(final ChatResultSet rs);
+	void onReceiveCollections(final ResultSet<Chat> rs);
+
+	void onReceiveChat(final ChatResultSet rs);
 }

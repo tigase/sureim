@@ -26,19 +26,19 @@ import com.google.gwt.user.client.ui.AcceptsOneWidget;
 import tigase.sure.web.site.client.ClientFactory;
 
 /**
- *
  * @author andrzej
  */
-public class ChatActivity extends AbstractActivity {
+public class ChatActivity
+		extends AbstractActivity {
 
-        private final ClientFactory factory;
-        
-        public ChatActivity(ChatPlace place, ClientFactory factory) {
-                this.factory = factory;
-        }
-        
-        public void start(AcceptsOneWidget panel, EventBus eventBus) {
-                panel.setWidget(factory.chatView().asWidget());
-        }
-        
+	private final ClientFactory factory;
+
+	public ChatActivity(ChatPlace place, ClientFactory factory) {
+		this.factory = factory;
+	}
+
+	public void start(AcceptsOneWidget panel, EventBus eventBus) {
+		panel.setWidget(factory.chatView().asWidget());
+	}
+
 }

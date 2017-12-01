@@ -26,21 +26,21 @@ import com.google.gwt.user.client.ui.AcceptsOneWidget;
 import tigase.sure.web.site.client.ClientFactory;
 
 /**
- *
  * @author andrzej
  */
-public class DiscoActivity extends AbstractActivity {
+public class DiscoActivity
+		extends AbstractActivity {
 
-        private final ClientFactory factory;
-        
-        public DiscoActivity(DiscoPlace place, ClientFactory factory) {
-                this.factory = factory;
-        }
-        
-        public void start(AcceptsOneWidget panel, EventBus eventBus) {
-                DiscoView view = factory.discoView();
-                panel.setWidget(view.asWidget());
-                view.refresh();                
-        }
-        
+	private final ClientFactory factory;
+
+	public DiscoActivity(DiscoPlace place, ClientFactory factory) {
+		this.factory = factory;
+	}
+
+	public void start(AcceptsOneWidget panel, EventBus eventBus) {
+		DiscoView view = factory.discoView();
+		panel.setWidget(view.asWidget());
+		view.refresh();
+	}
+
 }

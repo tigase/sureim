@@ -26,21 +26,21 @@ import com.google.gwt.user.client.ui.AcceptsOneWidget;
 import tigase.sure.web.site.client.ClientFactory;
 
 /**
- *
  * @author andrzej
  */
-public class SettingsActivity extends AbstractActivity {
+public class SettingsActivity
+		extends AbstractActivity {
 
-        private final ClientFactory factory;
-        
-        public SettingsActivity(SettingsPlace place, ClientFactory factory) {
-                this.factory = factory;
-        }
-        
-        public void start(AcceptsOneWidget panel, EventBus eventBus) {
-                SettingsView w = factory.settingsView();
-                panel.setWidget(w.asWidget());
-                w.refreshItems();
-        }
-        
+	private final ClientFactory factory;
+
+	public SettingsActivity(SettingsPlace place, ClientFactory factory) {
+		this.factory = factory;
+	}
+
+	public void start(AcceptsOneWidget panel, EventBus eventBus) {
+		SettingsView w = factory.settingsView();
+		panel.setWidget(w.asWidget());
+		w.refreshItems();
+	}
+
 }

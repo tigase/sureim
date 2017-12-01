@@ -24,17 +24,18 @@ import com.google.gwt.activity.shared.AbstractActivity;
 import com.google.gwt.core.client.Callback;
 import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.user.client.ui.AcceptsOneWidget;
-import java.util.logging.Logger;
 import tigase.sure.web.site.client.ClientFactory;
 
+import java.util.logging.Logger;
+
 /**
- *
  * @author andrzej
  */
-public class StatsActivity extends AbstractActivity {
+public class StatsActivity
+		extends AbstractActivity {
 
 	private static final Logger log = Logger.getLogger(StatsActivity.class.getName());
-			
+
 	private final ClientFactory factory;
 
 	public StatsActivity(StatsPlace place, ClientFactory factory) {
@@ -59,5 +60,5 @@ public class StatsActivity extends AbstractActivity {
 
 		});
 	}
-        
+
 }

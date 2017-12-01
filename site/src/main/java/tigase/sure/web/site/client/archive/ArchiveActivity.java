@@ -26,19 +26,19 @@ import com.google.gwt.user.client.ui.AcceptsOneWidget;
 import tigase.sure.web.site.client.ClientFactory;
 
 /**
- *
  * @author andrzej
  */
-public class ArchiveActivity extends AbstractActivity {
+public class ArchiveActivity
+		extends AbstractActivity {
 
-        private final ClientFactory factory;
-        
-        public ArchiveActivity(ArchivePlace place, ClientFactory factory) {
-                this.factory = factory;
-        }
-        
-        public void start(AcceptsOneWidget panel, EventBus eventBus) {
-                panel.setWidget(factory.archiveView().asWidget());
-        }
-        
+	private final ClientFactory factory;
+
+	public ArchiveActivity(ArchivePlace place, ClientFactory factory) {
+		this.factory = factory;
+	}
+
+	public void start(AcceptsOneWidget panel, EventBus eventBus) {
+		panel.setWidget(factory.archiveView().asWidget());
+	}
+
 }

@@ -26,19 +26,19 @@ import com.google.gwt.user.client.ui.AcceptsOneWidget;
 import tigase.sure.web.site.client.ClientFactory;
 
 /**
- *
  * @author andrzej
  */
-public class PubSubPublishActivity extends AbstractActivity {
+public class PubSubPublishActivity
+		extends AbstractActivity {
 
-        private final ClientFactory factory;
-        
-        public PubSubPublishActivity(PubSubPublishPlace place, ClientFactory factory) {
-                this.factory = factory;
-        }
-        
-        public void start(AcceptsOneWidget panel, EventBus eventBus) {
-                panel.setWidget(factory.pubSubPublishView().asWidget());
-        }
-        
+	private final ClientFactory factory;
+
+	public PubSubPublishActivity(PubSubPublishPlace place, ClientFactory factory) {
+		this.factory = factory;
+	}
+
+	public void start(AcceptsOneWidget panel, EventBus eventBus) {
+		panel.setWidget(factory.pubSubPublishView().asWidget());
+	}
+
 }

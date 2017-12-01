@@ -25,11 +25,11 @@ import com.google.gwt.event.shared.EventHandler;
 import tigase.jaxmpp.core.client.JID;
 
 /**
- *
  * @author andrzej
  */
-public interface AvatarChangedHandler extends EventHandler {
+public interface AvatarChangedHandler
+		extends EventHandler {
 
-    public void avatarChanged(JID jid);
-    
+	public void avatarChanged(JID jid);
+
 }

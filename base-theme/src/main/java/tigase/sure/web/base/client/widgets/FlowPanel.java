@@ -25,12 +25,13 @@ import com.google.gwt.user.client.ui.RequiresResize;
 import com.google.gwt.user.client.ui.Widget;
 
 /**
- *
  * @author andrzej
  */
-public class FlowPanel extends com.google.gwt.user.client.ui.FlowPanel implements RequiresResize, ProvidesResize {
+public class FlowPanel
+		extends com.google.gwt.user.client.ui.FlowPanel
+		implements RequiresResize, ProvidesResize {
 
-        public void onResize() {
+	public void onResize() {
 //                int height = this.getElement().getParentElement().getOffsetHeight();
 //                this.setHeight(height+"px");
 //                for (Widget child : getChildren()) {
@@ -42,12 +43,12 @@ public class FlowPanel extends com.google.gwt.user.client.ui.FlowPanel implement
 //                }
 //                int height = this.getElement().getParentElement().getOffsetHeight();
 //                this.setHeight(height+"px");
-                for (Widget child : getChildren()) {
+		for (Widget child : getChildren()) {
 //                        int cheight = child.getElement().getParentElement().getOffsetHeight();
 //                        child.setHeight(cheight+"px");
-                        if (child instanceof RequiresResize) {
-                                ((RequiresResize) child).onResize();
-                        }
-                }
-        }
+			if (child instanceof RequiresResize) {
+				((RequiresResize) child).onResize();
+			}
+		}
+	}
 }

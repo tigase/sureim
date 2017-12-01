@@ -21,7 +21,6 @@
 package tigase.sure.web.base.client.widgets.file;
 
 /**
- *
  * @author andrzej
  */
 public class File {
@@ -31,12 +30,12 @@ public class File {
 		return Long.parseLong(size);
 	}
 
-	private final native String getSize_() /*-{
-                return "" + this.size;
-	}-*/;   
-        
 	public final native String getType() /*-{
                 return this.type;
-	}-*/;        
-        
+	}-*/;
+
+	private final native String getSize_() /*-{
+                return "" + this.size;
+	}-*/;
+
 }

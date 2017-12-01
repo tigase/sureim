@@ -41,43 +41,38 @@ import tigase.sure.web.site.client.stats.StatsActivity;
 import tigase.sure.web.site.client.stats.StatsPlace;
 
 /**
- *
  * @author andrzej
  */
-public class AppActivityMapper implements ActivityMapper {
-    private ClientFactory clientFactory;
+public class AppActivityMapper
+		implements ActivityMapper {
 
-    public AppActivityMapper(ClientFactory clientFactory) {
-        super();
-        this.clientFactory = clientFactory;
-    }
+	private ClientFactory clientFactory;
 
-    @Override
-    public Activity getActivity(Place place) {
-        if (place instanceof AuthPlace) {
-                return new AuthActivity((AuthPlace) place, clientFactory);
-        }
-        else if (place instanceof ChatPlace) {
-                return new ChatActivity((ChatPlace) place, clientFactory);
-        }
-        else if (place instanceof ArchivePlace) {
-                return new ArchiveActivity((ArchivePlace) place, clientFactory);
-        }
-        else if (place instanceof DiscoPlace) {
-                return new DiscoActivity((DiscoPlace) place, clientFactory);
-        }
-        else if (place instanceof SettingsPlace) {
-                return new SettingsActivity((SettingsPlace) place, clientFactory);
-        }
-		else if (place instanceof ManagementPlace) {
-				return new ManagementActivity((ManagementPlace) place, clientFactory);
+	public AppActivityMapper(ClientFactory clientFactory) {
+		super();
+		this.clientFactory = clientFactory;
+	}
+
+	@Override
+	public Activity getActivity(Place place) {
+		if (place instanceof AuthPlace) {
+			return new AuthActivity((AuthPlace) place, clientFactory);
+		} else if (place instanceof ChatPlace) {
+			return new ChatActivity((ChatPlace) place, clientFactory);
+		} else if (place instanceof ArchivePlace) {
+			return new ArchiveActivity((ArchivePlace) place, clientFactory);
+		} else if (place instanceof DiscoPlace) {
+			return new DiscoActivity((DiscoPlace) place, clientFactory);
+		} else if (place instanceof SettingsPlace) {
+			return new SettingsActivity((SettingsPlace) place, clientFactory);
+		} else if (place instanceof ManagementPlace) {
+			return new ManagementActivity((ManagementPlace) place, clientFactory);
+		} else if (place instanceof PubSubPublishPlace) {
+			return new PubSubPublishActivity((PubSubPublishPlace) place, clientFactory);
+		} else if (place instanceof StatsPlace) {
+			return new StatsActivity((StatsPlace) place, clientFactory);
 		}
-        else if (place instanceof PubSubPublishPlace) {
-                return new PubSubPublishActivity((PubSubPublishPlace) place, clientFactory);
-        } else if (place instanceof StatsPlace) {
-				return new StatsActivity((StatsPlace) place, clientFactory);
-		}
-        return null;
-    }
-    
+		return null;
+	}
+
 }

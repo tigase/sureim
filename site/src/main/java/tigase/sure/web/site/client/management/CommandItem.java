@@ -23,23 +23,25 @@ package tigase.sure.web.site.client.management;
 import tigase.jaxmpp.core.client.xmpp.modules.disco.DiscoveryModule;
 
 /**
- *
  * @author andrzej
  */
-public class CommandItem extends DiscoveryModule.Item implements Comparable<CommandItem> {
-	private String group;
+public class CommandItem
+		extends DiscoveryModule.Item
+		implements Comparable<CommandItem> {
 
-	public void setGroup(String group) {
-		this.group = group;
-	}
+	private String group;
 
 	public String getGroup() {
 		return group;
+	}
+
+	public void setGroup(String group) {
+		this.group = group;
 	}
 
 	@Override
 	public int compareTo(CommandItem o) {
 		return getName().compareTo(o.getName());
 	}
-	
+
 }

@@ -20,105 +20,94 @@
  */
 package tigase.sure.web.site.client.chat;
 
-import com.google.gwt.dom.client.Element;
 import com.google.gwt.i18n.client.DateTimeFormat;
 import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
-import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HTMLPanel;
-import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.ScrollPanel;
-import com.google.gwt.user.client.ui.VerticalPanel;
-import tigase.sure.web.site.client.ClientFactory;
-import java.util.Date;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import tigase.jaxmpp.core.client.BareJID;
-import tigase.jaxmpp.core.client.JID;
-import tigase.jaxmpp.core.client.SessionObject;
 import tigase.jaxmpp.core.client.xml.XMLException;
 import tigase.jaxmpp.core.client.xmpp.modules.muc.Room;
 import tigase.jaxmpp.core.client.xmpp.stanzas.Message;
 import tigase.jaxmpp.core.client.xmpp.utils.delay.XmppDelay;
+import tigase.sure.web.site.client.ClientFactory;
+
+import java.util.Date;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
- *
  * @author andrzej
  */
-public class MucLogPanel extends Composite {
+public class MucLogPanel
+		extends Composite {
 
-        private final ScrollPanel scroll;
-        private final String name;
-        private final String jid;
-        private final Room room;
-        private final ClientFactory factory;
-        private DateTimeFormat timeFormat = DateTimeFormat.getFormat("HH:mm:ss");
-        private HTMLPanel log;
+	private final ClientFactory factory;
+	private final String jid;
+	private final String name;
+	private final Room room;
+	private final ScrollPanel scroll;
+	private HTMLPanel log;
+	private DateTimeFormat timeFormat = DateTimeFormat.getFormat("HH:mm:ss");
 
-        public MucLogPanel(ClientFactory factory, Room room) {
-                this.name = room.getRoomJid().toString();
-                this.jid = room.getRoomJid().toString();
-                this.room = room;
-                this.factory = factory;
-                log = new HTMLPanel("<div id=\"Chat-" + jid + "\"></div>");
-                scroll = new ScrollPanel(log);
-                initWidget(scroll);
-        }
+	public MucLogPanel(ClientFactory factory, Room room) {
+		this.name = room.getRoomJid().toString();
+		this.jid = room.getRoomJid().toString();
+		this.room = room;
+		this.factory = factory;
+		log = new HTMLPanel("<div id=\"Chat-" + jid + "\"></div>");
+		scroll = new ScrollPanel(log);
+		initWidget(scroll);
+	}
 
-        public void appendMessage(Message msg) {
-                try {
-                        String body = msg.getBody();
+	public void appendMessage(Message msg) {
+		try {
+			String body = msg.getBody();
 
-                        if (msg == null || body == null) {
-                                return;
-                        }
+			if (msg == null || body == null) {
+				return;
+			}
 
-                        SafeHtmlBuilder sb = new SafeHtmlBuilder();
-                        
-                        String nick = msg.getFrom().getResource();
-                        boolean mine = room.getNickname().equals(nick);
-                        boolean mark = body.contains(room.getNickname());
-                        
-                        XmppDelay delay = XmppDelay.extract(msg);
-                        Date time = delay != null ? delay.getStamp() : null;//new Date();
-                        if (time == null) {
-                                time = new Date();
-                        }
-												Logger.getLogger(MucLogPanel.class.getName()).log(
-														Level.FINE,
-														"time: " + time
-														+ ", nick: " + nick
-														+ ", body: " + body
-														+ ", mark: " + mark
-														+ ", mine: " + mine
+			SafeHtmlBuilder sb = new SafeHtmlBuilder();
 
-												);
-                        sb.appendHtmlConstant("<div class=\"mucEntry\">");
-                        sb.appendHtmlConstant("<div class=\"mucEntryNick muc" + (mine ? "Mine" : "His") + "EntryNick\">[");
-                        sb.appendEscaped(timeFormat.format(time));
-                        sb.appendEscaped("] <");
-                        sb.appendEscaped((nick != null ? nick : " *** "));
-                        sb.appendEscaped("> ");
-                        sb.appendHtmlConstant("</div>");
-                        sb.appendHtmlConstant("<div class=\"mucEntry" + (mark ? "Mark" : "") + "Text\">");
-                        sb.appendEscaped(body);
-                        sb.appendHtmlConstant("</div>");
-                        sb.appendHtmlConstant("</div>");
-                        
-                        HTML html = new HTML(sb.toSafeHtml());
-                        html.setWordWrap(true);
-                        log.add(html, "Chat-" + jid);
+			String nick = msg.getFrom().getResource();
+			boolean mine = room.getNickname().equals(nick);
+			boolean mark = body.contains(room.getNickname());
 
-                        scroll.scrollToBottom();
-                }
-                catch (XMLException ex) {
-                        Logger.getLogger("LogPanel").log(Level.WARNING, "Exception processing message", ex);
-                }
-        }
+			XmppDelay delay = XmppDelay.extract(msg);
+			Date time = delay != null ? delay.getStamp() : null;//new Date();
+			if (time == null) {
+				time = new Date();
+			}
+			Logger.getLogger(MucLogPanel.class.getName())
+					.log(Level.FINE,
+						 "time: " + time + ", nick: " + nick + ", body: " + body + ", mark: " + mark + ", mine: " + mine
 
-        public void activated() {
-                scroll.scrollToBottom();
-        }
-        
+					);
+			sb.appendHtmlConstant("<div class=\"mucEntry\">");
+			sb.appendHtmlConstant("<div class=\"mucEntryNick muc" + (mine ? "Mine" : "His") + "EntryNick\">[");
+			sb.appendEscaped(timeFormat.format(time));
+			sb.appendEscaped("] <");
+			sb.appendEscaped((nick != null ? nick : " *** "));
+			sb.appendEscaped("> ");
+			sb.appendHtmlConstant("</div>");
+			sb.appendHtmlConstant("<div class=\"mucEntry" + (mark ? "Mark" : "") + "Text\">");
+			sb.appendEscaped(body);
+			sb.appendHtmlConstant("</div>");
+			sb.appendHtmlConstant("</div>");
+
+			HTML html = new HTML(sb.toSafeHtml());
+			html.setWordWrap(true);
+			log.add(html, "Chat-" + jid);
+
+			scroll.scrollToBottom();
+		} catch (XMLException ex) {
+			Logger.getLogger("LogPanel").log(Level.WARNING, "Exception processing message", ex);
+		}
+	}
+
+	public void activated() {
+		scroll.scrollToBottom();
+	}
+
 }

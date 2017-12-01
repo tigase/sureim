@@ -21,21 +21,22 @@
 package tigase.sure.web.site.client.disco;
 
 import com.google.gwt.dom.client.Style;
-import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.ui.*;
-import tigase.sure.web.site.client.ClientFactory;
-import java.util.*;
 import tigase.jaxmpp.core.client.JID;
 import tigase.jaxmpp.core.client.exceptions.JaxmppException;
 import tigase.jaxmpp.core.client.xml.Element;
-import tigase.jaxmpp.core.client.xml.XMLException;
 import tigase.jaxmpp.core.client.xmpp.forms.*;
+import tigase.sure.web.site.client.ClientFactory;
+
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
 
 /**
- *
  * @author andrzej
  */
-public class Form extends Composite {
+public class Form
+		extends Composite {
 
 	private final ClientFactory factory;
 
@@ -59,11 +60,86 @@ public class Form extends Composite {
 	public void reset() {
 		layout.clear();
 	}
-	
+
 	public void setColumnWidth(int column, String width) {
 		for (int row = 0; row < layout.getRowCount(); row++) {
 			layout.getFlexCellFormatter().setWidth(row, column, "40%");
-		}		
+		}
+	}
+
+	public JabberDataElement getData() throws JaxmppException {
+		int row = 0;
+
+		String instructions = data.getInstructions();
+		if (instructions != null) {
+			row++;
+		}
+
+		for (AbstractField field : data.getFields()) {
+			if ("hidden".equals(field.getType())) {
+				continue;
+			}
+
+			Widget w = layout.getWidget(row, 1);
+
+			if ("boolean".equals(field.getType())) {
+				CheckBox checkbox = (CheckBox) w;
+				((BooleanField) field).setFieldValue(checkbox.getValue());
+			} else if ("text-single".equals(field.getType()) || "jid-single".equals(field.getType())) {
+				TextBox textBox = (TextBox) w;
+				String val = textBox.getValue();
+				if ("text-single".equals(field.getType())) {
+					((TextSingleField) field).setFieldValue(val);
+				} else if ("jid-single".equals(field.getType())) {
+					JID jid = val == null ? null : JID.jidInstance(val);
+					((JidSingleField) field).setFieldValue(jid);
+				}
+			} else if ("text-multi".equals(field.getType())) {
+				TextArea textArea = (TextArea) w;
+				String val = textArea.getValue();
+				String[] values =
+						val != null ? val.split("\n") : new String[0];//((TextMultiField) field).getFieldValue();
+				((TextMultiField) field).setFieldValue(values);
+			} else if ("jid-multi".equals(field.getType())) {
+				TextArea textArea = (TextArea) w;
+				String val = textArea.getValue();
+				String[] values = val != null
+								  ? val.split("\n")
+								  : new String[0];//((TextMultiField) field).getFieldValue();
+				List<JID> jids = new ArrayList<JID>();
+				for (String v : values) {
+					jids.add(JID.jidInstance(v));
+				}
+				((JidMultiField) field).setFieldValue(jids.toArray(new JID[jids.size()]));
+			} else if ("text-private".equals(field.getType())) {
+				PasswordTextBox textBox = (PasswordTextBox) w;
+				((TextPrivateField) field).setFieldValue(textBox.getValue());
+			} else if ("list-single".equals(field.getType())) {
+				ListBox listBox = (ListBox) w;
+				int idx = listBox.getSelectedIndex();
+				String val = null;
+				if (idx >= 0) {
+					val = listBox.getValue(idx);
+				}
+				((ListSingleField) field).setFieldValue(val);
+			} else if ("list-multi".equals(field.getType())) {
+				ListBox listBox = new ListBox();
+				listBox.setMultipleSelect(true);
+				List<String> selections = new ArrayList<String>();
+				for (int idx = 0; idx < listBox.getItemCount(); idx++) {
+					if (listBox.isItemSelected(row)) {
+						selections.add(listBox.getValue(idx));
+					}
+				}
+				((ListMultiField) field).setFieldValue(selections.toArray(new String[selections.size()]));
+			} else {
+				w = new Label(field.getValue());
+			}
+
+			row++;
+		}
+
+		return data;
 	}
 
 	public void setData(JabberDataElement data) throws JaxmppException {
@@ -217,77 +293,5 @@ public class Form extends Composite {
 			row++;
 		}
 
-	}
-
-	public JabberDataElement getData() throws JaxmppException {
-		int row = 0;
-
-		String instructions = data.getInstructions();
-		if (instructions != null) {
-			row++;
-		}
-
-		for (AbstractField field : data.getFields()) {
-			if ("hidden".equals(field.getType())) {
-				continue;
-			}
-
-			Widget w = layout.getWidget(row, 1);
-
-			if ("boolean".equals(field.getType())) {
-				CheckBox checkbox = (CheckBox) w;
-				((BooleanField) field).setFieldValue(checkbox.getValue());
-			} else if ("text-single".equals(field.getType()) || "jid-single".equals(field.getType())) {
-				TextBox textBox = (TextBox) w;
-				String val = textBox.getValue();
-				if ("text-single".equals(field.getType())) {
-					((TextSingleField) field).setFieldValue(val);
-				} else if ("jid-single".equals(field.getType())) {
-					JID jid = val == null ? null : JID.jidInstance(val);
-					((JidSingleField) field).setFieldValue(jid);
-				}
-			} else if ("text-multi".equals(field.getType())) {
-				TextArea textArea = (TextArea) w;
-				String val = textArea.getValue();
-				String[] values = val != null ? val.split("\n") : new String[0];//((TextMultiField) field).getFieldValue();
-				((TextMultiField) field).setFieldValue(values);
-			} else if ("jid-multi".equals(field.getType())) {
-				TextArea textArea = (TextArea) w;
-				String val = textArea.getValue();
-				String[] values = val != null ? val.split("\n") : new String[0];//((TextMultiField) field).getFieldValue();                                
-				List<JID> jids = new ArrayList<JID>();
-				for (String v : values) {
-					jids.add(JID.jidInstance(v));
-				}
-				((JidMultiField) field).setFieldValue(jids.toArray(new JID[jids.size()]));
-			} else if ("text-private".equals(field.getType())) {
-				PasswordTextBox textBox = (PasswordTextBox) w;
-				((TextPrivateField) field).setFieldValue(textBox.getValue());
-			} else if ("list-single".equals(field.getType())) {
-				ListBox listBox = (ListBox) w;
-				int idx = listBox.getSelectedIndex();
-				String val = null;
-				if (idx >= 0) {
-					val = listBox.getValue(idx);
-				}
-				((ListSingleField) field).setFieldValue(val);
-			} else if ("list-multi".equals(field.getType())) {
-				ListBox listBox = new ListBox();
-				listBox.setMultipleSelect(true);
-				List<String> selections = new ArrayList<String>();
-				for (int idx = 0; idx < listBox.getItemCount(); idx++) {
-					if (listBox.isItemSelected(row)) {
-						selections.add(listBox.getValue(idx));
-					}
-				}
-				((ListMultiField) field).setFieldValue(selections.toArray(new String[selections.size()]));
-			} else {
-				w = new Label(field.getValue());
-			}
-
-			row++;
-		}
-
-		return data;
 	}
 }

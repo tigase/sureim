@@ -24,11 +24,11 @@ import com.google.gwt.event.shared.EventHandler;
 import tigase.jaxmpp.core.client.JID;
 
 /**
- *
  * @author andrzej
  */
-public interface AuthRequestHandler extends EventHandler {
+public interface AuthRequestHandler
+		extends EventHandler {
 
-        void authenticate(JID jid, String password, String boshUrl);
-        
+	void authenticate(JID jid, String password, String boshUrl);
+
 }

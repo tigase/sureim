@@ -24,13 +24,13 @@ import com.google.gwt.user.client.ui.IsWidget;
 import tigase.jaxmpp.core.client.JID;
 
 /**
- *
  * @author andrzej
  */
-public interface DiscoView extends IsWidget {
+public interface DiscoView
+		extends IsWidget {
 
-        void refresh();
-        
-        void discover(JID jid, String node);
-        
+	void refresh();
+
+	void discover(JID jid, String node);
+
 }

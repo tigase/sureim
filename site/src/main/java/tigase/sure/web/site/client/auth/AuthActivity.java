@@ -26,19 +26,19 @@ import com.google.gwt.user.client.ui.AcceptsOneWidget;
 import tigase.sure.web.site.client.ClientFactory;
 
 /**
- *
  * @author andrzej
  */
-public class AuthActivity extends AbstractActivity {
+public class AuthActivity
+		extends AbstractActivity {
 
-        private final ClientFactory factory;
-        
-        public AuthActivity(AuthPlace place, ClientFactory factory_) {
-                this.factory = factory_;
-        }
-        
-        public void start(AcceptsOneWidget panel, EventBus eventBus) {
-                panel.setWidget(factory.authView().asWidget());
-        }
-        
+	private final ClientFactory factory;
+
+	public AuthActivity(AuthPlace place, ClientFactory factory_) {
+		this.factory = factory_;
+	}
+
+	public void start(AcceptsOneWidget panel, EventBus eventBus) {
+		panel.setWidget(factory.authView().asWidget());
+	}
+
 }

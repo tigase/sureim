@@ -24,13 +24,12 @@ import tigase.jaxmpp.core.client.JID;
 import tigase.jaxmpp.core.client.xmpp.modules.auth.SaslModule.SaslError;
 
 /**
- *
  * @author andrzej
  */
 public interface AuthHandler {
-        
-        void authenticated(JID jid);
-        
-        void deauthenticated(String msg, SaslError saslError);
-        
+
+	void authenticated(JID jid);
+
+	void deauthenticated(String msg, SaslError saslError);
+
 }

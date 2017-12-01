@@ -29,23 +29,14 @@ import com.google.gwt.i18n.client.Dictionary;
 import com.google.gwt.json.client.JSONArray;
 import com.google.gwt.json.client.JSONParser;
 import com.google.gwt.json.client.JSONString;
-import com.google.gwt.json.client.JSONValue;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.*;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import tigase.jaxmpp.core.client.AsyncCallback;
-import tigase.jaxmpp.core.client.BareJID;
 import tigase.jaxmpp.core.client.SessionObject;
 import tigase.jaxmpp.core.client.XMPPException.ErrorCondition;
 import tigase.jaxmpp.core.client.exceptions.JaxmppException;
 import tigase.jaxmpp.core.client.xml.Element;
-import tigase.jaxmpp.core.client.xml.ElementFactory;
 import tigase.jaxmpp.core.client.xml.XMLException;
-import tigase.jaxmpp.core.client.xmpp.forms.JabberDataElement;
-import tigase.jaxmpp.core.client.xmpp.forms.XDataType;
 import tigase.jaxmpp.core.client.xmpp.modules.StreamFeaturesModule;
 import tigase.jaxmpp.core.client.xmpp.modules.registration.InBandRegistrationModule;
 import tigase.jaxmpp.core.client.xmpp.modules.registration.UnifiedRegistrationForm;
@@ -59,24 +50,26 @@ import tigase.sure.web.site.client.Xode;
 import tigase.sure.web.site.client.chat.ChatViewImpl;
 import tigase.sure.web.site.client.disco.Form;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 /**
- *
  * @author andrzej
  */
-public class RegisterDialog extends DialogBox {
+public class RegisterDialog
+		extends DialogBox {
 
 	private static final Logger log = Logger.getLogger("RegisterDialog");
 
 	private final ClientFactory factory;
-
+	private final Form form;
+	private final Button ok;
+	private DeckPanel deck;
 	private Jaxmpp jaxmpp;
 	private RegisterHandler regHandler;
-	private final Button ok;
-
 	private String selectedDomain = null;
-	private final Form form;
-	
-	private DeckPanel deck;
 
 	public RegisterDialog(ClientFactory factory_) {
 		super(true);
@@ -109,11 +102,11 @@ public class RegisterDialog extends DialogBox {
 		Dictionary root = Dictionary.getDictionary("root");
 		String domainsStr = root.get("hosted-domains");
 		JSONArray domainsArr = (JSONArray) JSONParser.parseLenient(domainsStr);
-		
+
 		final ListBox domainSelector = new ListBox();
 		List<String> knownDomains = new ArrayList<>();
 		knownDomains.add(Window.Location.getHostName());
-		for (int i=0; i < domainsArr.size(); i++) {
+		for (int i = 0; i < domainsArr.size(); i++) {
 			String serverName = ((JSONString) domainsArr.get(i)).stringValue();
 			if (!knownDomains.contains(serverName)) {
 				knownDomains.add(serverName);
@@ -218,7 +211,7 @@ public class RegisterDialog extends DialogBox {
 			enableOkButton();
 			return;
 		}
-		
+
 		if (deck.getVisibleWidget() == 0) {
 			retrieveRegistrationForm();
 		} else {
@@ -231,8 +224,10 @@ public class RegisterDialog extends DialogBox {
 			jaxmpp = new Jaxmpp();
 			regHandler = new RegisterHandler();
 			jaxmpp.getModulesManager().register(new InBandRegistrationModule());
-			final InBandRegistrationModule regModule = jaxmpp.getModulesManager().getModule(InBandRegistrationModule.class);
-			jaxmpp.getProperties().setUserProperty(InBandRegistrationModule.IN_BAND_REGISTRATION_MODE_KEY, Boolean.TRUE);
+			final InBandRegistrationModule regModule = jaxmpp.getModulesManager()
+					.getModule(InBandRegistrationModule.class);
+			jaxmpp.getProperties()
+					.setUserProperty(InBandRegistrationModule.IN_BAND_REGISTRATION_MODE_KEY, Boolean.TRUE);
 			jaxmpp.getProperties().setUserProperty(SessionObject.SERVER_NAME, selectedDomain);
 			jaxmpp.getProperties().setUserProperty(BoshConnector.BOSH_SERVICE_URL_KEY, Xode.getBoshUrl(selectedDomain));
 
@@ -241,25 +236,28 @@ public class RegisterDialog extends DialogBox {
 			regModule.addReceivedRequestedFieldsHandler(regHandler);
 			regModule.addReceivedTimeoutHandler(regHandler);
 
-			jaxmpp.getModulesManager().getModule(StreamFeaturesModule.class).addStreamFeaturesReceivedHandler(new StreamFeaturesModule.StreamFeaturesReceivedHandler() {
+			jaxmpp.getModulesManager()
+					.getModule(StreamFeaturesModule.class)
+					.addStreamFeaturesReceivedHandler(new StreamFeaturesModule.StreamFeaturesReceivedHandler() {
 
-				@Override
-				public void onStreamFeaturesReceived(SessionObject sessionObject, Element featuresElement) throws JaxmppException {
-					Element features = featuresElement;//ElementFactory.create(featuresElement);
-					Element e = features.getChildrenNS("mechanisms", "urn:ietf:params:xml:ns:xmpp-sasl");
-					if (e != null) {
-						features.removeChild(e);
-					}
-					e = features.getChildrenNS("bind", "urn:ietf:params:xml:ns:xmpp-bind");
-					if (e != null) {
-						features.removeChild(e);
-					}
+						@Override
+						public void onStreamFeaturesReceived(SessionObject sessionObject, Element featuresElement)
+								throws JaxmppException {
+							Element features = featuresElement;//ElementFactory.create(featuresElement);
+							Element e = features.getChildrenNS("mechanisms", "urn:ietf:params:xml:ns:xmpp-sasl");
+							if (e != null) {
+								features.removeChild(e);
+							}
+							e = features.getChildrenNS("bind", "urn:ietf:params:xml:ns:xmpp-bind");
+							if (e != null) {
+								features.removeChild(e);
+							}
 
-					sessionObject.setProperty("StreamFeaturesModule#STREAM_FEATURES_ELEMENT", features);
+							sessionObject.setProperty("StreamFeaturesModule#STREAM_FEATURES_ELEMENT", features);
 
-					regModule.start();
-				}
-			});
+							regModule.start();
+						}
+					});
 
 			jaxmpp.login();
 		} catch (XMLException ex) {
@@ -270,48 +268,49 @@ public class RegisterDialog extends DialogBox {
 			enableOkButton();
 		}
 	}
-	
+
 	private void registerAccount() {
 		try {
-			jaxmpp.getModule(InBandRegistrationModule.class).register((UnifiedRegistrationForm) form.getData(), new AsyncCallback() {
-				public void onError(Stanza responseStanza, ErrorCondition error) throws JaxmppException {
-					String message = null;
+			jaxmpp.getModule(InBandRegistrationModule.class)
+					.register((UnifiedRegistrationForm) form.getData(), new AsyncCallback() {
+						public void onError(Stanza responseStanza, ErrorCondition error) throws JaxmppException {
+							String message = null;
 
-					if (error == null) {
-						message = "Registration error";
-					} else {
-						switch (error) {
-							case conflict:
-								message = "Username not available. Choose another one.";
-								break;
-							default:
-								message = error.name();
-								break;
+							if (error == null) {
+								message = "Registration error";
+							} else {
+								switch (error) {
+									case conflict:
+										message = "Username not available. Choose another one.";
+										break;
+									default:
+										message = error.name();
+										break;
+								}
+							}
+
+							showError(message, new Runnable() {
+								public void run() {
+									retrieveRegistrationForm();
+								}
+							});
 						}
-					}
 
-					showError(message, new Runnable() {
-						public void run() {
-							retrieveRegistrationForm();
+						public void onSuccess(Stanza responseStanza) throws JaxmppException {
+							String message = "Registration successful";
+							MessageDialog dlg = new MessageDialog(factory, factory.baseI18n().success(), message);
+							dlg.show();
+							dlg.center();
+							hide();
+							jaxmpp.disconnect();
+							enableOkButton();
+						}
+
+						public void onTimeout() throws JaxmppException {
+							String message = "Server doesn't responses";
+							showError(message, null);
 						}
 					});
-				}
-
-				public void onSuccess(Stanza responseStanza) throws JaxmppException {
-					String message = "Registration successful";
-					MessageDialog dlg = new MessageDialog(factory, factory.baseI18n().success(), message);
-					dlg.show();
-					dlg.center();
-					hide();
-					jaxmpp.disconnect();
-					enableOkButton();
-				}
-
-				public void onTimeout() throws JaxmppException {
-					String message = "Server doesn't responses";
-					showError(message, null);
-				}
-			});
 		} catch (JaxmppException ex) {
 			Logger.getLogger(ChatViewImpl.class.getName()).log(Level.SEVERE, null, ex);
 			enableOkButton();
@@ -341,8 +340,11 @@ public class RegisterDialog extends DialogBox {
 		}
 	}
 
-	private class RegisterHandler implements InBandRegistrationModule.NotSupportedErrorHandler, InBandRegistrationModule.ReceivedErrorHandler,
-			InBandRegistrationModule.ReceivedRequestedFieldsHandler, InBandRegistrationModule.ReceivedTimeoutHandler {
+	private class RegisterHandler
+			implements InBandRegistrationModule.NotSupportedErrorHandler,
+					   InBandRegistrationModule.ReceivedErrorHandler,
+					   InBandRegistrationModule.ReceivedRequestedFieldsHandler,
+					   InBandRegistrationModule.ReceivedTimeoutHandler {
 
 		@Override
 		public void onNotSupportedError(SessionObject sessionObject) throws JaxmppException {
@@ -354,7 +356,8 @@ public class RegisterDialog extends DialogBox {
 		}
 
 		@Override
-		public void onReceivedError(SessionObject sessionObject, IQ responseStanza, ErrorCondition error) throws JaxmppException {
+		public void onReceivedError(SessionObject sessionObject, IQ responseStanza, ErrorCondition error)
+				throws JaxmppException {
 			String message = null;
 			if (error == null) {
 				message = "Registration error";
@@ -374,11 +377,12 @@ public class RegisterDialog extends DialogBox {
 						retrieveRegistrationForm();
 					}
 				});
-			}						
+			}
 		}
 
 		@Override
-		public void onReceivedRequestedFields(SessionObject sessionObject, IQ responseStanza, UnifiedRegistrationForm unifiedRegistrationForm) {
+		public void onReceivedRequestedFields(SessionObject sessionObject, IQ responseStanza,
+											  UnifiedRegistrationForm unifiedRegistrationForm) {
 			try {
 				form.setData(unifiedRegistrationForm);
 				form.setColumnWidth(0, "40%");

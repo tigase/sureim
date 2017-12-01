@@ -23,11 +23,11 @@ package tigase.sure.web.site.client.stats;
 import com.google.gwt.user.client.ui.IsWidget;
 
 /**
- *
  * @author andrzej
  */
-public interface StatsView extends IsWidget {
-	
+public interface StatsView
+		extends IsWidget {
+
 	void refresh();
-	
+
 }

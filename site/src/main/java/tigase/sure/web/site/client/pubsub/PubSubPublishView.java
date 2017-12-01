@@ -23,9 +23,9 @@ package tigase.sure.web.site.client.pubsub;
 import com.google.gwt.user.client.ui.IsWidget;
 
 /**
- *
  * @author andrzej
  */
-public interface PubSubPublishView extends IsWidget {
-        
+public interface PubSubPublishView
+		extends IsWidget {
+
 }

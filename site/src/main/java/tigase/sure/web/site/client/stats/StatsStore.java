@@ -24,19 +24,19 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- *
  * @author andrzej
  */
 public class StatsStore {
-	
+
 	private static final int MAX_SIZE = 20;
-	
+
 	private final List<StatsItem> items = new ArrayList<StatsItem>();
-	
+
 	/**
 	 * Adds item to store
-	 * 
+	 *
 	 * @param item
+	 *
 	 * @return true if limit of items was reached and oldest one was removed
 	 */
 	public boolean add(StatsItem item) {
@@ -47,17 +47,17 @@ public class StatsStore {
 		}
 		return false;
 	}
-	
+
 	public List<StatsItem> getItems() {
 		return items;
 	}
-	
+
 	public void clear() {
 		items.clear();
 	}
-	
+
 	public int getMaxRecords() {
 		return MAX_SIZE;
 	}
-	
+
 }

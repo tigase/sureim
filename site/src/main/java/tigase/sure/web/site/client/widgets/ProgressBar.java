@@ -26,38 +26,38 @@ import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.ui.Widget;
 
 /**
- *
  * @author andrzej
  */
-public class ProgressBar extends Widget {
-    private static final String PERCENT_PATTERN = "#,##0%";
-    private static final NumberFormat percentFormat = NumberFormat.getFormat(PERCENT_PATTERN);
+public class ProgressBar
+		extends Widget {
 
-    private final Element progress;
-    private final Element percentageLabel;
-    private double percentage;
-    private final double max;
+	private static final String PERCENT_PATTERN = "#,##0%";
+	private static final NumberFormat percentFormat = NumberFormat.getFormat(PERCENT_PATTERN);
+	private final double max;
+	private final Element percentageLabel;
+	private final Element progress;
+	private double percentage;
 
-    public ProgressBar(double value, double max) {
-        assert max != 0;
-        this.max = max;
+	public ProgressBar(double value, double max) {
+		assert max != 0;
+		this.max = max;
 
-        progress = DOM.createElement("progress");
-        progress.setAttribute("max", Double.toString(max));
-        progress.setAttribute("value", Double.toString(value));
+		progress = DOM.createElement("progress");
+		progress.setAttribute("max", Double.toString(max));
+		progress.setAttribute("value", Double.toString(value));
 
-        percentageLabel = DOM.createElement("span");
-        percentage = value / max;
-        percentageLabel.setInnerHTML(percentFormat.format(percentage));
-        progress.insertFirst(percentageLabel);
+		percentageLabel = DOM.createElement("span");
+		percentage = value / max;
+		percentageLabel.setInnerHTML(percentFormat.format(percentage));
+		progress.insertFirst(percentageLabel);
 
-        setElement(progress);
-    }
+		setElement(progress);
+	}
 
-    public void setProgress(double value) {
-        progress.setAttribute("value", Double.toString(value));
-        percentage = value / max;
-        percentageLabel.setInnerHTML(percentFormat.format(percentage));
-    }
+	public void setProgress(double value) {
+		progress.setAttribute("value", Double.toString(value));
+		percentage = value / max;
+		percentageLabel.setInnerHTML(percentFormat.format(percentage));
+	}
 
 }

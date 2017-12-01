@@ -32,10 +32,12 @@ import tigase.sure.web.site.client.settings.SettingsPlace;
 import tigase.sure.web.site.client.stats.StatsPlace;
 
 /**
- *
  * @author andrzej
  */
-@WithTokenizers({ChatPlace.Tokenizer.class,ArchivePlace.Tokenizer.class,AuthPlace.Tokenizer.class,SettingsPlace.Tokenizer.class,DiscoPlace.Tokenizer.class,ManagementPlace.Tokenizer.class,PubSubPublishPlace.Tokenizer.class,StatsPlace.Tokenizer.class})
-public interface AppPlaceHistoryMapper extends PlaceHistoryMapper {      
-        
+@WithTokenizers({ChatPlace.Tokenizer.class, ArchivePlace.Tokenizer.class, AuthPlace.Tokenizer.class,
+				 SettingsPlace.Tokenizer.class, DiscoPlace.Tokenizer.class, ManagementPlace.Tokenizer.class,
+				 PubSubPublishPlace.Tokenizer.class, StatsPlace.Tokenizer.class})
+public interface AppPlaceHistoryMapper
+		extends PlaceHistoryMapper {
+
 }

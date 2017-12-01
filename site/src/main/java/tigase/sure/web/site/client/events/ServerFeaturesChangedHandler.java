@@ -20,15 +20,15 @@
  */
 package tigase.sure.web.site.client.events;
 
-import java.util.Collection;
 import tigase.jaxmpp.core.client.xmpp.modules.disco.DiscoveryModule.Identity;
 
+import java.util.Collection;
+
 /**
- *
  * @author andrzej
  */
 public interface ServerFeaturesChangedHandler {
-        
-        void serverFeaturesChanged(Collection<Identity> identities, Collection<String> features);
-        
+
+	void serverFeaturesChanged(Collection<Identity> identities, Collection<String> features);
+
 }

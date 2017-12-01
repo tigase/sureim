@@ -24,24 +24,25 @@ import com.google.gwt.place.shared.Place;
 import com.google.gwt.place.shared.PlaceTokenizer;
 
 /**
- *
  * @author andrzej
  */
-public class SettingsPlace extends Place {
-        
-        public SettingsPlace() {                
-        }
-        
-        public static class Tokenizer implements PlaceTokenizer<SettingsPlace> {
+public class SettingsPlace
+		extends Place {
 
-                public SettingsPlace getPlace(String token) {
-                        return new SettingsPlace();
-                }
+	public SettingsPlace() {
+	}
 
-                public String getToken(SettingsPlace place) {
-                        return null;
-                }
-                
-        }
-        
+	public static class Tokenizer
+			implements PlaceTokenizer<SettingsPlace> {
+
+		public SettingsPlace getPlace(String token) {
+			return new SettingsPlace();
+		}
+
+		public String getToken(SettingsPlace place) {
+			return null;
+		}
+
+	}
+
 }

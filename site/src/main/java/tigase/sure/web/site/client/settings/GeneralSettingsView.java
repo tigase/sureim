@@ -20,30 +20,28 @@
  */
 package tigase.sure.web.site.client.settings;
 
-import tigase.jaxmpp.core.client.AsyncCallback;
-import tigase.jaxmpp.core.client.SessionObject;
-import tigase.jaxmpp.core.client.XMPPException;
-
 import com.google.gwt.dom.client.Style;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.ui.*;
-
+import tigase.jaxmpp.core.client.AsyncCallback;
+import tigase.jaxmpp.core.client.SessionObject;
+import tigase.jaxmpp.core.client.XMPPException;
+import tigase.jaxmpp.core.client.exceptions.JaxmppException;
+import tigase.jaxmpp.core.client.xmpp.modules.registration.InBandRegistrationModule;
+import tigase.jaxmpp.core.client.xmpp.stanzas.Stanza;
 import tigase.sure.web.base.client.widgets.View;
 import tigase.sure.web.site.client.ClientFactory;
 
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import tigase.jaxmpp.core.client.exceptions.JaxmppException;
-import tigase.jaxmpp.core.client.xmpp.modules.registration.InBandRegistrationModule;
-import tigase.jaxmpp.core.client.xmpp.stanzas.Stanza;
-
 /**
- *
  * @author andrzej
  */
-public class GeneralSettingsView extends Composite implements View {
+public class GeneralSettingsView
+		extends Composite
+		implements View {
 
 	private final ClientFactory factory;
 	private final VerticalPanel layout;
@@ -87,6 +85,9 @@ public class GeneralSettingsView extends Composite implements View {
 		layout.add(panel);
 
 		initWidget(layout);
+	}
+
+	public void update() {
 	}
 
 	private void showChangePasswordDlg() {
@@ -145,12 +146,15 @@ public class GeneralSettingsView extends Composite implements View {
 				final Logger log = Logger.getLogger(SettingsViewImpl.class.getName());
 				try {
 					factory.jaxmpp().getModulesManager().register(new InBandRegistrationModule());
-					InBandRegistrationModule module = factory.jaxmpp().getModulesManager().getModule(InBandRegistrationModule.class);
+					InBandRegistrationModule module = factory.jaxmpp()
+							.getModulesManager()
+							.getModule(InBandRegistrationModule.class);
 
 					factory.jaxmpp().getSessionObject().setProperty(SessionObject.DOMAIN_NAME, domain);
 
-					log.log(Level.FINE, "module: " + module + ", username: " + username
-							+ ", domain: " + domain + ", p1: " + p1 + ", p2: " + p2);
+					log.log(Level.FINE,
+							"module: " + module + ", username: " + username + ", domain: " + domain + ", p1: " + p1 +
+									", p2: " + p2);
 
 					module.register(username, p1, null, null);
 
@@ -181,7 +185,7 @@ public class GeneralSettingsView extends Composite implements View {
 		label.getElement().getStyle().setFontSize(1.2, Style.Unit.EM);
 		label.getElement().getStyle().setFontWeight(Style.FontWeight.BOLD);
 		table.setWidget(0, 0, label);
-		
+
 		table.setText(1, 0, factory.i18n().accountRemovalWarning());
 		table.getFlexCellFormatter().setColSpan(1, 0, 2);
 
@@ -210,8 +214,10 @@ public class GeneralSettingsView extends Composite implements View {
 					factory.jaxmpp().getModulesManager().register(new InBandRegistrationModule());
 					factory.jaxmpp().getModule(InBandRegistrationModule.class).removeAccount(new AsyncCallback() {
 						@Override
-						public void onError(Stanza responseStanza, XMPPException.ErrorCondition error) throws JaxmppException {
-							throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+						public void onError(Stanza responseStanza, XMPPException.ErrorCondition error)
+								throws JaxmppException {
+							throw new UnsupportedOperationException(
+									"Not supported yet."); //To change body of generated methods, choose Tools | Templates.
 						}
 
 						@Override
@@ -220,7 +226,8 @@ public class GeneralSettingsView extends Composite implements View {
 
 						@Override
 						public void onTimeout() throws JaxmppException {
-							throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+							throw new UnsupportedOperationException(
+									"Not supported yet."); //To change body of generated methods, choose Tools | Templates.
 						}
 					});
 				} catch (JaxmppException ex) {
@@ -235,9 +242,6 @@ public class GeneralSettingsView extends Composite implements View {
 
 		dlg.show();
 		dlg.center();
-	}
-
-	public void update() {
 	}
 
 }

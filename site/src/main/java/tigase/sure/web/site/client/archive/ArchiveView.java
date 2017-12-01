@@ -23,9 +23,9 @@ package tigase.sure.web.site.client.archive;
 import com.google.gwt.user.client.ui.IsWidget;
 
 /**
- *
  * @author andrzej
  */
-public interface ArchiveView extends IsWidget  {
-        
+public interface ArchiveView
+		extends IsWidget {
+
 }

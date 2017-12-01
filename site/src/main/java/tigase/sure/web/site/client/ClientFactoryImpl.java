@@ -22,10 +22,6 @@ package tigase.sure.web.site.client;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.place.shared.PlaceController;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import tigase.jaxmpp.core.client.JID;
 import tigase.jaxmpp.core.client.JaxmppCore;
 import tigase.jaxmpp.core.client.SessionObject;
@@ -71,187 +67,203 @@ import tigase.sure.web.site.client.settings.SettingsViewImpl;
 import tigase.sure.web.site.client.stats.StatsView;
 import tigase.sure.web.site.client.stats.StatsViewImpl;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 /**
- *
  * @author andrzej
  */
-public class ClientFactoryImpl extends tigase.sure.web.base.client.ClientFactoryImpl implements ClientFactory {
+public class ClientFactoryImpl
+		extends tigase.sure.web.base.client.ClientFactoryImpl
+		implements ClientFactory {
 
-        private static final Logger log = Logger.getLogger("ClientFactoryImpl");
-        private final ActionBarFactory actionBarFactory;
-        private final ArchiveView archiveView;
-        private final AbstractAvatarFactory avatarFactory;
-        private final AuthView authView;
-        private final BookmarksManager bookmarksManager;
-        private final ChatView chatView;
-        private final DiscoView discoView;
-        private final PubSubPublishView pubSubPublishView;
-        private final SettingsView settingsView;
-		private final StatsView statsView;
-        private final I18n i18n = GWT.create(I18n.class);
-        private final PlaceController placeController;
-        private final ResourceBindHandler jaxmppBindListener = new ResourceBindHandler();
-		private final ManagementViewImpl managementView;
-        
-        public ClientFactoryImpl() {
-                super();
-				
-                jaxmpp().getModulesManager().register(new MessageArchivingModule());
-                jaxmpp().getModulesManager().register(new BookmarksModule());
-				try {
-					Presence.initialize(jaxmpp());
-					Roster.initialize(jaxmpp());
-				} catch (JaxmppException ex) {
-					log.log(Level.SEVERE, "could not initialize properly Jaxmpp instance", ex);
-				}
-				jaxmpp().getModulesManager().register(new MessageModule());
-				jaxmpp().getModulesManager().register(new MucModule());
-				jaxmpp().getModulesManager().register(new AdHocCommansModule());
-				jaxmpp().getModulesManager().register(new VCardModule());
-				jaxmpp().getModulesManager().register(new PubSubModule());
-				jaxmpp().getModulesManager().register(new HttpFileUploadModule());
-				
-                placeController = new PlaceController(eventBus());
-                avatarFactory = new AvatarFactory(this);
-                actionBarFactory = new ActionBarFactory(this);
-                
-                bookmarksManager = new BookmarksManager(this);
-                
-                authView = new AuthView(this);
-                chatView = new ChatViewImpl(this);
-                archiveView = new ArchiveViewImpl(this);                
-                discoView = new DiscoViewImpl(this);
-				managementView = new ManagementViewImpl(this);
-                pubSubPublishView = new PubSubPublishViewImpl(this);
-                settingsView = new SettingsViewImpl(this);
-				statsView = new StatsViewImpl(this);
-                                
-				jaxmpp().getEventBus().addHandler(ResourceBinderModule.ResourceBindErrorHandler.ResourceBindErrorEvent.class, jaxmppBindListener);
-				jaxmpp().getEventBus().addHandler(ResourceBinderModule.ResourceBindSuccessHandler.ResourceBindSuccessEvent.class, jaxmppBindListener);
-                
-                jaxmpp().getEventBus().addHandler(JaxmppCore.LoggedOutHandler.LoggedOutEvent.class, new JaxmppCore.LoggedOutHandler() {
+	private static final Logger log = Logger.getLogger("ClientFactoryImpl");
+	private final ActionBarFactory actionBarFactory;
+	private final ArchiveView archiveView;
+	private final AuthView authView;
+	private final AbstractAvatarFactory avatarFactory;
+	private final BookmarksManager bookmarksManager;
+	private final ChatView chatView;
+	private final DiscoView discoView;
+	private final I18n i18n = GWT.create(I18n.class);
+	private final ResourceBindHandler jaxmppBindListener = new ResourceBindHandler();
+	private final ManagementViewImpl managementView;
+	private final PlaceController placeController;
+	private final PubSubPublishView pubSubPublishView;
+	private final SettingsView settingsView;
+	private final StatsView statsView;
+
+	public ClientFactoryImpl() {
+		super();
+
+		jaxmpp().getModulesManager().register(new MessageArchivingModule());
+		jaxmpp().getModulesManager().register(new BookmarksModule());
+		try {
+			Presence.initialize(jaxmpp());
+			Roster.initialize(jaxmpp());
+		} catch (JaxmppException ex) {
+			log.log(Level.SEVERE, "could not initialize properly Jaxmpp instance", ex);
+		}
+		jaxmpp().getModulesManager().register(new MessageModule());
+		jaxmpp().getModulesManager().register(new MucModule());
+		jaxmpp().getModulesManager().register(new AdHocCommansModule());
+		jaxmpp().getModulesManager().register(new VCardModule());
+		jaxmpp().getModulesManager().register(new PubSubModule());
+		jaxmpp().getModulesManager().register(new HttpFileUploadModule());
+
+		placeController = new PlaceController(eventBus());
+		avatarFactory = new AvatarFactory(this);
+		actionBarFactory = new ActionBarFactory(this);
+
+		bookmarksManager = new BookmarksManager(this);
+
+		authView = new AuthView(this);
+		chatView = new ChatViewImpl(this);
+		archiveView = new ArchiveViewImpl(this);
+		discoView = new DiscoViewImpl(this);
+		managementView = new ManagementViewImpl(this);
+		pubSubPublishView = new PubSubPublishViewImpl(this);
+		settingsView = new SettingsViewImpl(this);
+		statsView = new StatsViewImpl(this);
+
+		jaxmpp().getEventBus()
+				.addHandler(ResourceBinderModule.ResourceBindErrorHandler.ResourceBindErrorEvent.class,
+							jaxmppBindListener);
+		jaxmpp().getEventBus()
+				.addHandler(ResourceBinderModule.ResourceBindSuccessHandler.ResourceBindSuccessEvent.class,
+							jaxmppBindListener);
+
+		jaxmpp().getEventBus()
+				.addHandler(JaxmppCore.LoggedOutHandler.LoggedOutEvent.class, new JaxmppCore.LoggedOutHandler() {
 					@Override
 					public void onLoggedOut(SessionObject sessionObject) {
 						if (StreamManagementModule.isResumptionEnabled(sessionObject())) {
-							Logger.getLogger(ClientFactoryImpl.class.getName()).severe("trying to resume broken connection");
+							Logger.getLogger(ClientFactoryImpl.class.getName())
+									.severe("trying to resume broken connection");
 							try {
 								jaxmpp().login();
 							} catch (JaxmppException ex) {
 								Logger.getLogger(ClientFactoryImpl.class.getName()).log(Level.SEVERE, null, ex);
 							}
-						}
-						else {
+						} else {
 							eventBus().fireEvent(new AuthEvent(null));
 						}
 					}
 				});
 
-				jaxmpp().getEventBus().addHandler(AuthModule.AuthFailedHandler.AuthFailedEvent.class, new AuthModule.AuthFailedHandler() {
+		jaxmpp().getEventBus()
+				.addHandler(AuthModule.AuthFailedHandler.AuthFailedEvent.class, new AuthModule.AuthFailedHandler() {
 
 					@Override
-					public void onAuthFailed(SessionObject sessionObject, SaslModule.SaslError error) throws JaxmppException {
+					public void onAuthFailed(SessionObject sessionObject, SaslModule.SaslError error)
+							throws JaxmppException {
 						eventBus().fireEvent(new AuthFailureEvent(error));
 					}
 				});
-        }
+	}
 
-        @Override
-        public ActionBarFactory actionBarFactory() {
-                return actionBarFactory;
-        }
-        
-        @Override
-        public ArchiveView archiveView() {
-                return archiveView;
-        }
-        
-        @Override
-        public AbstractAvatarFactory avatarFactory() {
-                return avatarFactory;
-        }
+	@Override
+	public ActionBarFactory actionBarFactory() {
+		return actionBarFactory;
+	}
 
-        @Override
-        public AuthView authView() {
-                return authView;
-        }
-        
-        @Override
-        public BookmarksManager bookmarksManager() {
-                return bookmarksManager;
-        }
-        
-        @Override
-        public ChatView chatView() {
-                return chatView;
-        }
+	@Override
+	public ArchiveView archiveView() {
+		return archiveView;
+	}
 
-        @Override
-        public DiscoView discoView() {
-                return discoView;
-        }
-        
-        public I18n i18n() {
-                return i18n;
-        }
-        
+	@Override
+	public AbstractAvatarFactory avatarFactory() {
+		return avatarFactory;
+	}
+
+	@Override
+	public AuthView authView() {
+		return authView;
+	}
+
+	@Override
+	public BookmarksManager bookmarksManager() {
+		return bookmarksManager;
+	}
+
+	@Override
+	public ChatView chatView() {
+		return chatView;
+	}
+
+	@Override
+	public DiscoView discoView() {
+		return discoView;
+	}
+
+	public I18n i18n() {
+		return i18n;
+	}
+
+	@Override
+	public ManagementView managementView() {
+		return managementView;
+	}
+
+	@Override
+	public PlaceController placeController() {
+		return placeController;
+	}
+
+	@Override
+	public PubSubPublishView pubSubPublishView() {
+		return pubSubPublishView;
+	}
+
+	@Override
+	public SettingsView settingsView() {
+		return settingsView;
+	}
+
+	@Override
+	public StatsView statsView() {
+		return statsView;
+	}
+
+	private class ResourceBindHandler
+			implements ResourceBinderModule.ResourceBindErrorHandler, ResourceBinderModule.ResourceBindSuccessHandler {
+
 		@Override
-		public ManagementView managementView() {
-			return managementView;
+		public void onResourceBindError(SessionObject sessionObject, ErrorCondition errorCondition) {
+			MessageDialog dlg = new MessageDialog(ClientFactoryImpl.this, baseI18n().error(), errorCondition.name());
+			dlg.show();
+			dlg.center();
+			eventBus().fireEvent(new AuthEvent(null));
 		}
-		
-        @Override
-        public PlaceController placeController() {
-                return placeController;
-        }
-        
-        @Override
-        public PubSubPublishView pubSubPublishView() {
-                return pubSubPublishView;
-        }
-        
-        @Override
-        public SettingsView settingsView() {
-                return settingsView;
-        }
 
 		@Override
-		public StatsView statsView() {
-				return statsView;
-		}
- 
-		private class ResourceBindHandler implements ResourceBinderModule.ResourceBindErrorHandler, 
-				ResourceBinderModule.ResourceBindSuccessHandler {
+		public void onResourceBindSuccess(SessionObject sessionObject, JID bindedJid) throws JaxmppException {
+			try {
+				eventBus().fireEvent(
+						new ServerFeaturesChangedEvent(new ArrayList<Identity>(), new ArrayList<String>()));
+				bookmarksManager().retrieve();
+				jaxmpp().getModulesManager()
+						.getModule(DiscoveryModule.class)
+						.getInfo(JID.jidInstance(bindedJid.getDomain()), new DiscoInfoAsyncCallback(null) {
 
-			@Override
-			public void onResourceBindError(SessionObject sessionObject, ErrorCondition errorCondition) {
-				MessageDialog dlg = new MessageDialog(ClientFactoryImpl.this, baseI18n().error(), errorCondition.name());
-				dlg.show();
-				dlg.center();
-				eventBus().fireEvent(new AuthEvent(null));
-			}
+							public void onError(Stanza responseStanza, ErrorCondition error) throws JaxmppException {
+								throw new UnsupportedOperationException("Not supported yet.");
+							}
 
-			@Override
-			public void onResourceBindSuccess(SessionObject sessionObject, JID bindedJid) throws JaxmppException {
-				try {
-					eventBus().fireEvent(new ServerFeaturesChangedEvent(new ArrayList<Identity>(), new ArrayList<String>()));
-					bookmarksManager().retrieve();
-					jaxmpp().getModulesManager().getModule(DiscoveryModule.class).getInfo(
-							JID.jidInstance(bindedJid.getDomain()), new DiscoInfoAsyncCallback(null) {
+							public void onTimeout() throws JaxmppException {
+								throw new UnsupportedOperationException("Not supported yet.");
+							}
 
-								@Override
-								protected void onInfoReceived(String node, Collection<Identity> identities, Collection<String> features) throws XMLException {
-									eventBus().fireEvent(new ServerFeaturesChangedEvent(identities, features));
-								}
+							@Override
+							protected void onInfoReceived(String node, Collection<Identity> identities,
+														  Collection<String> features) throws XMLException {
+								eventBus().fireEvent(new ServerFeaturesChangedEvent(identities, features));
+							}
 
-								public void onError(Stanza responseStanza, ErrorCondition error) throws JaxmppException {
-									throw new UnsupportedOperationException("Not supported yet.");
-								}
-
-								public void onTimeout() throws JaxmppException {
-									throw new UnsupportedOperationException("Not supported yet.");
-								}
-
-							});
+						});
 
 //                                        if (be.getError() != null) {
 //                                                Cookies.setCookie("username", 
@@ -261,11 +273,11 @@ public class ClientFactoryImpl extends tigase.sure.web.base.client.ClientFactory
 //                                                        jaxmpp().getProperties().getUserProperty(SessionObject.PASSWORD).toString(),
 //                                                        new Date(new Date().getTime() + 24*60*60*1000*7));
 //                                        }
-					eventBus().fireEvent(new AuthEvent(bindedJid));
-				} catch (Exception ex) {
-					log.log(Level.WARNING, "exception firing auth event", ex);
-				}
+				eventBus().fireEvent(new AuthEvent(bindedJid));
+			} catch (Exception ex) {
+				log.log(Level.WARNING, "exception firing auth event", ex);
 			}
-			
 		}
+
+	}
 }

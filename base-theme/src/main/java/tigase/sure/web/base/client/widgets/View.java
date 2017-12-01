@@ -23,11 +23,11 @@ package tigase.sure.web.base.client.widgets;
 import com.google.gwt.user.client.ui.IsWidget;
 
 /**
- *
  * @author andrzej
  */
-public interface View extends IsWidget{
+public interface View
+		extends IsWidget {
 
-        void update();
-        
+	void update();
+
 }

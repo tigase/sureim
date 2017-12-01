@@ -23,18 +23,19 @@ package tigase.sure.web.base.client.widgets.file;
 import com.google.gwt.core.client.JavaScriptObject;
 
 /**
- *
  * @author andrzej
  */
-public class FileList extends JavaScriptObject {
+public class FileList
+		extends JavaScriptObject {
 
-		protected FileList() {}
-	
-        public final native int getLength() /*-{
+	protected FileList() {
+	}
+
+	public final native int getLength() /*-{
                 return this.length;
         }-*/;
-        
-        public final native File getItem(int index) /*-{
+
+	public final native File getItem(int index) /*-{
                 return this[index];
         }-*/;
 }

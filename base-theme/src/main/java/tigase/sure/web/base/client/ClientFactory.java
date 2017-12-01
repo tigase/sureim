@@ -25,20 +25,19 @@ import tigase.jaxmpp.core.client.SessionObject;
 import tigase.jaxmpp.gwt.client.Jaxmpp;
 
 /**
- *
  * @author andrzej
  */
 public interface ClientFactory {
 
-        EventBus eventBus();
-        
-        Theme theme();
-        
-        Jaxmpp jaxmpp();
-		
-		SessionObject sessionObject();
-        
-        AbstractAvatarFactory avatarFactory();
+	EventBus eventBus();
 
-        BaseI18n baseI18n();
+	Theme theme();
+
+	Jaxmpp jaxmpp();
+
+	SessionObject sessionObject();
+
+	AbstractAvatarFactory avatarFactory();
+
+	BaseI18n baseI18n();
 }

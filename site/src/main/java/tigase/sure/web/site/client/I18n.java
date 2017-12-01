@@ -21,13 +21,12 @@
 package tigase.sure.web.site.client;
 
 import com.google.gwt.i18n.client.Constants;
-import com.google.gwt.safehtml.shared.SafeHtml;
 
 /**
- *
  * @author andrzej
  */
-public interface I18n extends Constants {
+public interface I18n
+		extends Constants {
 
 	@DefaultStringValue("Logout")
 	String logout();
@@ -172,13 +171,13 @@ public interface I18n extends Constants {
 
 	@DefaultStringValue("Account")
 	String account();
-	
+
 	@DefaultStringValue("Remove account")
 	String removeAccount();
-	
+
 	@DefaultStringValue("Are you sure you want to delete your XMPP account?")
 	String accountRemovalWarning();
-	
+
 	// ---- Personal information
 	@DefaultStringValue("Personal information")
 	String personalInformation();
@@ -223,7 +222,7 @@ public interface I18n extends Constants {
 
 	@DefaultStringValue("Join")
 	String join();
-	
+
 	// -- Registration dialog
 	@DefaultStringValue("Other...")
 	String enterCustomValue();
@@ -233,5 +232,5 @@ public interface I18n extends Constants {
 
 	@DefaultStringValue("Share")
 	String share();
-	
+
 }

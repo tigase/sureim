@@ -20,27 +20,64 @@
  */
 package tigase.sure.web.site.client.stats;
 
-import java.util.HashMap;
-import java.util.Map;
 import tigase.jaxmpp.core.client.xml.XMLException;
 import tigase.jaxmpp.core.client.xmpp.forms.Field;
 import tigase.jaxmpp.core.client.xmpp.forms.JabberDataElement;
 
+import java.util.HashMap;
+import java.util.Map;
+
 /**
- *
  * @author andrzej
  */
 public class StatsItem {
 
+	private final String prefix;
+	private final Map<String, Item> values = new HashMap<String, Item>();
+	private boolean openUserConnections = false;
+
+	private static Integer getValue(JabberDataElement data, String prefix, String field) throws XMLException {
+		Field f = data.getField(prefix + field);
+		if (f == null) {
+			return null;
+		}
+		return Integer.parseInt("0" + f.getFieldValue().toString());
+	}
+
+	public StatsItem(String prefix) {
+		this.prefix = prefix;
+	}
+
+	public void setValues(String clusterNode, JabberDataElement data) throws XMLException {
+		Item item = new Item(data, prefix);
+		if (item.openUserConnections != null) {
+			openUserConnections = true;
+		}
+		values.put(clusterNode, item);
+	}
+
+	public Item getValues(String clusterNode) {
+		Item item = values.get(clusterNode);
+		if (item == null) {
+			item = new Item();
+		}
+		return item;
+	}
+
+	public boolean hasOpenUserConnections() {
+		return openUserConnections;
+	}
+
 	public class Item {
+
 		public final Integer lastMinutePackets;
-		public final Integer totalInQueuesWait;
-		public final Integer totalOutQueuesWait;
+		public final Integer maxUserConnections;
+		public final Integer maxUserSessions;
 		// sess-man only
 		public final Integer openUserConnections;
-		public final Integer maxUserConnections;
 		public final Integer openUserSessions;
-		public final Integer maxUserSessions;
+		public final Integer totalInQueuesWait;
+		public final Integer totalOutQueuesWait;
 
 		public Item(JabberDataElement data, String prefix) throws XMLException {
 			lastMinutePackets = getValue(data, prefix, "/Last minute packets");
@@ -51,7 +88,7 @@ public class StatsItem {
 			openUserSessions = getValue(data, prefix, "/Open user sessions");
 			maxUserSessions = getValue(data, prefix, "/Maximum user sessions");
 		}
-		
+
 		public Item() {
 			lastMinutePackets = -1;
 			totalInQueuesWait = -1;
@@ -59,42 +96,8 @@ public class StatsItem {
 			openUserConnections = -1;
 			maxUserConnections = -1;
 			openUserSessions = -1;
-			maxUserSessions = -1;			
+			maxUserSessions = -1;
 		}
 	}
-	
-	private final Map<String,Item> values = new HashMap<String,Item>();
-	private final String prefix;
-	
-	private boolean openUserConnections = false;
-	
-	public StatsItem(String prefix) {
-		this.prefix = prefix;
-	}
-	
-	public void setValues(String clusterNode, JabberDataElement data) throws XMLException {
-		Item item = new Item(data, prefix);
-		if (item.openUserConnections != null)
-			openUserConnections = true;
-		values.put(clusterNode, item);
-	}
-	
-	public Item getValues(String clusterNode) {
-		Item item = values.get(clusterNode);
-		if (item == null)
-			item = new Item();
-		return item;
-	}
-	
-	public boolean hasOpenUserConnections() {
-		return openUserConnections;
-	}
-	
-	private static Integer getValue(JabberDataElement data, String prefix, String field) throws XMLException {
-		Field f =  data.getField(prefix + field);
-		if (f == null) 
-			return null;
-		return Integer.parseInt("0" + f.getFieldValue().toString());
-	}
-	
+
 }

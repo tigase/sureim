@@ -23,10 +23,9 @@ package tigase.sure.web.site.client.chat;
 import com.google.gwt.user.client.ui.IsWidget;
 
 /**
- *
  * @author andrzej
  */
-public interface ChatView extends IsWidget {
-        
-        
+public interface ChatView
+		extends IsWidget {
+
 }

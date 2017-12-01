@@ -20,19 +20,18 @@
  */
 package tigase.sure.web.base.client;
 
-import com.google.gwt.resources.client.CssResource;
 import tigase.sure.web.base.client.widgets.VerticalTabLayoutPanel.VerticalTabLayoutStyle;
 
 /**
- *
  * @author andrzej
  */
-public interface Theme extends Icons {
-        
-        @Source("style.css")
-        Style style();
+public interface Theme
+		extends Icons {
 
-        @Source("verticaltabpanel.css")
-        VerticalTabLayoutStyle verticalTabPanelStyles();
-        
+	@Source("style.css")
+	Style style();
+
+	@Source("verticaltabpanel.css")
+	VerticalTabLayoutStyle verticalTabPanelStyles();
+
 }

@@ -20,15 +20,15 @@
  */
 package tigase.sure.web.site.client.bookmarks;
 
-import java.util.List;
 import tigase.jaxmpp.core.client.xml.Element;
 
+import java.util.List;
+
 /**
- *
  * @author andrzej
  */
 public interface BookmarksHandler {
 
-        void bookmarksChanged(List<Element> bookmarks);
-        
+	void bookmarksChanged(List<Element> bookmarks);
+
 }

@@ -21,24 +21,23 @@
 
 package tigase.sure.web.site.client.archive;
 
-import com.google.gwt.core.client.GWT;
 import com.google.gwt.i18n.client.DateTimeFormat;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.cellview.client.CellTable;
-import com.google.gwt.user.cellview.client.RowStyles;
 import com.google.gwt.user.cellview.client.SimplePager;
 import com.google.gwt.user.cellview.client.TextColumn;
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.ui.AbsolutePanel;
 import com.google.gwt.user.client.ui.Composite;
-import com.google.gwt.user.client.ui.ResizeComposite;
 import com.google.gwt.user.client.ui.VerticalPanel;
-import java.util.Date;
 import tigase.jaxmpp.core.client.xmpp.modules.xep0136.ChatItem;
 import tigase.sure.web.site.client.ClientFactory;
 import tigase.sure.web.site.client.I18n;
 
-public class Messages extends Composite {
+import java.util.Date;
+
+public class Messages
+		extends Composite {
 
 //    interface TableResources extends CellTable.Resources {
 //        @Source({CellTable.Style.DEFAULT_CSS,"Messages.css"})
@@ -53,31 +52,28 @@ public class Messages extends Composite {
 //        String to();        
 //    }
 
-//    private final static TableResources resources = GWT.create(TableResources.class);
-    private final DateTimeFormat tf1;
-
-    @UiField(provided=true)
-    private final CellTable<ChatItem> table;
-    private final SimplePager pager;
-    //private MessagesDataProvider provider;
-
-    private final ClientFactory factory;
-    private final I18n i18n;
-    private final Controller controller;
-
-    private Date date = null;
+	private final Controller controller;
+	private final ClientFactory factory;
+	private final I18n i18n;
+	//private MessagesDataProvider provider;
+	private final SimplePager pager;
+	@UiField(provided = true)
+	private final CellTable<ChatItem> table;
+	//    private final static TableResources resources = GWT.create(TableResources.class);
+	private final DateTimeFormat tf1;
+	private Date date = null;
 
 //    GlassPanel glass = null;
-	
-    public Messages(ClientFactory factory_, Controller controller) {
-        this.factory = factory_;
-        this.i18n = factory_.i18n();
-        tf1 = DateTimeFormat.getFormat("HH:mm:ss");
-        this.controller = controller;
+
+	public Messages(ClientFactory factory_, Controller controller) {
+		this.factory = factory_;
+		this.i18n = factory_.i18n();
+		tf1 = DateTimeFormat.getFormat("HH:mm:ss");
+		this.controller = controller;
 //	glass = new GlassPanelProgressBar();
 
-        table = new CellTable<ChatItem>(50);//new CellTable<Item>(50, resources);
-        table.setLoadingIndicator(null);
+		table = new CellTable<ChatItem>(50);//new CellTable<Item>(50, resources);
+		table.setLoadingIndicator(null);
 //        table.setRowStyles(new RowStyles<Item>() {
 //            @Override
 //            public String getStyleNames(Item row, int rowIndex) {
@@ -85,69 +81,69 @@ public class Messages extends Composite {
 //            }
 //        });
 
-        TextColumn<ChatItem> dateColumn = new TextColumn<ChatItem>() {
-            @Override
-            public String getValue(ChatItem object) {
-                return tf1.format(object.getDate());
-            }
-        };
-        table.addColumn(dateColumn, i18n.time());
+		TextColumn<ChatItem> dateColumn = new TextColumn<ChatItem>() {
+			@Override
+			public String getValue(ChatItem object) {
+				return tf1.format(object.getDate());
+			}
+		};
+		table.addColumn(dateColumn, i18n.time());
 //        table.addColumnStyleName(0, resources.cellTableStyle().time());
 
-        TextColumn<ChatItem> directionColumn = new TextColumn<ChatItem>() {
-            @Override
-            public String getValue(ChatItem object) {
-                return (object.getType() == ChatItem.Type.FROM) ? i18n.from() : i18n.to();
-            }
-        };
-        table.addColumn(directionColumn, i18n.from());
+		TextColumn<ChatItem> directionColumn = new TextColumn<ChatItem>() {
+			@Override
+			public String getValue(ChatItem object) {
+				return (object.getType() == ChatItem.Type.FROM) ? i18n.from() : i18n.to();
+			}
+		};
+		table.addColumn(directionColumn, i18n.from());
 //        table.addColumnStyleName(1, resources.cellTableStyle().direction());
 
-        TextColumn<ChatItem> bodyColumn = new TextColumn<ChatItem>() {
-            @Override
-            public String getValue(ChatItem object) {
-                return object.getBody();
-            }
-        };
-        table.addColumn(bodyColumn, i18n.message());
+		TextColumn<ChatItem> bodyColumn = new TextColumn<ChatItem>() {
+			@Override
+			public String getValue(ChatItem object) {
+				return object.getBody();
+			}
+		};
+		table.addColumn(bodyColumn, i18n.message());
 
-        table.setWidth("100%");
-        controller.getMessageProvider().addDataDisplay(table);
+		table.setWidth("100%");
+		controller.getMessageProvider().addDataDisplay(table);
 
-        pager = new SimplePager();
-        pager.setDisplay(table);
+		pager = new SimplePager();
+		pager.setDisplay(table);
 
-        VerticalPanel vbox = new VerticalPanel();
-        vbox.add(table);
-        vbox.add(pager);
-        vbox.setWidth("100%");
-        vbox.setHeight("100%");
+		VerticalPanel vbox = new VerticalPanel();
+		vbox.add(table);
+		vbox.add(pager);
+		vbox.setWidth("100%");
+		vbox.setHeight("100%");
 
-        controller.setPageSize(table.getPageSize());
+		controller.setPageSize(table.getPageSize());
 
-        table.setHeight("100%");
+		table.setHeight("100%");
 
-        AbsolutePanel panel = new AbsolutePanel();
-        panel.setWidth("100%");
-        //panel.addStyleName(aresources.getCss().messagesClass());
-        panel.add(vbox);
-        initWidget(panel);
-	DOM.setElementAttribute(this.getElement(), "id", "chats");
-    }
-	
+		AbsolutePanel panel = new AbsolutePanel();
+		panel.setWidth("100%");
+		//panel.addStyleName(aresources.getCss().messagesClass());
+		panel.add(vbox);
+		initWidget(panel);
+		DOM.setElementAttribute(this.getElement(), "id", "chats");
+	}
 
-    //@Override
-    public void onResize() {
-        int height = this.getParent().getOffsetHeight();
-        int rows = ((height - 60) / 20);
-        if (rows < 0)
-            rows = 15;
-        table.setPageSize(rows);
-    }
+	//@Override
+	public void onResize() {
+		int height = this.getParent().getOffsetHeight();
+		int rows = ((height - 60) / 20);
+		if (rows < 0) {
+			rows = 15;
+		}
+		table.setPageSize(rows);
+	}
 
-    @Override
-    public void onAttach() {
-        super.onAttach();
-        this.onResize();
-    }
+	@Override
+	public void onAttach() {
+		super.onAttach();
+		this.onResize();
+	}
 }

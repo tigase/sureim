@@ -21,36 +21,18 @@
 package tigase.sure.web.site.client.stats;
 
 import com.google.gwt.core.client.JsArrayInteger;
-import com.google.gwt.dom.client.Document;
-import com.google.gwt.dom.client.Element;
-import com.google.gwt.dom.client.Style;
+import com.google.gwt.dom.client.*;
 import com.google.gwt.dom.client.Style.Display;
-import com.google.gwt.dom.client.TableCellElement;
-import com.google.gwt.dom.client.TableElement;
-import com.google.gwt.dom.client.TableRowElement;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.i18n.shared.DateTimeFormat;
 import com.google.gwt.user.cellview.client.CellList;
-import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.ui.ResizeComposite;
 import com.google.gwt.user.client.ui.ScrollPanel;
-import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.view.client.ListDataProvider;
 import com.google.gwt.view.client.SelectionChangeEvent;
 import com.google.gwt.view.client.SingleSelectionModel;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import static java.util.Collections.list;
-import java.util.Comparator;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import tigase.jaxmpp.core.client.BareJID;
 import tigase.jaxmpp.core.client.JID;
 import tigase.jaxmpp.core.client.XMPPException;
@@ -73,63 +55,62 @@ import tigase.sure.web.site.client.disco.DiscoItemCell;
 import tigase.sure.web.site.client.events.ServerFeaturesChangedEvent;
 import tigase.sure.web.site.client.events.ServerFeaturesChangedHandler;
 
+import java.util.*;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 /**
- *
  * @author andrzej
  */
-public class StatsViewImpl extends ResizeComposite implements StatsView {
-
-	private final ClientFactory factory;
+public class StatsViewImpl
+		extends ResizeComposite
+		implements StatsView {
 
 	private final DiscoItemsCallback discoItemsCallback = new DiscoItemsCallback();
+	private final ClientFactory factory;
 	private final DiscoItemsNamesComparator itemsNamesComparator = new DiscoItemsNamesComparator();
-
-	private final ListDataProvider<DiscoItem> provider;
-	private final CellList<DiscoItem> list;
 	private final tigase.sure.web.base.client.widgets.FlowPanel layout;
-	private final StatsStore store = new StatsStore();
-	private ChartJS packetsPerSecondGraph;
-	private ChartJS totalQueuesWaitGraph;
-	private Timer timer;
-	private ChartJS userConnectionsGraph;
-	private ChartJS userSessionsGraph;
-
-	private List<String> clusterNodes = new ArrayList<String>();
-	private List<String> colors = new ArrayList<String>();
-
+	private final CellList<DiscoItem> list;
+	private final ListDataProvider<DiscoItem> provider;
 	private final ServerFeaturesChangedHandler serverFeaturesChangedHandler = new ServerFeaturesChangedHandler() {
 
 		@Override
-		public void serverFeaturesChanged(Collection<DiscoveryModule.Identity> identities, Collection<String> features) {
+		public void serverFeaturesChanged(Collection<DiscoveryModule.Identity> identities,
+										  Collection<String> features) {
 			BareJID jid = factory.sessionObject().getUserBareJid();
 			boolean hidden = true;
 
 			if (jid != null) {
 				DiscoveryModule module = factory.jaxmpp().getModulesManager().getModule(DiscoveryModule.class);
 				try {
-					module.getItems(JID.jidInstance(jid.getDomain()), null, new DiscoveryModule.DiscoItemsAsyncCallback() {
+					module.getItems(JID.jidInstance(jid.getDomain()), null,
+									new DiscoveryModule.DiscoItemsAsyncCallback() {
 
-						@Override
-						public void onInfoReceived(String attribute, ArrayList<DiscoveryModule.Item> items) throws XMLException {
-							boolean hidden = true;
-							if (items != null) {
-								for (DiscoveryModule.Item item : items) {
-									if (item.getJid() != null && "stats".equals(item.getJid().getLocalpart())) {
-										hidden = false;
-									}
-								}
-							}
-							factory.actionBarFactory().setVisible("stats", !hidden);
-						}
+										@Override
+										public void onInfoReceived(String attribute,
+																   ArrayList<DiscoveryModule.Item> items)
+												throws XMLException {
+											boolean hidden = true;
+											if (items != null) {
+												for (DiscoveryModule.Item item : items) {
+													if (item.getJid() != null &&
+															"stats".equals(item.getJid().getLocalpart())) {
+														hidden = false;
+													}
+												}
+											}
+											factory.actionBarFactory().setVisible("stats", !hidden);
+										}
 
-						@Override
-						public void onError(Stanza responseStanza, XMPPException.ErrorCondition error) throws JaxmppException {
-						}
+										@Override
+										public void onError(Stanza responseStanza, XMPPException.ErrorCondition error)
+												throws JaxmppException {
+										}
 
-						@Override
-						public void onTimeout() throws JaxmppException {
-						}
-					});
+										@Override
+										public void onTimeout() throws JaxmppException {
+										}
+									});
 				} catch (XMLException ex) {
 					Logger.getLogger(StatsViewImpl.class.getName()).log(Level.SEVERE, null, ex);
 				} catch (JaxmppException ex) {
@@ -140,9 +121,17 @@ public class StatsViewImpl extends ResizeComposite implements StatsView {
 		}
 
 	};
-	private NodesStatsGrid nodesStatsGrid;
+	private final StatsStore store = new StatsStore();
+	private List<String> clusterNodes = new ArrayList<String>();
+	private List<String> colors = new ArrayList<String>();
 	private ChartJSX nodesConnectionsGraph;
 	private ChartJSX nodesPacketPerMinuteGraph;
+	private NodesStatsGrid nodesStatsGrid;
+	private ChartJS packetsPerSecondGraph;
+	private Timer timer;
+	private ChartJS totalQueuesWaitGraph;
+	private ChartJS userConnectionsGraph;
+	private ChartJS userSessionsGraph;
 
 	public StatsViewImpl(ClientFactory factory_) {
 		factory = factory_;
@@ -171,7 +160,7 @@ public class StatsViewImpl extends ResizeComposite implements StatsView {
 		appView.setLeftSidebar(new ScrollPanel(list), 25);
 
 		layout = new tigase.sure.web.base.client.widgets.FlowPanel();
-			
+
 		layout.getElement().getStyle().setWidth(100, Style.Unit.PCT);
 		layout.getElement().getStyle().setOverflowY(Style.Overflow.AUTO);
 		appView.setCenter(layout);
@@ -188,13 +177,81 @@ public class StatsViewImpl extends ResizeComposite implements StatsView {
 		initWidget(appView);
 	}
 
+	@Override
+	public void refresh() {
+		final JID jid = JID.jidInstance("stats", factory.jaxmpp().getSessionObject().getUserBareJid().getDomain());
+		final boolean loadMainStats = provider.getList().isEmpty();
+		try {
+			factory.jaxmpp()
+					.getModule(AdHocCommansModule.class)
+					.execute(JID.jidInstance("cl-comp", factory.sessionObject().getUserBareJid().getDomain(), null),
+							 "cluster-nodes-list", Action.execute, null,
+							 new AdHocCommansModule.AdHocCommansAsyncCallback() {
+
+								 @Override
+								 public void onError(Stanza responseStanza, XMPPException.ErrorCondition error)
+										 throws JaxmppException {
+									 // retrieval of list of cluster nodes failed, let's assume this is not clustered installation
+									 clusterNodes.clear();
+									 clusterNodes.add(factory.sessionObject().getUserBareJid().getDomain());
+									 finished();
+								 }
+
+								 @Override
+								 public void onTimeout() throws JaxmppException {
+									 // retrieval of list of cluster nodes failed, let's assume this is not clustered installation
+									 clusterNodes.clear();
+									 clusterNodes.add(factory.sessionObject().getUserBareJid().getDomain());
+									 finished();
+								 }
+
+								 @Override
+								 protected void onResponseReceived(String sessionid, String node, State status,
+																   JabberDataElement data) throws JaxmppException {
+									 try {
+										 clusterNodes.clear();
+										 String[] nodesStr = ((TextMultiField) data.getField(
+												 "Cluster nodes:")).getFieldValue();
+										 for (String nodeStr : nodesStr) {
+											 clusterNodes.add(nodeStr);
+										 }
+										 Collections.sort(clusterNodes);
+										 finished();
+									 } catch (Throwable ex) {
+										 Logger.getLogger(StatsViewImpl.class.getName()).log(Level.SEVERE, null, ex);
+									 }
+								 }
+
+								 private void finished() {
+									 refreshColors();
+									 initGraphs();
+									 if (loadMainStats) {
+										 retrieveStats(jid, "stats");
+									 }
+								 }
+							 });
+		} catch (JaxmppException ex) {
+			Logger.getLogger(StatsViewImpl.class.getName()).log(Level.SEVERE, null, ex);
+		}
+
+		DiscoveryModule module = factory.jaxmpp().getModulesManager().getModule(DiscoveryModule.class);
+		try {
+			module.getItems(jid, "stats", discoItemsCallback);
+		} catch (XMLException ex) {
+			Logger.getLogger(StatsViewImpl.class.getName()).log(Level.SEVERE, null, ex);
+		} catch (JaxmppException ex) {
+			Logger.getLogger(StatsViewImpl.class.getName()).log(Level.SEVERE, null, ex);
+		}
+	}
+
 	private void refreshColors() {
 		colors.clear();
 		int x = (int) Math.ceil(Math.sqrt((double) clusterNodes.size() + 1));
 		for (int i = 1; i <= x; i++) {
 			for (int j = 1; j <= x; j++) {
 				for (int k = 1; k <= x; k++) {
-					colors.add("" + ((int) Math.floor(192 / i)) + "," + ((int) Math.floor(192 / j)) + "," + ((int) Math.floor(192 / k)));
+					colors.add("" + ((int) Math.floor(192 / i)) + "," + ((int) Math.floor(192 / j)) + "," +
+									   ((int) Math.floor(192 / k)));
 				}
 			}
 		}
@@ -246,10 +303,7 @@ public class StatsViewImpl extends ResizeComposite implements StatsView {
 			for (int i = 0; i < store.getMaxRecords(); i++) {
 				((List) data.get("labels")).add(" ");
 			}
-			nodesConnectionsGraph = new ChartJSX(data, new String[]{
-				"c2s/Open connections",
-				"s2s/Open connections"
-			});
+			nodesConnectionsGraph = new ChartJSX(data, new String[]{"c2s/Open connections", "s2s/Open connections"});
 			nodesConnectionsGraph.setPixelWidth(600);
 			nodesConnectionsGraph.setPixelHeight(300);
 			layout.add(nodesConnectionsGraph);
@@ -277,9 +331,7 @@ public class StatsViewImpl extends ResizeComposite implements StatsView {
 			for (int i = 0; i < store.getMaxRecords(); i++) {
 				((List) data.get("labels")).add(" ");
 			}
-			nodesPacketPerMinuteGraph = new ChartJSX(data, new String[]{
-				"message-router/Last minute packets"
-			});
+			nodesPacketPerMinuteGraph = new ChartJSX(data, new String[]{"message-router/Last minute packets"});
 			nodesPacketPerMinuteGraph.setPixelWidth(600);
 			nodesPacketPerMinuteGraph.setPixelHeight(300);
 			layout.add(nodesPacketPerMinuteGraph);
@@ -311,7 +363,7 @@ public class StatsViewImpl extends ResizeComposite implements StatsView {
 			packetsPerSecondGraph.setPixelWidth(600);
 			packetsPerSecondGraph.setPixelHeight(300);
 			layout.add(packetsPerSecondGraph);
-			//packetsPerSecondGraph = ChartJS.createLineChart("packetsPerSecondGraph", data);	
+			//packetsPerSecondGraph = ChartJS.createLineChart("packetsPerSecondGraph", data);
 			//packetsPerSecondGraph.addToElement(layout.getElement());
 		}
 		if (totalQueuesWaitGraph == null) {
@@ -448,69 +500,8 @@ public class StatsViewImpl extends ResizeComposite implements StatsView {
 			userSessionsGraph.setPixelHeight(300);
 			layout.add(userSessionsGraph);
 		}
-		for (int i=0; i<layout.getWidgetCount(); i++) {
+		for (int i = 0; i < layout.getWidgetCount(); i++) {
 			layout.getWidget(i).getElement().getStyle().setFloat(Style.Float.LEFT);
-		}
-	}
-
-	@Override
-	public void refresh() {
-		final JID jid = JID.jidInstance("stats", factory.jaxmpp().getSessionObject().getUserBareJid().getDomain());
-		final boolean loadMainStats = provider.getList().isEmpty();
-		try {
-			factory.jaxmpp().getModule(AdHocCommansModule.class).execute(JID.jidInstance("cl-comp", factory.sessionObject().getUserBareJid().getDomain(), null),
-					"cluster-nodes-list", Action.execute, null, new AdHocCommansModule.AdHocCommansAsyncCallback() {
-
-						@Override
-						protected void onResponseReceived(String sessionid, String node, State status, JabberDataElement data) throws JaxmppException {
-							try {
-								clusterNodes.clear();
-								String[] nodesStr = ((TextMultiField) data.getField("Cluster nodes:")).getFieldValue();
-								for (String nodeStr : nodesStr) {
-									clusterNodes.add(nodeStr);
-								}
-								Collections.sort(clusterNodes);
-								finished();
-							} catch (Throwable ex) {
-								Logger.getLogger(StatsViewImpl.class.getName()).log(Level.SEVERE, null, ex);
-							}
-						}
-
-						@Override
-						public void onError(Stanza responseStanza, XMPPException.ErrorCondition error) throws JaxmppException {
-							// retrieval of list of cluster nodes failed, let's assume this is not clustered installation
-							clusterNodes.clear();
-							clusterNodes.add(factory.sessionObject().getUserBareJid().getDomain());
-							finished();
-						}
-
-						@Override
-						public void onTimeout() throws JaxmppException {
-							// retrieval of list of cluster nodes failed, let's assume this is not clustered installation
-							clusterNodes.clear();
-							clusterNodes.add(factory.sessionObject().getUserBareJid().getDomain());
-							finished();
-						}
-
-						private void finished() {
-							refreshColors();
-							initGraphs();
-							if (loadMainStats) {
-								retrieveStats(jid, "stats");
-							}
-						}
-					});
-		} catch (JaxmppException ex) {
-			Logger.getLogger(StatsViewImpl.class.getName()).log(Level.SEVERE, null, ex);
-		}
-
-		DiscoveryModule module = factory.jaxmpp().getModulesManager().getModule(DiscoveryModule.class);
-		try {
-			module.getItems(jid, "stats", discoItemsCallback);
-		} catch (XMLException ex) {
-			Logger.getLogger(StatsViewImpl.class.getName()).log(Level.SEVERE, null, ex);
-		} catch (JaxmppException ex) {
-			Logger.getLogger(StatsViewImpl.class.getName()).log(Level.SEVERE, null, ex);
 		}
 	}
 
@@ -539,46 +530,51 @@ public class StatsViewImpl extends ResizeComposite implements StatsView {
 					return;
 				}
 				final Counter counter = new Counter(clusterNodes.size());
-				AdHocCommansModule adHocCommands = factory.jaxmpp().getModulesManager().getModule(AdHocCommansModule.class);
+				AdHocCommansModule adHocCommands = factory.jaxmpp()
+						.getModulesManager()
+						.getModule(AdHocCommansModule.class);
 				try {
 					JabberDataElement data = new JabberDataElement(XDataType.submit);
 					data.addListSingleField("Stats level", "FINEST");
 					// data should contain info about level of stats - FINEST ??
 					for (final String clusterNode : clusterNodes) {
-						adHocCommands.execute(JID.jidInstance(jid.getLocalpart(), clusterNode), node, Action.execute, data, new AdHocCommansModule.AdHocCommansAsyncCallback() {
+						adHocCommands.execute(JID.jidInstance(jid.getLocalpart(), clusterNode), node, Action.execute,
+											  data, new AdHocCommansModule.AdHocCommansAsyncCallback() {
 
-							@Override
-							protected void onResponseReceived(String sessionid, String node, State status, JabberDataElement data) throws JaxmppException {
-								nodesStatsGrid.update(clusterNode, data);
-								nodesConnectionsGraph.addData(clusterNode, data);
-								nodesPacketPerMinuteGraph.addData(clusterNode, data);
-								finished();
-							}
+									@Override
+									public void onError(Stanza responseStanza, XMPPException.ErrorCondition error)
+											throws JaxmppException {
+										finished();
+									}
 
-							@Override
-							public void onError(Stanza responseStanza, XMPPException.ErrorCondition error) throws JaxmppException {
-								finished();
-							}
+									@Override
+									public void onTimeout() throws JaxmppException {
+										finished();
+									}
 
-							@Override
-							public void onTimeout() throws JaxmppException {
-								finished();
-							}
+									@Override
+									protected void onResponseReceived(String sessionid, String node, State status,
+																	  JabberDataElement data) throws JaxmppException {
+										nodesStatsGrid.update(clusterNode, data);
+										nodesConnectionsGraph.addData(clusterNode, data);
+										nodesPacketPerMinuteGraph.addData(clusterNode, data);
+										finished();
+									}
 
-							protected void finished() {
-								if (counter.dec() > 0) {
-									return;
-								}
-								nodesStatsGrid.refresh();
-								try {
-									nodesConnectionsGraph.updateChart();
-									nodesPacketPerMinuteGraph.updateChart();
-								} catch (XMLException ex) {
-									Logger.getLogger(StatsViewImpl.class.getName()).log(Level.SEVERE, null, ex);
-								}
-							}
+									protected void finished() {
+										if (counter.dec() > 0) {
+											return;
+										}
+										nodesStatsGrid.refresh();
+										try {
+											nodesConnectionsGraph.updateChart();
+											nodesPacketPerMinuteGraph.updateChart();
+										} catch (XMLException ex) {
+											Logger.getLogger(StatsViewImpl.class.getName()).log(Level.SEVERE, null, ex);
+										}
+									}
 
-						});
+								});
 					}
 				} catch (JaxmppException ex) {
 					Logger.getLogger(CommandsWidget.class.getName()).log(Level.SEVERE, null, ex);
@@ -614,39 +610,44 @@ public class StatsViewImpl extends ResizeComposite implements StatsView {
 				}
 				final Counter counter = new Counter(clusterNodes.size());
 				final StatsItem item = new StatsItem(node.replace("stats/", ""));
-				AdHocCommansModule adHocCommands = factory.jaxmpp().getModulesManager().getModule(AdHocCommansModule.class);
+				AdHocCommansModule adHocCommands = factory.jaxmpp()
+						.getModulesManager()
+						.getModule(AdHocCommansModule.class);
 				try {
 					JabberDataElement data = new JabberDataElement(XDataType.submit);
 					data.addListSingleField("Stats level", "FINEST");
 					// data should contain info about level of stats - FINEST ??
 					for (final String clusterNode : clusterNodes) {
-						adHocCommands.execute(JID.jidInstance(jid.getLocalpart(), clusterNode), node, Action.execute, data, new AdHocCommansModule.AdHocCommansAsyncCallback() {
+						adHocCommands.execute(JID.jidInstance(jid.getLocalpart(), clusterNode), node, Action.execute,
+											  data, new AdHocCommansModule.AdHocCommansAsyncCallback() {
 
-							@Override
-							protected void onResponseReceived(String sessionid, String node, State status, JabberDataElement data) throws JaxmppException {
-								item.setValues(clusterNode, data);
-								finished();
-							}
+									@Override
+									public void onError(Stanza responseStanza, XMPPException.ErrorCondition error)
+											throws JaxmppException {
+										finished();
+									}
 
-							@Override
-							public void onError(Stanza responseStanza, XMPPException.ErrorCondition error) throws JaxmppException {
-								finished();
-							}
+									@Override
+									public void onTimeout() throws JaxmppException {
+										finished();
+									}
 
-							@Override
-							public void onTimeout() throws JaxmppException {
-								finished();
-							}
+									@Override
+									protected void onResponseReceived(String sessionid, String node, State status,
+																	  JabberDataElement data) throws JaxmppException {
+										item.setValues(clusterNode, data);
+										finished();
+									}
 
-							protected void finished() {
-								if (counter.dec() > 0) {
-									return;
-								}
-								boolean overflow = store.add(item);
-								refreshGraphs(item, true);
-							}
+									protected void finished() {
+										if (counter.dec() > 0) {
+											return;
+										}
+										boolean overflow = store.add(item);
+										refreshGraphs(item, true);
+									}
 
-						});
+								});
 					}
 //						if (progressHandler != null) progressHandler.started();
 				} catch (JaxmppException ex) {
@@ -698,7 +699,8 @@ public class StatsViewImpl extends ResizeComposite implements StatsView {
 			}
 		}
 
-		DateTimeFormat format = DateTimeFormat.getFormat(com.google.gwt.i18n.shared.DateTimeFormat.PredefinedFormat.HOUR24_MINUTE);
+		DateTimeFormat format = DateTimeFormat.getFormat(
+				com.google.gwt.i18n.shared.DateTimeFormat.PredefinedFormat.HOUR24_MINUTE);
 		String ts = format.format(new Date());
 		JsArrayInteger data = (JsArrayInteger) JsArrayInteger.createArray();
 		for (String clusterNode : clusterNodes) {
@@ -764,69 +766,8 @@ public class StatsViewImpl extends ResizeComposite implements StatsView {
 		}
 	}
 
-	private class DiscoItemsCallback extends DiscoveryModule.DiscoItemsAsyncCallback {
-
-		@Override
-		public void onInfoReceived(String attribute, ArrayList<DiscoveryModule.Item> items) throws XMLException {
-			provider.getList().clear();
-			for (DiscoveryModule.Item item : items) {
-				DiscoItem discoItem = new DiscoItem(item.getJid(), item.getNode(), item.getName());
-				addItem(discoItem);
-			}
-			provider.flush();
-		}
-
-		public void onError(Stanza responseStanza, XMPPException.ErrorCondition error) throws JaxmppException {
-			throw new UnsupportedOperationException("Not supported yet.");
-		}
-
-		public void onTimeout() throws JaxmppException {
-			throw new UnsupportedOperationException("Not supported yet.");
-		}
-
-	}
-
-	private class DiscoItemsNamesComparator implements Comparator<DiscoItem> {
-
-		private String getName(DiscoItem t1) {
-			DiscoveryModule.Identity identity1 = t1.getIdentities() != null ? t1.getIdentities().iterator().next() : null;
-
-			String name1 = (identity1 != null && identity1.getName() != null) ? identity1.getName() : t1.getName();
-			if (name1 == null) {
-				name1 = t1.getJid().toString();
-			}
-
-			return name1;
-		}
-
-		@Override
-		public int compare(DiscoItem t1, DiscoItem t2) {
-			if (t1 == null || t2 == null) {
-				return -1;
-			}
-			String n1 = getName(t1);
-			String n2 = getName(t2);
-			return n1.compareTo(n2);
-		}
-
-	}
-
-	private class Counter {
-
-		private int value;
-
-		public Counter(int start) {
-			this.value = start;
-		}
-
-		public int dec() {
-			this.value--;
-			return this.value;
-		}
-
-	}
-
-	private class ChartJSX extends ChartJS {
+	private class ChartJSX
+			extends ChartJS {
 
 		protected final Map<String, JabberDataElement> data = new HashMap<String, JabberDataElement>();
 
@@ -843,7 +784,8 @@ public class StatsViewImpl extends ResizeComposite implements StatsView {
 
 		public void updateChart() throws XMLException {
 			this.removeData();
-			DateTimeFormat format = DateTimeFormat.getFormat(com.google.gwt.i18n.shared.DateTimeFormat.PredefinedFormat.HOUR24_MINUTE);
+			DateTimeFormat format = DateTimeFormat.getFormat(
+					com.google.gwt.i18n.shared.DateTimeFormat.PredefinedFormat.HOUR24_MINUTE);
 			String ts = format.format(new Date());
 			JsArrayInteger arr = (JsArrayInteger) JsArrayInteger.createArray();
 			for (String field : fieldNames) {
@@ -866,67 +808,77 @@ public class StatsViewImpl extends ResizeComposite implements StatsView {
 		}
 	}
 
-	private class NodesStatsGrid {
+	private class Counter {
 
-		private class NItem {
+		private int value;
 
-			private final String node;
-			private final String uptime;
-			private int onlineUsers;
-//			private int messagesPerMinute;
-//			private int presencesPerMinute;
-			private final int lastMinPackets;
-			private final int cpuPerc;
-			private final int memPerc;
-
-			NItem(String node, JabberDataElement data) throws XMLException {
-				this.node = node;
-
-				uptime = getValue(data, "message-router/Uptime");
-				String v = getValue(data, "message-router/Last minute packets");
-				lastMinPackets = Integer.parseInt("0" + v);
-				v = getValue(data, "sess-man/Open user sessions");
-				onlineUsers = Integer.parseInt("0" + v);
-				v = getValue(data, "message-router/CPU usage [%]");
-				cpuPerc = (int) Math.round(Double.parseDouble(v));//Integer.parseInt("0" + v.substring(2, 4));
-				v = getValue(data, "message-router/HEAP usage [%]");
-				memPerc = (int) Math.round(Double.parseDouble(v));//Integer.parseInt("0" + v.substring(0, 2));
-			}
-
-			final String getValue(JabberDataElement data, String name) throws XMLException {
-				Field f = data.getField(name);
-				if (f == null) {
-					return null;
-				}
-				return f.getFieldValue().toString();
-			}
-
-			String getValue(int col) {
-				switch (col) {
-					case 0:
-						return node;
-					case 1:
-						return uptime;
-					case 2:
-						return String.valueOf(onlineUsers);
-					case 3:
-						return String.valueOf(lastMinPackets);
-					case 4:
-						return String.valueOf(cpuPerc);
-					case 5:
-						return String.valueOf(memPerc);
-				}
-				return null;
-			}
+		public Counter(int start) {
+			this.value = start;
 		}
 
-		private Map<String, NItem> items = new HashMap<String, NItem>();
+		public int dec() {
+			this.value--;
+			return this.value;
+		}
+
+	}
+
+	private class DiscoItemsCallback
+			extends DiscoveryModule.DiscoItemsAsyncCallback {
+
+		@Override
+		public void onInfoReceived(String attribute, ArrayList<DiscoveryModule.Item> items) throws XMLException {
+			provider.getList().clear();
+			for (DiscoveryModule.Item item : items) {
+				DiscoItem discoItem = new DiscoItem(item.getJid(), item.getNode(), item.getName());
+				addItem(discoItem);
+			}
+			provider.flush();
+		}
+
+		public void onError(Stanza responseStanza, XMPPException.ErrorCondition error) throws JaxmppException {
+			throw new UnsupportedOperationException("Not supported yet.");
+		}
+
+		public void onTimeout() throws JaxmppException {
+			throw new UnsupportedOperationException("Not supported yet.");
+		}
+
+	}
+
+	private class DiscoItemsNamesComparator
+			implements Comparator<DiscoItem> {
+
+		@Override
+		public int compare(DiscoItem t1, DiscoItem t2) {
+			if (t1 == null || t2 == null) {
+				return -1;
+			}
+			String n1 = getName(t1);
+			String n2 = getName(t2);
+			return n1.compareTo(n2);
+		}
+
+		private String getName(DiscoItem t1) {
+			DiscoveryModule.Identity identity1 =
+					t1.getIdentities() != null ? t1.getIdentities().iterator().next() : null;
+
+			String name1 = (identity1 != null && identity1.getName() != null) ? identity1.getName() : t1.getName();
+			if (name1 == null) {
+				name1 = t1.getJid().toString();
+			}
+
+			return name1;
+		}
+
+	}
+
+	private class NodesStatsGrid {
 
 		private final String[] hnames = {"Node", "Uptime", "Online users",
-			//"Messages/minute", "Presences/minute",
-			"Packets/minute",
-			"CPU%", "MEM%"};
-
+										 //"Messages/minute", "Presences/minute",
+										 "Packets/minute", "CPU%", "MEM%"};
+		private Map<String, NItem> items = new HashMap<String, NItem>();
 		private TableElement table;
 
 		public NodesStatsGrid() {
@@ -988,6 +940,58 @@ public class StatsViewImpl extends ResizeComposite implements StatsView {
 
 		public void setVisible(boolean visible) {
 			table.getStyle().setDisplay(visible ? Display.BLOCK : Display.NONE);
+		}
+
+		private class NItem {
+
+			private final int cpuPerc;
+			//			private int messagesPerMinute;
+//			private int presencesPerMinute;
+			private final int lastMinPackets;
+			private final int memPerc;
+			private final String node;
+			private final String uptime;
+			private int onlineUsers;
+
+			NItem(String node, JabberDataElement data) throws XMLException {
+				this.node = node;
+
+				uptime = getValue(data, "message-router/Uptime");
+				String v = getValue(data, "message-router/Last minute packets");
+				lastMinPackets = Integer.parseInt("0" + v);
+				v = getValue(data, "sess-man/Open user sessions");
+				onlineUsers = Integer.parseInt("0" + v);
+				v = getValue(data, "message-router/CPU usage [%]");
+				cpuPerc = (int) Math.round(Double.parseDouble(v));//Integer.parseInt("0" + v.substring(2, 4));
+				v = getValue(data, "message-router/HEAP usage [%]");
+				memPerc = (int) Math.round(Double.parseDouble(v));//Integer.parseInt("0" + v.substring(0, 2));
+			}
+
+			final String getValue(JabberDataElement data, String name) throws XMLException {
+				Field f = data.getField(name);
+				if (f == null) {
+					return null;
+				}
+				return f.getFieldValue().toString();
+			}
+
+			String getValue(int col) {
+				switch (col) {
+					case 0:
+						return node;
+					case 1:
+						return uptime;
+					case 2:
+						return String.valueOf(onlineUsers);
+					case 3:
+						return String.valueOf(lastMinPackets);
+					case 4:
+						return String.valueOf(cpuPerc);
+					case 5:
+						return String.valueOf(memPerc);
+				}
+				return null;
+			}
 		}
 	}
 }
