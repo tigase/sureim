@@ -8,3 +8,4 @@
 */nb-configuration.xml
 site/gwt-unitCache
 site/war
+.idea/*
