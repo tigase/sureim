@@ -259,6 +259,11 @@ public class Xode
 			String defUrl = WebSocket.isSupported()
 							? "ws://" + Window.Location.getHostName() + ":5290/"
 							: "http://" + Window.Location.getHostName() + ":5280/";
+			if (Window.Location.getProtocol().startsWith("https")) {
+				defUrl = WebSocket.isSupported()
+						 ? "wss://" + Window.Location.getHostName() + ":5291/"
+						 : "https://" + Window.Location.getHostName() + ":5281/";
+			}
 			factory.sessionObject().setUserProperty(ConnectionManager.URL_ON_FAILURE, defUrl);
 
 			factory.jaxmpp()
