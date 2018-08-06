@@ -30,7 +30,7 @@ public class Markdown {
 					"Simple unordered list\n\n" + "* Type Markdown text in the left window\n" +
 					"* See the HTML in the right\n" + "Simple ordered list\n" + "1. Item 1\n" + "2. Item 2\n" +
 					"4. Item 3\n\n" +
-					"Simple text with link to [Tigase.IM](http://tigase.im) site and with simple image ![image](http://www.tigase.org/files/image/tiger-oiled-292x170.jpg)[200x150] where 200x150 are dimensions passed to img tag.\n\n" +
+					"Simple text with link to [Tigase.IM](http://tigase.im) site and with simple image ![image](https://tigase.tech/themes/a1/images/logo.png)[216x150] where 216x150 are dimensions passed to img tag.\n\n" +
 					"> The overriding design goal for Markdown's\n" +
 					"> formatting syntax is to make it as readable\n" + "> as possible. The idea is that a\n" +
 					"> Markdown-formatted document should be\n" + "> publishable as-is, as plain text, without\n" +
