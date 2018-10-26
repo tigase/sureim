@@ -42,8 +42,11 @@ import tigase.jaxmpp.core.client.xmpp.modules.registration.InBandRegistrationMod
 import tigase.jaxmpp.core.client.xmpp.modules.registration.UnifiedRegistrationForm;
 import tigase.jaxmpp.core.client.xmpp.stanzas.IQ;
 import tigase.jaxmpp.core.client.xmpp.stanzas.Stanza;
+import tigase.jaxmpp.gwt.client.ConnectionManager;
 import tigase.jaxmpp.gwt.client.Jaxmpp;
 import tigase.jaxmpp.gwt.client.connectors.BoshConnector;
+import tigase.jaxmpp.gwt.client.connectors.WebSocket;
+import tigase.jaxmpp.gwt.client.dns.WebDnsResolver;
 import tigase.sure.web.site.client.ClientFactory;
 import tigase.sure.web.site.client.MessageDialog;
 import tigase.sure.web.site.client.Xode;
@@ -229,7 +232,7 @@ public class RegisterDialog
 			jaxmpp.getProperties()
 					.setUserProperty(InBandRegistrationModule.IN_BAND_REGISTRATION_MODE_KEY, Boolean.TRUE);
 			jaxmpp.getProperties().setUserProperty(SessionObject.SERVER_NAME, selectedDomain);
-			jaxmpp.getProperties().setUserProperty(BoshConnector.BOSH_SERVICE_URL_KEY, Xode.getBoshUrl(selectedDomain));
+			//jaxmpp.getProperties().setUserProperty(BoshConnector.BOSH_SERVICE_URL_KEY, Xode.getBoshUrl(selectedDomain));
 
 			regModule.addNotSupportedErrorHandler(regHandler);
 			regModule.addReceivedErrorHandler(regHandler);
@@ -258,6 +261,23 @@ public class RegisterDialog
 							regModule.start();
 						}
 					});
+
+			jaxmpp.getSessionObject().setUserProperty(BoshConnector.BOSH_SERVICE_URL_KEY, null);
+			final Dictionary root = Dictionary.getDictionary("root");
+			String webDnsResolver = root.get("dns-resolver");
+
+			String defUrl = WebSocket.isSupported()
+							? "ws://" + Window.Location.getHostName() + ":5290/"
+							: "http://" + Window.Location.getHostName() + ":5280/";
+			if (Window.Location.getProtocol().startsWith("https")) {
+				defUrl = WebSocket.isSupported()
+						 ? "wss://" + Window.Location.getHostName() + ":5291/"
+						 : "https://" + Window.Location.getHostName() + ":5281/";
+			}
+			jaxmpp.getSessionObject().setUserProperty(ConnectionManager.URL_ON_FAILURE, defUrl);
+
+			jaxmpp.getSessionObject()
+					.setUserProperty(WebDnsResolver.WEB_DNS_RESOLVER_URL_KEY, webDnsResolver);
 
 			jaxmpp.login();
 		} catch (XMLException ex) {
