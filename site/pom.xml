@@ -1,351 +1,105 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
-	<!-- POM file generated with GWT webAppCreator -->
-	<modelVersion>4.0.0</modelVersion>
-	<groupId>tigase.sure.web</groupId>
-	<artifactId>tigase-web-ui</artifactId>
-	<packaging>war</packaging>
-	<version>2.2.0-SNAPSHOT</version>
-	<name>Sure.IM site</name>
+    <!-- POM file generated with GWT webAppCreator -->
+    <modelVersion>4.0.0</modelVersion>
+    <artifactId>tigase-web-ui</artifactId>
+    <packaging>war</packaging>
+    <name>Sure.IM site</name>
 
-	<properties>
-		<!-- Convenience property to set the GWT version -->
-		<gwtVersion>2.7.0</gwtVersion>
-		<jaxmppVersion>3.2.0-SNAPSHOT</jaxmppVersion>
-		<!-- GWT needs at least java 1.5 -->
-		<webappDirectory>${project.build.directory}/${project.build.finalName}</webappDirectory>
-		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<maven.build.timestamp.format>yyyy-MM-dd/HH:mm:ss</maven.build.timestamp.format>
-		<timestamp>${maven.build.timestamp}</timestamp>
-		
-		<sign-keystore>/path/to/jks.keystore</sign-keystore>
-		<sign-alias>alias</sign-alias>
-		<sign-storepass>storepass</sign-storepass>
-		<sign-keypass>keypass</sign-keypass>
-		<sign-skip>true</sign-skip>		
-		<verbose-log>false</verbose-log>
-		<tsa>${tsa-uri}</tsa>
-	</properties>
+    <parent>
+        <groupId>tigase.sure.web</groupId>
+        <artifactId>tigase-web-ui-parent</artifactId>
+        <version>2.2.0-SNAPSHOT</version>
+    </parent>
 
-	<scm>
-		<connection>scm:git:https://repository.tigase.org/git/sureim.git</connection>
-		<developerConnection>scm:git:https://repository.tigase.org/git/sureim.git</developerConnection>
-		<url>https://projects.tigase.org/projects/sureim/repository</url>
-	</scm>
+    <dependencies>
+        <dependency>
+            <groupId>tigase.sure.web</groupId>
+            <artifactId>theme</artifactId>
+            <version>2.2.0-SNAPSHOT</version>
+            <scope>compile</scope>
+        </dependency>
+    </dependencies>
 
-	<dependencies>
-		<dependency>
-			<groupId>com.google.gwt</groupId>
-			<artifactId>gwt-user</artifactId>
-			<version>2.7.0</version>
-			<scope>provided</scope>
-		</dependency>
-<!--		<dependency>
-			<groupId>com.google.gwt</groupId>
-			<artifactId>gwt-dev</artifactId>
-			<version>2.7.0</version>
-			<scope>compile</scope>
-		</dependency>-->
-<!--		<dependency>
-			<groupId>asm</groupId>
-			<artifactId>asm</artifactId>
-			<version>3.3.1</version>
-		</dependency>-->
-		<dependency>
-			<groupId>tigase.sure.web</groupId>
-			<artifactId>theme</artifactId>
-			<version>2.2.0-SNAPSHOT</version>
-			<scope>provided</scope>
-		</dependency>
-		<dependency>
-			<groupId>tigase</groupId>
-			<artifactId>jaxmpp-vcard</artifactId>
-			<version>${jaxmppVersion}</version>
-			<scope>provided</scope>
-		</dependency>
-		<dependency>
-			<groupId>tigase</groupId>
-			<artifactId>jaxmpp-chat</artifactId>
-			<version>${jaxmppVersion}</version>
-			<scope>provided</scope>
-		</dependency>
-		<dependency>
-			<groupId>tigase</groupId>
-			<artifactId>jaxmpp-pubsub</artifactId>
-			<version>${jaxmppVersion}</version>
-			<scope>provided</scope>
-		</dependency>
-		<dependency>
-			<groupId>tigase</groupId>
-			<artifactId>jaxmpp-registration</artifactId>
-			<version>${jaxmppVersion}</version>
-			<scope>provided</scope>
-		</dependency>
-		<dependency>
-			<groupId>tigase</groupId>
-			<artifactId>jaxmpp-adhoc</artifactId>
-			<version>${jaxmppVersion}</version>
-			<scope>provided</scope>
-		</dependency>
-		<dependency>
-			<groupId>tigase</groupId>
-			<artifactId>jaxmpp-xep0136</artifactId>
-			<version>${jaxmppVersion}</version>
-			<scope>provided</scope>
-		</dependency>
-		<dependency>
-			<groupId>tigase</groupId>
-			<artifactId>jaxmpp-httpfileupload</artifactId>
-			<version>${jaxmppVersion}</version>
-			<scope>provided</scope>
-		</dependency>
-		<dependency>
-			<groupId>junit</groupId>
-			<artifactId>junit</artifactId>
-			<version>4.7</version>
-			<scope>test</scope>
-		</dependency>
-		<!--    <dependency>
-			<groupId>javax.validation</groupId>
-			<artifactId>validation-api</artifactId>
-			<version>1.0.0.GA</version>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>javax.validation</groupId>
-			<artifactId>validation-api</artifactId>
-			<version>1.0.0.GA</version>
-			<classifier>sources</classifier>
-			<scope>test</scope>
-		</dependency>-->
-	</dependencies>
+    <build>
+        <!-- Generate compiled stuff in the folder used for developing mode -->
+        <outputDirectory>${webappDirectory}/WEB-INF/classes</outputDirectory>
 
-    <profiles>
-        <profile>
-            <id>disable-java8-doclint</id>
-            <activation>
-                <jdk>[1.8,)</jdk>
-            </activation>
-            <properties>
-                <additionalparam>-Xdoclint:none</additionalparam>
-            </properties>
-        </profile>
-    </profiles>	
-	<build>
-		<!-- Generate compiled stuff in the folder used for developing mode -->
-		<outputDirectory>${webappDirectory}/WEB-INF/classes</outputDirectory>
+        <plugins>
+            <plugin>
+                <artifactId>maven-resources-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>copy-resources</id>
+                        <phase>validate</phase>
+                        <goals>
+                            <goal>copy-resources</goal>
+                        </goals>
+                        <configuration>
+                            <outputDirectory>${webappDirectory}</outputDirectory>
+                            <resources>
+                                <resource>
+                                    <directory>src/main/resources</directory>
+                                    <filtering>true</filtering>
+                                    <includes>
+                                        <include>generatedProps.js</include>
+                                    </includes>
+                                </resource>
+                            </resources>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
 
-		<plugins>
-			<plugin>
-				<artifactId>maven-release-plugin</artifactId>
-				<version>2.5.1</version>
-			</plugin>
-			<plugin>
-				<groupId>org.codehaus.mojo</groupId>
-				<artifactId>buildnumber-maven-plugin</artifactId>
-				<version>1.2</version>
-				<configuration>
-					<timestampFormat>{0,date} {0,time}</timestampFormat>
-					<doCheck>false</doCheck>
-					<doUpdate>false</doUpdate>
-					<getRevisionOnlyOnce>true</getRevisionOnlyOnce>
-					<shortRevisionLength>8</shortRevisionLength>
-				</configuration>
-				<executions>
-					<execution>
-						<phase>validate</phase>
-						<goals>
-							<goal>create</goal>
-						</goals>
-					</execution>
-				</executions>
-			</plugin>
-			<plugin>
-				<groupId>org.codehaus.gmaven</groupId>
-				<artifactId>gmaven-plugin</artifactId>
-				<version>1.5</version>
-				<executions>
-					<execution>
-						<id>gitver</id>
-						<phase>validate</phase>
-						<goals>
-							<goal>execute</goal>
-						</goals>
-						<configuration>
-							<providerSelection>2.0</providerSelection>
-							<properties>
-								<script>git rev-list HEAD --count</script>
-							</properties>
-							<source>
-								def version
-								try {
-								def command = project.properties.script
-								def process = command.execute()
-								process.waitFor()
+            <!-- GWT Maven Plugin -->
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>gwt-maven-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>compile</goal>
+                            <goal>test</goal>
+                            <goal>i18n</goal>
+                            <goal>generateAsync</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <!-- Plugin configuration. There are many available options, see
+                gwt-maven-plugin documentation at codehaus.org -->
+                <configuration>
+                    <localWorkers>8</localWorkers>
+                    <optimize>9</optimize>
+                    <draftCompile>false</draftCompile>
+                    <disableClassMetadata>true</disableClassMetadata>
+                    <runTarget>index.html</runTarget>
+                    <hostedWebapp>${webappDirectory}</hostedWebapp>
+                    <i18nMessagesBundle>tigase.sure.web.site.client.Messages</i18nMessagesBundle>
+                    <extraJvmArgs>-Xmx512m</extraJvmArgs>
+                </configuration>
+            </plugin>
 
-								version = process.in.text.trim()
-								} catch (Exception e) {
-								version = '0'
-								}
-								println "setting revision to: " + version
-
-								project.properties.setProperty( 'gitVersion' , version )
-
-							</source>
-						</configuration>
-					</execution>
-				</executions>
-			</plugin>
-
-			<plugin>
-				<artifactId>maven-resources-plugin</artifactId>
-				<version>2.7</version>
-				<executions>
-					<execution>
-						<id>copy-resources</id>
-						<!-- here the phase you need -->
-						<phase>validate</phase>
-						<goals>
-							<goal>copy-resources</goal>
-						</goals>
-						<configuration>
-							<outputDirectory>${webappDirectory}</outputDirectory>
-							<resources>
-								<resource>
-									<directory>src/main/resources</directory>
-									<filtering>true</filtering>
-									<includes>
-										<include>generatedProps.js</include>
-									</includes>
-								</resource>
-							</resources>
-						</configuration>
-					</execution>
-				</executions>
-			</plugin>
-
-			<!-- GWT Maven Plugin -->
-			<plugin>
-				<groupId>org.codehaus.mojo</groupId>
-				<artifactId>gwt-maven-plugin</artifactId>
-				<version>2.7.0</version>
-				<executions>
-					<execution>
-						<goals>
-							<goal>compile</goal>
-							<goal>test</goal>
-							<goal>i18n</goal>
-							<goal>generateAsync</goal>
-						</goals>
-					</execution>
-				</executions>
-				<!-- Plugin configuration. There are many available options, see
-				gwt-maven-plugin documentation at codehaus.org -->
-				<configuration>
-					<localWorkers>8</localWorkers>
-					<optimize>9</optimize>
-					<draftCompile>false</draftCompile>
-					<disableClassMetadata>true</disableClassMetadata>
-					<runTarget>index.html</runTarget>
-					<hostedWebapp>${webappDirectory}</hostedWebapp>
-					<i18nMessagesBundle>tigase.sure.web.site.client.Messages</i18nMessagesBundle>
-					<extraJvmArgs>-Xmx512m</extraJvmArgs>
-				</configuration>
-			</plugin>
-
-			<!-- Copy static web files before executing gwt:run -->
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-war-plugin</artifactId>
-				<version>3.0.0</version>
-				<executions>
-					<execution>
-						<phase>compile</phase>
-						<goals>
-							<goal>exploded</goal>
-						</goals>
-					</execution>
-				</executions>
-				<configuration>
-					<webappDirectory>${webappDirectory}</webappDirectory>
-					<packagingExcludes>
-						WEB-INF/lib/*.jar
-					</packagingExcludes>
-				</configuration>
-			</plugin>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-compiler-plugin</artifactId>
-				<version>3.1</version>
-				<configuration>
-					<source>1.7</source>
-					<target>1.7</target>
-				</configuration>
-			</plugin>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-jarsigner-plugin</artifactId>
-				<version>1.4</version>
-				<executions>
-					<execution>
-						<id>sign</id>
-						<goals>
-							<goal>sign</goal>
-						</goals>
-					</execution>
-				</executions>
-				<configuration>
-					<archiveDirectory>${project.basedir}</archiveDirectory>
-					<includes>
-						<include>target/tigase*.?ar</include>
-						<include>jars/tigase*.?ar</include>
-					</includes>
-					<processMainArtifact>false</processMainArtifact>
-					<processAttachedArtifacts>false</processAttachedArtifacts>
-					<tsa>${tsa-uri}</tsa>
-					<skip>${sign-skip}</skip>
-
-					<keystore>${sign-keystore}</keystore>
-					<alias>${sign-alias}</alias>
-					<storepass>${sign-storepass}</storepass>
-					<keypass>${sign-keypass}</keypass>
-					<verbose>${verbose-log}</verbose>
-				</configuration>
-			</plugin>			
-		</plugins>
-	</build>
-
-	<repositories>
-		<repository>
-			<id>gwt-mobile-webkit</id>
-			<url>http://gwt-mobile-webkit.googlecode.com/svn/repo</url>
-		</repository>	
-		<repository>
-			<id>tigase</id>
-			<name>Tigase repository</name>
-			<url>http://maven-repo.tigase.org/repository/release</url>
-		</repository>
-		<repository>
-			<id>tigase-snapshot</id>
-			<name>Tigase repository</name>
-			<url>http://maven-repo.tigase.org/repository/snapshot</url>
-			<snapshots>
-				<enabled>true</enabled>
-			</snapshots>
-		</repository>
-	</repositories>
-	<distributionManagement>
-		<repository>
-			<id>tigase</id>
-			<name>Tigase repository</name>
-			<url>http://maven-repo.tigase.org/repository/release</url>
-		</repository>
-		<snapshotRepository>
-			<id>tigase-snapshot</id>
-			<name>Tigase snapshot repository</name>
-			<url>http://maven-repo.tigase.org/repository/snapshot</url>
-		</snapshotRepository>
-	</distributionManagement>
+            <!-- Copy static web files before executing gwt:run -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-war-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <phase>compile</phase>
+                        <goals>
+                            <goal>exploded</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <webappDirectory>${webappDirectory}</webappDirectory>
+                    <packagingExcludes>
+                        WEB-INF/lib/*.jar
+                    </packagingExcludes>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
 </project>

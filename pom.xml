@@ -1,0 +1,146 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>tigase</groupId>
+        <artifactId>tigase-projects-parent</artifactId>
+        <version>1.0.0-SNAPSHOT</version>
+        <relativePath/>
+    </parent>
+
+    <modules>
+        <module>base-theme</module>
+        <module>site</module>
+    </modules>
+
+    <groupId>tigase.sure.web</groupId>
+    <artifactId>tigase-web-ui-parent</artifactId>
+    <version>2.2.0-SNAPSHOT</version>
+    <packaging>pom</packaging>
+
+    <name>Sure.IM parent</name>
+
+    <inceptionYear>2012</inceptionYear>
+
+    <properties>
+        <!-- Convenience property to set the GWT version -->
+        <gwtVersion>2.7.0</gwtVersion>
+        <jaxmppVersion>3.2.0</jaxmppVersion>
+        <!-- GWT needs at least java 1.5 -->
+        <webappDirectory>${project.build.directory}/${project.build.finalName}</webappDirectory>
+        <timestamp>${maven.build.timestamp}</timestamp>
+
+        <maven.compiler.source>1.7</maven.compiler.source>
+
+        <maven.javadoc.skip>true</maven.javadoc.skip>
+
+        <license.inlineHeader>${inlineHeader_agpl3}</license.inlineHeader>
+    </properties>
+
+    <scm>
+        <connection>scm:git:${scm_repo_base}/sureim.git</connection>
+        <developerConnection>scm:git:${scm_repo_base}/sureim.git</developerConnection>
+        <url>https://projects.tigase.org/projects/sureim/repository</url>
+    </scm>
+
+    <dependencies>
+        <dependency>
+            <groupId>com.google.gwt</groupId>
+            <artifactId>gwt-user</artifactId>
+            <version>2.7.0</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>tigase</groupId>
+            <artifactId>jaxmpp-vcard</artifactId>
+            <version>${jaxmppVersion}</version>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>tigase</groupId>
+            <artifactId>jaxmpp-chat</artifactId>
+            <version>${jaxmppVersion}</version>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>tigase</groupId>
+            <artifactId>jaxmpp-pubsub</artifactId>
+            <version>${jaxmppVersion}</version>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>tigase</groupId>
+            <artifactId>jaxmpp-registration</artifactId>
+            <version>${jaxmppVersion}</version>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>tigase</groupId>
+            <artifactId>jaxmpp-adhoc</artifactId>
+            <version>${jaxmppVersion}</version>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>tigase</groupId>
+            <artifactId>jaxmpp-xep0136</artifactId>
+            <version>${jaxmppVersion}</version>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>tigase</groupId>
+            <artifactId>jaxmpp-httpfileupload</artifactId>
+            <version>${jaxmppVersion}</version>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>tigase</groupId>
+            <artifactId>jaxmpp-gwt</artifactId>
+            <version>${jaxmppVersion}</version>
+            <scope>compile</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>tigase</groupId>
+            <artifactId>jaxmpp-im</artifactId>
+            <version>${jaxmppVersion}</version>
+            <scope>compile</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>tigase</groupId>
+            <artifactId>jaxmpp-core</artifactId>
+            <version>${jaxmppVersion}</version>
+            <scope>compile</scope>
+        </dependency>
+
+    </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>gwt-maven-plugin</artifactId>
+                <version>2.7.0</version>
+            </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-war-plugin</artifactId>
+                <version>3.0.0</version>
+            </plugin>
+        </plugins>
+    </build>
+
+    <repositories>
+        <repository>
+            <id>gwt-mobile-webkit</id>
+            <url>http://gwt-mobile-webkit.googlecode.com/svn/repo</url>
+        </repository>
+        <repository>
+            <id>tigase</id>
+            <url>http://maven-repo.tigase.org/repository/tigase</url>
+        </repository>
+    </repositories>
+</project>
