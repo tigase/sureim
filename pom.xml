@@ -130,6 +130,13 @@
                 <artifactId>maven-war-plugin</artifactId>
                 <version>3.0.0</version>
             </plugin>
+            <plugin>
+                <artifactId>maven-release-plugin</artifactId>
+                <configuration>
+                    <releaseProfiles>dist</releaseProfiles>
+                    <tagNameFormat>tigase-web-ui-@{project.version}</tagNameFormat>
+                </configuration>
+            </plugin>
         </plugins>
     </build>
 
