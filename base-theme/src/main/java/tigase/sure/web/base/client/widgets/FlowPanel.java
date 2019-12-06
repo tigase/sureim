@@ -1,4 +1,4 @@
-/**
+/*
  * Sure.IM base theme library - bootstrap configuration for all Tigase projects
  * Copyright (C) 2012 Tigase, Inc. (office@tigase.com)
  *
