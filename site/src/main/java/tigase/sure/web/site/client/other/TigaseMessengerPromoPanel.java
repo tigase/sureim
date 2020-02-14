@@ -17,14 +17,12 @@
  */
 package tigase.sure.web.site.client.other;
 
+import com.google.gwt.dom.client.AnchorElement;
 import com.google.gwt.dom.client.Document;
 import com.google.gwt.dom.client.HeadingElement;
 import com.google.gwt.dom.client.Style;
-import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.i18n.client.Dictionary;
-import com.google.gwt.user.client.Window;
-import com.google.gwt.user.client.ui.*;
+import com.google.gwt.user.client.ui.AbsolutePanel;
+import com.google.gwt.user.client.ui.Composite;
 
 /**
  * @author andrzej
@@ -52,88 +50,28 @@ public class TigaseMessengerPromoPanel
 
 		layout.add(textPanel);
 
-		HeadingElement head = Document.get().createHElement(2);
-		head.getStyle().setColor("#357AE8");
-		head.getStyle().setProperty("padding", "0% 10%");
+		HeadingElement clients = Document.get().createHElement(1);
+		clients.getStyle().setColor("#357AE8");
+		clients.getStyle().setProperty("padding", "0% 10%");
+		clients.setInnerText("Our clients:");
+		textPanel.getElement().appendChild(clients);
 
-		head.setInnerText("Tigase Messenger on Android");
-
-		textPanel.getElement()
-				.setInnerHTML("Are you there? Sure, I'm!" +
-									  "<br/>Tigase Messenger is a mobile chat client to use with Jabber.org," +
-									  " Google Talk, Live Journal Talk, Nimbuzz, Ovi, and thousands of other " +
-									  "services run by companies, ISPs, and volunteers around the world (a small" +
-									  " list is on the page: http://xmpp.net/). <br/>If you happen to have a few " +
-									  "accounts on different servers, if you want to stay online when you are on " +
-									  "the go, to be in contact with your friends and family all the time, if you " +
-									  "love to share photos once you take them, then Tigase Messenger is for you.");
-		textPanel.getElement().insertFirst(head);
-
-		final Dictionary links = Dictionary.getDictionary("root");
-		links.get("version-link-ads-free");
-
-		Grid grid = new Grid(2, 3);
-		Label free = new Label("Free");
-		style = free.getElement().getStyle();
-		style.setProperty("whiteSpace", "nowrap");
-		free.addClickHandler(new ClickHandler() {
-
-			public void onClick(ClickEvent event) {
-				Window.open(links.get("version-link-free"), null, null);
-			}
-
-		});
-		free.setStyleName("");
-		grid.setWidget(0, 0, free);
-		Label adsFree = new Label("Ads-Free");
-		style = adsFree.getElement().getStyle();
-		style.setProperty("whiteSpace", "nowrap");
-		adsFree.addClickHandler(new ClickHandler() {
-
-			public void onClick(ClickEvent event) {
-				Window.open(links.get("version-link-ads-free"), null, null);
-			}
-
-		});
-		adsFree.setStyleName("");
-		grid.setWidget(0, 2, adsFree);
-
-		Image promo = new Image("mobile.png");
-		promo.setHeight("90px");
-		grid.setWidget(0, 1, promo);
-		grid.getCellFormatter().getElement(0, 1).setAttribute("rowspan", "2");
-		grid.getCellFormatter().getElement(1, 1).setAttribute("style", "display: none;");
-
-		Image image = new Image("android.jpg");
-		image.setHeight("70px");
-		image.addClickHandler(new ClickHandler() {
-
-			public void onClick(ClickEvent event) {
-				Window.open(links.get("version-link-free"), null, null);
-			}
-
-		});
-		grid.setWidget(1, 0, image);
-
-		Image image1 = new Image("android.jpg");
-		image1.setHeight("70px");
-		image1.addClickHandler(new ClickHandler() {
-
-			public void onClick(ClickEvent event) {
-				Window.open(links.get("version-link-ads-free"), null, null);
-			}
-
-		});
-		grid.setWidget(1, 2, image1);
-
-		grid.getElement().getStyle().setProperty("padding", "0% 14%");
-		grid.getElement().getStyle().setColor("#357AE8");
-		grid.getElement().getStyle().setProperty("textAlign", "center");
-		grid.getElement().getStyle().setFontWeight(Style.FontWeight.BOLD);
-
-		layout.add(grid);
+		addClient(textPanel, "SiskinIM (iOS/iPhone)", "https://siskin.im/");
+		addClient(textPanel, "BeagleIM (macOS)", "https://beagle.im/");
+		addClient(textPanel, "StorkIM (Android)", "https://stork.im/");
 
 		initWidget(layout);
+	}
+
+	private void addClient(AbsolutePanel textPanel, String name, String link) {
+		HeadingElement stork = Document.get().createHElement(2);
+		stork.getStyle().setColor("#357AE8");
+		stork.getStyle().setProperty("padding", "0% 10%");
+		stork.setInnerText(name);
+		AnchorElement storkA = Document.get().createAnchorElement();
+		storkA.setAttribute("href", link);
+		storkA.appendChild(stork);
+		textPanel.getElement().appendChild(storkA);
 	}
 
 }

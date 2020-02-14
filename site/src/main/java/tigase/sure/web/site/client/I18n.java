@@ -135,6 +135,9 @@ public interface I18n
 	@DefaultStringValue("Register")
 	String register();
 
+	@DefaultStringValue("Reset password")
+	String reset();
+
 	// -- Management
 	@DefaultStringValue("Management")
 	String management();

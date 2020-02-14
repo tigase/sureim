@@ -17,14 +17,13 @@
  */
 package tigase.sure.web.site.client.auth;
 
-import com.google.gwt.dom.client.Style;
+import com.google.gwt.dom.client.*;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.i18n.client.Dictionary;
-import com.google.gwt.user.client.ui.AbsolutePanel;
-import com.google.gwt.user.client.ui.Button;
-import com.google.gwt.user.client.ui.HTML;
-import com.google.gwt.user.client.ui.Image;
+import com.google.gwt.user.client.DOM;
+import com.google.gwt.user.client.Element;
+import com.google.gwt.user.client.ui.*;
 import tigase.jaxmpp.core.client.BareJID;
 import tigase.jaxmpp.core.client.JID;
 import tigase.jaxmpp.core.client.xmpp.modules.auth.SaslModule;
@@ -82,6 +81,26 @@ public class AuthView
 			}
 		});
 		w.add(register);
+
+		final Element element = DOM.createElement(BRElement.TAG);
+
+		w.getElement().appendChild(element);
+
+		Anchor resetPassword = new Anchor(factory.i18n().reset(),"rest/user/resetPassword");
+		resetPassword.setTarget("_blank");
+		resetPassword.setStyleName(factory.theme().style().button());
+		resetPassword.getElement().getStyle().setWidth(90 , Style.Unit.PX);
+		resetPassword.getElement().getStyle().setTextAlign(Style.TextAlign.CENTER);
+		resetPassword.getElement().getStyle().setBackgroundColor("white");
+		resetPassword.getElement().getStyle().setColor("rgb(68, 68, 68)");
+		resetPassword.getElement().getStyle().setTextDecoration(Style.TextDecoration.NONE);
+		resetPassword.getElement().getStyle().setDisplay(Style.Display.BLOCK);
+		resetPassword.getElement().getStyle().setFontSize(11, Style.Unit.PX);
+
+		resetPassword.getElement().getStyle().setProperty("margin-left", "auto");
+		resetPassword.getElement().getStyle().setMarginTop(0.5, Style.Unit.EM);
+		resetPassword.getElement().getStyle().setMarginRight(-0.5, Style.Unit.EM);
+		w.add(resetPassword);
 
 		layout.add(w);
 		w.getElement().getStyle().setFloat(Style.Float.RIGHT);
