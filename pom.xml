@@ -26,7 +26,7 @@
     <properties>
         <!-- Convenience property to set the GWT version -->
         <gwtVersion>2.9.0</gwtVersion>
-        <jaxmppVersion>3.2.0</jaxmppVersion>
+        <jaxmppVersion>3.5.0-SNAPSHOT</jaxmppVersion>
         <!-- GWT needs at least java 1.5 -->
         <webappDirectory>${project.build.directory}/${project.build.finalName}</webappDirectory>
         <timestamp>${maven.build.timestamp}</timestamp>
@@ -145,7 +145,7 @@
         </repository>
         <repository>
             <id>tigase</id>
-            <url>http://maven-repo.tigase.org/repository/tigase</url>
+            <url>https://maven-repo.tigase.org/repository/tigase</url>
         </repository>
     </repositories>
 </project>

@@ -97,7 +97,7 @@ public class AuthView
 		resetPassword.getElement().getStyle().setDisplay(Style.Display.BLOCK);
 		resetPassword.getElement().getStyle().setFontSize(11, Style.Unit.PX);
 
-		resetPassword.getElement().getStyle().setProperty("margin-left", "auto");
+		resetPassword.getElement().getStyle().setProperty("marginLeft", "auto");
 		resetPassword.getElement().getStyle().setMarginTop(0.5, Style.Unit.EM);
 		resetPassword.getElement().getStyle().setMarginRight(-0.5, Style.Unit.EM);
 		w.add(resetPassword);
