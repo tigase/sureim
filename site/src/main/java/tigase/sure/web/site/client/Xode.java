@@ -47,7 +47,6 @@ import tigase.jaxmpp.gwt.client.GwtSessionObject;
 import tigase.jaxmpp.gwt.client.Jaxmpp;
 import tigase.jaxmpp.gwt.client.connectors.BoshConnector;
 import tigase.jaxmpp.gwt.client.connectors.WebSocket;
-import tigase.jaxmpp.gwt.client.dns.WebDnsResolver;
 import tigase.sure.web.base.client.ResizablePanel;
 import tigase.sure.web.base.client.RootView;
 import tigase.sure.web.base.client.auth.AuthEvent;
@@ -250,7 +249,6 @@ public class Xode
 			factory.jaxmpp().getSessionObject().setUserProperty(BoshConnector.BOSH_SERVICE_URL_KEY, boshUrl);
 		} else {
 			factory.jaxmpp().getSessionObject().setUserProperty(BoshConnector.BOSH_SERVICE_URL_KEY, null);
-			String webDnsResolver = root.get("dns-resolver");
 
 			String defUrl = WebSocket.isSupported()
 							? "ws://" + Window.Location.getHostName() + ":5290/"
@@ -261,10 +259,6 @@ public class Xode
 						 : "https://" + Window.Location.getHostName() + ":5281/";
 			}
 			factory.sessionObject().setUserProperty(ConnectionManager.URL_ON_FAILURE, defUrl);
-
-			factory.jaxmpp()
-					.getSessionObject()
-					.setUserProperty(WebDnsResolver.WEB_DNS_RESOLVER_URL_KEY, webDnsResolver);
 		}
 		connCfg.setUserPassword(password);
 		try {

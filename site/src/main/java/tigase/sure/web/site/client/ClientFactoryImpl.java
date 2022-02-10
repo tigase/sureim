@@ -19,10 +19,12 @@ package tigase.sure.web.site.client;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.place.shared.PlaceController;
+import tigase.jaxmpp.core.client.Connector;
 import tigase.jaxmpp.core.client.JID;
 import tigase.jaxmpp.core.client.JaxmppCore;
 import tigase.jaxmpp.core.client.SessionObject;
 import tigase.jaxmpp.core.client.XMPPException.ErrorCondition;
+import tigase.jaxmpp.core.client.connector.StreamError;
 import tigase.jaxmpp.core.client.exceptions.JaxmppException;
 import tigase.jaxmpp.core.client.xml.XMLException;
 import tigase.jaxmpp.core.client.xmpp.modules.BookmarksModule;
@@ -159,6 +161,16 @@ public class ClientFactoryImpl
 						eventBus().fireEvent(new AuthFailureEvent(error));
 					}
 				});
+
+		jaxmpp().getEventBus().addHandler(Connector.ErrorHandler.ErrorEvent.class, new Connector.ErrorHandler() {
+			@Override
+			public void onError(SessionObject sessionObject, StreamError streamError, Throwable throwable)
+					throws JaxmppException {
+				if (streamError == StreamError.remote_connection_failed) {
+					eventBus().fireEvent(new AuthFailureEvent("Could not connect to the XMPP server."));
+				}
+			}
+		});
 	}
 
 	@Override

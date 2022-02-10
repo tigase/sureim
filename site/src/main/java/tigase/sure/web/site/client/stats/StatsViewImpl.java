@@ -44,6 +44,7 @@ import tigase.jaxmpp.core.client.xmpp.modules.adhoc.AdHocCommansModule;
 import tigase.jaxmpp.core.client.xmpp.modules.adhoc.State;
 import tigase.jaxmpp.core.client.xmpp.modules.disco.DiscoveryModule;
 import tigase.jaxmpp.core.client.xmpp.stanzas.Stanza;
+import tigase.jaxmpp.core.client.xmpp.utils.RSM;
 import tigase.sure.web.base.client.AppView;
 import tigase.sure.web.site.client.ClientFactory;
 import tigase.sure.web.site.client.disco.CommandsWidget;
@@ -80,7 +81,7 @@ public class StatsViewImpl
 			if (jid != null) {
 				DiscoveryModule module = factory.jaxmpp().getModulesManager().getModule(DiscoveryModule.class);
 				try {
-					module.getItems(JID.jidInstance(jid.getDomain()), null,
+					module.getItems(JID.jidInstance(jid.getDomain()), (RSM) null,
 									new DiscoveryModule.DiscoItemsAsyncCallback() {
 
 										@Override
