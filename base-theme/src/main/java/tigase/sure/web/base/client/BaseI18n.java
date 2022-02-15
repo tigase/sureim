@@ -58,6 +58,9 @@ public interface BaseI18n
 	@DefaultStringValue("Contact")
 	String contactForm();
 
+	@DefaultStringValue("MUC")
+	String mucForm();
+
 	@DefaultStringValue("Support")
 	String supportForm();
 

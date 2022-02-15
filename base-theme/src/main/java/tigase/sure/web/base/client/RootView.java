@@ -117,6 +117,10 @@ public class RootView
 //                anchor.addStyleName(factory.theme().style().footerBarItem());
 //                anchor.setTarget("_blank");
 //                footerPanel.add(anchor);
+		anchor = new Anchor(factory.baseI18n().mucForm(), root.get("muc-link"));
+		anchor.addStyleName(factory.theme().style().footerBarItem());
+		anchor.setTarget("_blank");
+		footerPanel.add(anchor);
 		anchor = new Anchor(factory.baseI18n().supportForm(), root.get("support-link"));
 		anchor.addStyleName(factory.theme().style().footerBarItem());
 		anchor.setTarget("_blank");
