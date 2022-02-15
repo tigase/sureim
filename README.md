@@ -5,7 +5,7 @@
 
 # Tigase.IM Web Client
 
-Tigase XMPP Web Client. It is based on Tigase [JaXMPP library](https://github.com/tigaseinc/jaxmpp). A live demo is available at the http://tigase.im and by default connects to our public tigase.im installation.
+Tigase XMPP Web Client. It is based on Tigase [JaXMPP library](https://github.com/tigaseinc/jaxmpp). A live demo is available at the https://tigase.im/ and by default connects to our public tigase.im installation.
 
 # Features
 

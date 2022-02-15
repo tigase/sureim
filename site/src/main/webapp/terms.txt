@@ -8,7 +8,7 @@ Agreement Version Date: May 11, 2012
 
 1. Privacy Policy
 
-1.1 PLEASE REVIEW TIGASE'S PRIVACY POLICY [http://www.sure.im/privacy.txt].
+1.1 PLEASE REVIEW TIGASE'S PRIVACY POLICY [https://sure.im/privacy.txt].
 
 2. Account
 
